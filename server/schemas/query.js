@@ -49,6 +49,26 @@ const RootQuery = new GraphQLObjectType({
           .catch((err) => err);
       },
     },
+
+    GetUserByEmail: {
+      type: UserType,
+      args: {
+        email: { type: GraphQLString },
+      },
+
+      resolve(parent, args) {
+        const { email } = args;
+        const query = `SELECT * FROM users WHERE email = $1`;
+        const values = [email];
+
+        return db
+          .one(query, values)
+          .then((res) => res)
+          .catch((err) => {
+            console.error("Error in GetUserByEmail resolver:", err);
+          });
+      },
+    },
   },
 });
 
