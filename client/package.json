@@ -21,7 +21,7 @@
     "@vtaits/react-color-picker": "1.0.2",
     "apexcharts": "^3.41.0",
     "autoprefixer": "^10.4.14",
-    "axios": "^1.4.0",
+    "axios": "^1.7.2",
     "axios-mock-adapter": "^1.21.5",
     "babel-eslint": "^10.1.0",
     "bootstrap": "5.3.2",

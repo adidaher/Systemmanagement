@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import {
   Card,
@@ -12,9 +12,48 @@ import {
   UncontrolledDropdown,
 } from "reactstrap"
 
-import { myfiles } from "../../common/data";
-
+import { myfiles } from "../../common/data"
+import axios from "axios"
 const FileList = () => {
+  const [Files, setFiles] = useState([])
+  const [content, setContent] = useState("")
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/files")
+      .then(response => {
+        console.log(response.data)
+        setFiles(response.data)
+      })
+      .catch(error => {
+        console.error("Error fetching files:", error)
+      })
+  }, [])
+
+  const filetype = fileType => {
+    if (fileType == "file" || fileType == "directory")
+      return <i className="bx bxs-folder font-size-24 text-warning"></i>
+
+    if (fileType == "pdf")
+      return <i className="bx bxs-file-pdf font-size-24 text-danger"></i>
+    if (fileType == "txt")
+      return <i className="bx bxs-file-txt font-size-24 text-black"></i>
+  }
+
+  const openFileInExplorer = filePath => {
+    axios
+      .get(
+        `http://localhost:3000/openFile?filePath=${encodeURIComponent(
+          filePath
+        )}`
+      )
+      .then(response => {
+        console.log("File explorer opened successfully")
+      })
+      .catch(error => {
+        console.error("Error opening file explorer:", error)
+      })
+  }
 
   return (
     <React.Fragment>
@@ -47,15 +86,9 @@ const FileList = () => {
                 </DropdownToggle>
 
                 <DropdownMenu className="dropdown-menu-end">
-                  <DropdownItem href="#">
-                    Share Files
-                  </DropdownItem>
-                  <DropdownItem href="#">
-                    Share with me
-                  </DropdownItem>
-                  <DropdownItem href="#">
-                    Other Actions
-                  </DropdownItem>
+                  <DropdownItem href="#">Share Files</DropdownItem>
+                  <DropdownItem href="#">Share with me</DropdownItem>
+                  <DropdownItem href="#">Other Actions</DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
             </Form>
@@ -64,11 +97,11 @@ const FileList = () => {
       </div>
       <div>
         <Row>
-          {(myfiles || [])?.map((myfiles, key) => (
+          {(Files || [])?.map((myfiles, key) => (
             <Col xl={4} sm={6} key={key}>
               <Card className="shadow-none border">
                 <CardBody className="p-3">
-                  <div >
+                  <div>
                     <div className="float-end ms-2">
                       <UncontrolledDropdown className="mb-2">
                         <DropdownToggle
@@ -79,40 +112,35 @@ const FileList = () => {
                         </DropdownToggle>
 
                         <DropdownMenu className="dropdown-menu-end">
-                          <DropdownItem href="#">
-                            Open
-                          </DropdownItem>
-                          <DropdownItem href="#">
-                            Edit
-                          </DropdownItem>
-                          <DropdownItem href="#">
-                            Rename
-                          </DropdownItem>
+                          <DropdownItem href="#">Open</DropdownItem>
+                          <DropdownItem href="#">Edit</DropdownItem>
+                          <DropdownItem href="#">Rename</DropdownItem>
                           <div className="dropdown-divider"></div>
-                          <DropdownItem href="#">
-                            Remove
-                          </DropdownItem>
+                          <DropdownItem href="#">Remove</DropdownItem>
                         </DropdownMenu>
                       </UncontrolledDropdown>
                     </div>
                     <div className="avatar-xs me-3 mb-3">
                       <div className="avatar-title bg-transparent rounded">
-                        <i className="bx bxs-folder font-size-24 text-warning"></i>
+                        {filetype(myfiles.fileType)}
                       </div>
                     </div>
                     <div className="d-flex">
                       <div className="overflow-hidden me-auto">
                         <h5 className="font-size-14 text-truncate mb-1">
-                          <Link to="#" className="text-body">
+                          <Link
+                            to="#"
+                            className="text-body"
+                            onClick={() => openFileInExplorer(myfiles.path)}
+                          >
                             {myfiles.name}
                           </Link>
                         </h5>
-                        <p className="text-muted text-truncate mb-0">
-                          {myfiles.file} Files
-                        </p>
                       </div>
                       <div className="align-self-end ms-2">
-                        <p className="text-muted mb-0">{myfiles.Gb}GB</p>
+                        {myfiles.size > 0 && (
+                          <p className="text-muted mb-0">{myfiles.size}kB</p>
+                        )}
                       </div>
                     </div>
                   </div>

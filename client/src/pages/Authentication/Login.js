@@ -32,32 +32,47 @@ import profile from "assets/images/profile-img.png"
 import logo from "assets/images/logo.svg"
 
 import loginUsername from "../../store/auth/login/apiCalls"
+import { useQuery, gql, useLazyQuery } from "@apollo/client"
+
+const GET_USER_BY_EMAIL = gql`
+  query GetUserByEmail($email: String!) {
+    GetUserByEmail(email: $email) {
+      password
+    }
+  }
+`
+
 const Login = props => {
   //meta title
   document.title = "Login | Skote - React Admin & Dashboard Template"
 
   const dispatch = useDispatch()
 
+  const [getUserByEmail, { loading, data }] = useLazyQuery(GET_USER_BY_EMAIL)
+
   const validation = useFormik({
     // enableReinitialize : use this  flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {
-      email: "admin@themesbrand.com" || "",
-      password: "123456" || "",
+      email: "adi@email.com" || "",
+      password: "adi123" || "",
     },
     validationSchema: Yup.object({
       email: Yup.string().required("Please Enter Your Email"),
       password: Yup.string().required("Please Enter Your Password"),
     }),
     onSubmit: async values => {
-      const isvalid = await loginUsername(values)
-
-      if (isvalid) {
-        dispatch(loginUser(values, props.router.navigate))
-      } else {
-        // Handle invalid login credentials
-        console.error("Invalid login credentials")
+      await getUserByEmail({
+        variables: { email: values.email },
+      })
+      if (data && data.GetUserByEmail) {
+        const userPassword = data.GetUserByEmail.password
+        if (userPassword === validation.values.password) {
+          dispatch(loginUser(values, props.router.navigate))
+        } else {
+          console.error("Invalid login credentials")
+        }
       }
     },
   })
