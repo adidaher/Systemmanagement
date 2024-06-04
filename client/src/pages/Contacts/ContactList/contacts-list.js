@@ -28,6 +28,7 @@ import {
   addNewUser as onAddNewUser,
   updateUser as onUpdateUser,
   deleteUser as onDeleteUser,
+  getUsersSuccess,
 } from "store/contacts/actions"
 import { isEmpty } from "lodash"
 
@@ -36,6 +37,20 @@ import { useSelector, useDispatch } from "react-redux"
 import { createSelector } from "reselect"
 import Spinners from "components/Common/Spinner"
 import { ToastContainer } from "react-toastify"
+import { useQuery, gql, useLazyQuery } from "@apollo/client"
+
+const GET_ALL_USERS = gql`
+  query {
+    allUsers {
+      user_id
+      username
+      email
+      password
+      phone
+      role
+    }
+  }
+`
 
 const ContactsList = () => {
   //meta title
@@ -43,6 +58,7 @@ const ContactsList = () => {
 
   const dispatch = useDispatch()
   const [contact, setContact] = useState()
+
   // validation
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
@@ -108,12 +124,18 @@ const ContactsList = () => {
   const [modal, setModal] = useState(false)
   const [isEdit, setIsEdit] = useState(false)
   const [isLoading, setLoading] = useState(loading)
-
+  const [usersdetails, setUsersdetails] = useState(loading)
+  const { data } = useQuery(GET_ALL_USERS, {
+    onCompleted: data => {
+      console.log(data?.allUsers)
+    },
+  })
   useEffect(() => {
-    if (users && !users.length) {
-      dispatch(onGetUsers())
-      setIsEdit(false)
-    }
+    /* dispatch(onGetUsers())
+      setIsEdit(false)*/
+    console.log("updating...")
+    dispatch(getUsersSuccess(data?.allUsers))
+    setIsEdit(false)
   }, [dispatch, users])
 
   useEffect(() => {
@@ -123,6 +145,7 @@ const ContactsList = () => {
 
   useEffect(() => {
     if (!isEmpty(users) && !!isEdit) {
+      console.log(users)
       setContact(users)
       setIsEdit(false)
     }
@@ -179,7 +202,7 @@ const ContactsList = () => {
             {!cell.getValue() ? (
               <div className="avatar-xs">
                 <span className="avatar-title rounded-circle">
-                  {cell.row.original.name.charAt(0)}{" "}
+                  {cell.row.original.email.charAt(0)}{" "}
                 </span>
               </div>
             ) : (
@@ -198,7 +221,7 @@ const ContactsList = () => {
       },
       {
         header: "Name",
-        accessorKey: "name",
+        accessorKey: "username",
         enableColumnFilter: false,
         enableSorting: true,
         cell: cell => {
@@ -221,29 +244,17 @@ const ContactsList = () => {
         enableSorting: true,
       },
       {
-        header: "Title",
-        accessorKey: "title",
+        header: "Tags",
+        accessorKey: "role",
         enableColumnFilter: false,
         enableSorting: true,
         cell: cell => {
-          return (
-            <div>
-              {cell.getValue()?.map((item, index) => (
-                <Link
-                  to="#1"
-                  className="badge badge-soft-primary font-size-11 m-1"
-                  key={index}
-                >
-                  {item}
-                </Link>
-              ))}
-            </div>
-          )
+          return <div>{cell.getValue()}</div>
         },
       },
       {
-        header: "Projects",
-        accessorKey: "projects",
+        header: "Phone",
+        accessorKey: "phone",
         enableColumnFilter: false,
         enableSorting: true,
       },
@@ -300,7 +311,7 @@ const ContactsList = () => {
                   <CardBody>
                     <TableContainer
                       columns={columns}
-                      data={users || []}
+                      data={data?.allUsers || []}
                       isGlobalFilter={true}
                       isPagination={true}
                       SearchPlaceholder="Search..."
@@ -354,30 +365,7 @@ const ContactsList = () => {
                           </FormFeedback>
                         ) : null}
                       </div>
-                      <div className="mb-3">
-                        <Label className="form-label">Designation</Label>
-                        <Input
-                          name="designation"
-                          label="Designation"
-                          placeholder="Insert Designation"
-                          type="text"
-                          onChange={validation.handleChange}
-                          onBlur={validation.handleBlur}
-                          value={validation.values.designation || ""}
-                          invalid={
-                            validation.touched.designation &&
-                            validation.errors.designation
-                              ? true
-                              : false
-                          }
-                        />
-                        {validation.touched.designation &&
-                        validation.errors.designation ? (
-                          <FormFeedback type="invalid">
-                            {validation.errors.designation}
-                          </FormFeedback>
-                        ) : null}
-                      </div>
+
                       <div className="mb-3">
                         <Label className="form-label">Email</Label>
                         <Input
@@ -400,38 +388,7 @@ const ContactsList = () => {
                           </FormFeedback>
                         ) : null}
                       </div>
-                      <div className="mb-3">
-                        <Label className="form-label">Option</Label>
-                        <Input
-                          type="select"
-                          name="tags"
-                          className="form-select"
-                          multiple={true}
-                          onChange={validation.handleChange}
-                          onBlur={validation.handleBlur}
-                          value={validation.values.tags || []}
-                          invalid={
-                            validation.touched.tags && validation.errors.tags
-                              ? true
-                              : false
-                          }
-                        >
-                          <option>Photoshop</option>
-                          <option>illustrator</option>
-                          <option>Html</option>
-                          <option>Php</option>
-                          <option>Java</option>
-                          <option>Python</option>
-                          <option>UI/UX Designer</option>
-                          <option>Ruby</option>
-                          <option>Css</option>
-                        </Input>
-                        {validation.touched.tags && validation.errors.tags ? (
-                          <FormFeedback type="invalid">
-                            {validation.errors.tags}
-                          </FormFeedback>
-                        ) : null}
-                      </div>
+
                       <div className="mb-3">
                         <Label className="form-label">Projects</Label>
                         <Input
