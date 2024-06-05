@@ -43,6 +43,11 @@ app.get("/files", (req, res) => {
   });
 });
 */
+
+app.get("/", (req, res) => {
+  return res.status(200).json("app is running");
+});
+
 app.get("/files", (req, res) => {
   const directoryPath = "C:\\react"; // Change this to your directory path
   fs.readdir(directoryPath, (err, files) => {
@@ -115,4 +120,7 @@ app.get("/openFile", (req, res) => {
   });
 });
 
-app.listen(3000, () => console.log("GraphQL server running on localhost:3000"));
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
