@@ -37,7 +37,12 @@ import { useQuery, gql, useLazyQuery } from "@apollo/client"
 const GET_USER_BY_EMAIL = gql`
   query GetUserByEmail($email: String!) {
     GetUserByEmail(email: $email) {
+      user_id
+      username
+      email
       password
+      phone
+      role
     }
   }
 `
@@ -69,7 +74,7 @@ const Login = props => {
       if (data && data.GetUserByEmail) {
         const userPassword = data.GetUserByEmail.password
         if (userPassword === validation.values.password) {
-          dispatch(loginUser(values, props.router.navigate))
+          dispatch(loginUser(data.GetUserByEmail, props.router.navigate))
         } else {
           console.error("Invalid login credentials")
         }

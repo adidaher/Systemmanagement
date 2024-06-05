@@ -37,7 +37,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { createSelector } from "reselect"
 import Spinners from "components/Common/Spinner"
 import { ToastContainer } from "react-toastify"
-import { useQuery, gql, useLazyQuery } from "@apollo/client"
+import { useQuery, gql, useLazyQuery, useMutation } from "@apollo/client"
 
 const GET_ALL_USERS = gql`
   query {
@@ -52,12 +52,74 @@ const GET_ALL_USERS = gql`
   }
 `
 
+const ADD_USER = gql`
+  mutation AddUser(
+    $username: String!
+    $email: String!
+    $password: String!
+    $phone: String!
+    $role: String!
+  ) {
+    addUser(
+      username: $username
+      email: $email
+      password: $password
+      phone: $phone
+      role: $role
+    ) {
+      user_id
+      username
+      email
+      password
+      phone
+      role
+    }
+  }
+`
+const UPDATE_USER = gql`
+  mutation UpdateUser(
+    $id: ID!
+    $username: String!
+    $email: String!
+    $phone: String!
+    $role: String!
+  ) {
+    updateUser(
+      id: $id
+      username: $username
+      email: $email
+      phone: $phone
+      role: $role
+    ) {
+      user_id
+      username
+      email
+      phone
+      role
+    }
+  }
+`
+
+const DELETE_USER = gql`
+  mutation DeleteUser($id: ID!) {
+    deleteUser(id: $id) {
+      user_id
+    }
+  }
+`
+
 const ContactsList = () => {
   //meta title
   document.title = "User List | Skote - React Admin & Dashboard Template"
 
   const dispatch = useDispatch()
   const [contact, setContact] = useState()
+  const [currentUser, setCurrentUser] = useState()
+  const [addUserMutation, { loading: mutationLoading, error }] =
+    useMutation(ADD_USER)
+
+  const [updateUserMutation, { loading: updateLoading, error: updateError }] =
+    useMutation(UPDATE_USER)
 
   // validation
   const validation = useFormik({
@@ -65,47 +127,56 @@ const ContactsList = () => {
     enableReinitialize: true,
 
     initialValues: {
-      name: (contact && contact.name) || "",
-      designation: (contact && contact.designation) || "",
-      tags: (contact && contact.tags) || "",
+      name: (contact && contact.username) || "",
+      role: (contact && contact.role) || "",
       email: (contact && contact.email) || "",
-      projects: (contact && contact.projects) || "",
+      password: (contact && contact.password) || "",
+      phone: (contact && contact.phone) || "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("Please Enter Your Name"),
-      designation: Yup.string().required("Please Enter Your Designation"),
-      tags: Yup.array().required("Please Enter Tag"),
+      username: Yup.string().required("Please Enter Your username"),
+      role: Yup.string().required("Please Enter role"),
       email: Yup.string()
         .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Please Enter Valid Email")
         .required("Please Enter Your Email"),
-      projects: Yup.string().required("Please Enter Your Project"),
+      password: Yup.string().required("Please Enter password"),
+      phone: Yup.string().required("Please Enter phone"),
     }),
     onSubmit: values => {
       if (isEdit) {
-        const updateUser = {
-          id: contact.id,
-          name: values.name,
-          designation: values.designation,
-          tags: values.tags,
-          email: values.email,
-          projects: values.projects,
-        }
-        // update user
-        dispatch(onUpdateUser(updateUser))
-        setIsEdit(false)
-        validation.resetForm()
+        updateUserMutation({
+          variables: {
+            id: contact.id,
+            username: values.name,
+            email: values.email,
+            phone: values.phone,
+            role: values.role,
+          },
+        }).then(result => {
+          // Handle success
+          console.log("User updated successfully:", result.data.updateUser)
+          // update user
+          dispatch(onUpdateUser(result.data.updateUser))
+          setIsEdit(false)
+          validation.resetForm()
+        })
       } else {
-        const newUser = {
-          id: Math.floor(Math.random() * (30 - 20)) + 20,
-          name: values["name"],
-          designation: values["designation"],
-          email: values["email"],
-          tags: values["tags"],
-          projects: values["projects"],
-        }
-        // save new user
-        dispatch(onAddNewUser(newUser))
-        validation.resetForm()
+        console.log("adding user started...")
+        addUserMutation({
+          variables: {
+            username: values["username"],
+            email: values["email"],
+            password: values["password"],
+            phone: values["phone"],
+            role: values["role"],
+          },
+        }).then(result => {
+          // Handle success
+          console.log("User added successfully:", result.data.addUser)
+          dispatch(onAddNewUser(result.data.addUser))
+
+          validation.resetForm()
+        })
       }
       toggle()
     },
@@ -125,18 +196,33 @@ const ContactsList = () => {
   const [isEdit, setIsEdit] = useState(false)
   const [isLoading, setLoading] = useState(loading)
   const [usersdetails, setUsersdetails] = useState(loading)
-  const { data } = useQuery(GET_ALL_USERS, {
-    onCompleted: data => {
-      console.log(data?.allUsers)
-    },
-  })
+
+  const [getUsers, { data, loading: queryLoading }] = useLazyQuery(
+    GET_ALL_USERS,
+    {
+      onCompleted: data => {
+        if (data?.allUsers) {
+          dispatch(getUsersSuccess(data.allUsers))
+        }
+      },
+    }
+  )
+
+  //getting the current user
   useEffect(() => {
-    /* dispatch(onGetUsers())
-      setIsEdit(false)*/
-    console.log("updating...")
-    dispatch(getUsersSuccess(data?.allUsers))
-    setIsEdit(false)
-  }, [dispatch, users])
+    if (!currentUser) {
+      if (localStorage.getItem("authUser")) {
+        const obj = JSON.parse(localStorage.getItem("authUser"))
+        setCurrentUser(obj)
+      }
+    }
+  }, [currentUser])
+
+  useEffect(() => {
+    if (users) {
+      getUsers()
+    }
+  }, [users, getUsers])
 
   useEffect(() => {
     setContact(users)
@@ -145,7 +231,6 @@ const ContactsList = () => {
 
   useEffect(() => {
     if (!isEmpty(users) && !!isEdit) {
-      console.log(users)
       setContact(users)
       setIsEdit(false)
     }
@@ -164,7 +249,6 @@ const ContactsList = () => {
       designation: user.designation,
       email: user.email,
       tags: user.tags,
-      projects: user.projects,
     })
     setIsEdit(true)
 
@@ -311,12 +395,12 @@ const ContactsList = () => {
                   <CardBody>
                     <TableContainer
                       columns={columns}
-                      data={data?.allUsers || []}
+                      data={users || []}
                       isGlobalFilter={true}
                       isPagination={true}
                       SearchPlaceholder="Search..."
                       isCustomPageSize={true}
-                      isAddButton={true}
+                      isAddButton={currentUser?.role === "admin"}
                       handleUserClick={handleUserClicks}
                       buttonClass="btn btn-success btn-rounded waves-effect waves-light addContact-modal mb-2"
                       buttonName="New Contact"
@@ -345,23 +429,25 @@ const ContactsList = () => {
                   <Row>
                     <Col xs={12}>
                       <div className="mb-3">
-                        <Label className="form-label">Name</Label>
+                        <Label className="form-label">username</Label>
                         <Input
-                          name="name"
+                          name="username"
                           type="text"
-                          placeholder="Insert Name"
+                          placeholder="Insert username"
                           onChange={validation.handleChange}
                           onBlur={validation.handleBlur}
-                          value={validation.values.name || ""}
+                          value={validation.values.username || ""}
                           invalid={
-                            validation.touched.name && validation.errors.name
+                            validation.touched.username &&
+                            validation.errors.username
                               ? true
                               : false
                           }
                         />
-                        {validation.touched.name && validation.errors.name ? (
+                        {validation.touched.username &&
+                        validation.errors.username ? (
                           <FormFeedback type="invalid">
-                            {validation.errors.name}
+                            {validation.errors.username}
                           </FormFeedback>
                         ) : null}
                       </div>
@@ -388,28 +474,72 @@ const ContactsList = () => {
                           </FormFeedback>
                         ) : null}
                       </div>
-
                       <div className="mb-3">
-                        <Label className="form-label">Projects</Label>
+                        <Label className="form-label">password</Label>
                         <Input
-                          name="projects"
-                          label="Projects"
+                          name="password"
+                          label="password"
                           type="text"
-                          placeholder="Insert Projects"
+                          placeholder="Insert password"
                           onChange={validation.handleChange}
                           onBlur={validation.handleBlur}
-                          value={validation.values.projects || ""}
+                          value={validation.values.password || ""}
                           invalid={
-                            validation.touched.projects &&
-                            validation.errors.projects
+                            validation.touched.password &&
+                            validation.errors.password
                               ? true
                               : false
                           }
                         />
-                        {validation.touched.projects &&
-                        validation.errors.projects ? (
+                        {validation.touched.password &&
+                        validation.errors.password ? (
                           <FormFeedback type="invalid">
-                            {validation.errors.projects}
+                            {validation.errors.password}
+                          </FormFeedback>
+                        ) : null}
+                      </div>
+                      <div className="mb-3">
+                        <Label className="form-label">role</Label>
+                        <Input
+                          name="role"
+                          label="role"
+                          type="text"
+                          placeholder="Insert role"
+                          onChange={validation.handleChange}
+                          onBlur={validation.handleBlur}
+                          value={validation.values.role || ""}
+                          invalid={
+                            validation.touched.role && validation.errors.role
+                              ? true
+                              : false
+                          }
+                        />
+                        {validation.touched.role && validation.errors.role ? (
+                          <FormFeedback type="invalid">
+                            {validation.errors.role}
+                          </FormFeedback>
+                        ) : null}
+                      </div>
+
+                      <div className="mb-3">
+                        <Label className="form-label">phone</Label>
+                        <Input
+                          name="phone"
+                          label="phone"
+                          type="text"
+                          placeholder="Insert phone"
+                          onChange={validation.handleChange}
+                          onBlur={validation.handleBlur}
+                          value={validation.values.phone || ""}
+                          invalid={
+                            validation.touched.phone && validation.errors.phone
+                              ? true
+                              : false
+                          }
+                        />
+                        {validation.touched.phone && validation.errors.phone ? (
+                          <FormFeedback type="invalid">
+                            {validation.errors.phone}
                           </FormFeedback>
                         ) : null}
                       </div>

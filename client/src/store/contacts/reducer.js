@@ -15,7 +15,7 @@ const INIT_STATE = {
   users: [],
   userProfile: {},
   error: {},
-  loading: true
+  loading: true,
 }
 
 const contacts = (state = INIT_STATE, action) => {
@@ -24,7 +24,7 @@ const contacts = (state = INIT_STATE, action) => {
       return {
         ...state,
         users: action.payload,
-        loading: true
+        loading: false,
       }
 
     case GET_USERS_FAIL:
@@ -34,7 +34,6 @@ const contacts = (state = INIT_STATE, action) => {
       }
 
     case ADD_USER_SUCCESS:
-
       return {
         ...state,
         users: [action.payload, ...state.users],

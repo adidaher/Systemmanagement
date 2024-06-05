@@ -77,8 +77,9 @@ function* onDeleteUser({ payload: user }) {
 
 function* onAddNewUser({ payload: user }) {
   try {
-    const response = yield call(addNewUser, user)
-    yield put(addUserSuccess(response))
+    //const response = yield call(addNewUser, user)
+    console.log(user)
+    yield put(addUserSuccess(user))
     toast.success("Contact Added Successfully", { autoClose: 2000 })
   } catch (error) {
     yield put(addUserFail(error))
