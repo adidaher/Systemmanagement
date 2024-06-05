@@ -107,7 +107,6 @@ app.get("/openFile", (req, res) => {
     return;
   }
 
-  // Execute system command to open file explorer with the specified file path
   exec(`start explorer "${filePath}"`, (error, stdout, stderr) => {
     if (error) {
       console.error("Error opening file explorer:", error);
