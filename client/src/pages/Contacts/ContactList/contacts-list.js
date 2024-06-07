@@ -78,18 +78,20 @@ const ADD_USER = gql`
 `
 const UPDATE_USER = gql`
   mutation UpdateUser(
-    $id: ID!
+    $user_id: ID!
     $username: String!
     $email: String!
     $phone: String!
     $role: String!
+    $password: String!
   ) {
     updateUser(
-      id: $id
+      user_id: $user_id
       username: $username
       email: $email
       phone: $phone
       role: $role
+      password: $password
     ) {
       user_id
       username
@@ -127,7 +129,7 @@ const ContactsList = () => {
     enableReinitialize: true,
 
     initialValues: {
-      name: (contact && contact.username) || "",
+      username: (contact && contact.username) || "",
       role: (contact && contact.role) || "",
       email: (contact && contact.email) || "",
       password: (contact && contact.password) || "",
@@ -142,24 +144,40 @@ const ContactsList = () => {
       password: Yup.string().required("Please Enter password"),
       phone: Yup.string().required("Please Enter phone"),
     }),
+
     onSubmit: values => {
       if (isEdit) {
+        console.log(
+          contact.user_id,
+          values.username,
+          values.email,
+          values.phone,
+          values.role,
+          contact.password
+        )
         updateUserMutation({
           variables: {
-            id: contact.id,
-            username: values.name,
+            user_id: contact.user_id,
+            username: values.username,
             email: values.email,
             phone: values.phone,
             role: values.role,
+            password: contact.password,
           },
-        }).then(result => {
-          // Handle success
-          console.log("User updated successfully:", result.data.updateUser)
-          // update user
-          dispatch(onUpdateUser(result.data.updateUser))
-          setIsEdit(false)
-          validation.resetForm()
         })
+          .then(result => {
+            // Handle success
+            console.log("User updated successfully:", result.data.updateUser)
+            // update user
+            dispatch(onUpdateUser(result.data.updateUser))
+            setIsEdit(false)
+            //validation.resetForm()
+          })
+          .catch(error => {
+            console.log("Error updating user:", error)
+          })
+
+        if (updateError) console.log(updateError)
       } else {
         console.log("adding user started...")
         addUserMutation({
@@ -174,7 +192,6 @@ const ContactsList = () => {
           // Handle success
           console.log("User added successfully:", result.data.addUser)
           dispatch(onAddNewUser(result.data.addUser))
-
           validation.resetForm()
         })
       }
@@ -202,6 +219,7 @@ const ContactsList = () => {
     {
       onCompleted: data => {
         if (data?.allUsers) {
+          console.log(data.allUsers)
           dispatch(getUsersSuccess(data.allUsers))
         }
       },
@@ -214,6 +232,7 @@ const ContactsList = () => {
       if (localStorage.getItem("authUser")) {
         const obj = JSON.parse(localStorage.getItem("authUser"))
         setCurrentUser(obj)
+        console.log(obj)
       }
     }
   }, [currentUser])
@@ -222,7 +241,7 @@ const ContactsList = () => {
     if (users) {
       getUsers()
     }
-  }, [users, getUsers])
+  }, [])
 
   useEffect(() => {
     setContact(users)
@@ -244,11 +263,12 @@ const ContactsList = () => {
     const user = arg
 
     setContact({
-      id: user.id,
-      name: user.name,
-      designation: user.designation,
+      user_id: user.user_id,
+      username: user.username,
       email: user.email,
-      tags: user.tags,
+      phone: user.phone,
+      role: user.role,
+      password: user.password,
     })
     setIsEdit(true)
 
@@ -277,102 +297,108 @@ const ContactsList = () => {
   }
 
   const columns = useMemo(
-    () => [
-      {
-        header: "#",
-        accessorKey: "img",
-        cell: cell => (
-          <>
-            {!cell.getValue() ? (
-              <div className="avatar-xs">
-                <span className="avatar-title rounded-circle">
-                  {cell.row.original.email.charAt(0)}{" "}
-                </span>
-              </div>
-            ) : (
-              <div>
-                <img
-                  className="rounded-circle avatar-xs"
-                  src={cell.getValue()}
-                  alt=""
-                />
-              </div>
-            )}
-          </>
-        ),
-        enableColumnFilter: false,
-        enableSorting: true,
-      },
-      {
-        header: "Name",
-        accessorKey: "username",
-        enableColumnFilter: false,
-        enableSorting: true,
-        cell: cell => {
-          return (
+    () =>
+      [
+        {
+          header: "#",
+          accessorKey: "img",
+          cell: cell => (
             <>
-              <h5 className="font-size-14 mb-1">
-                <Link to="#" className="text-dark">
-                  {cell.getValue()}
-                </Link>
-              </h5>
-              <p className="text-muted mb-0">{cell.row.original.designation}</p>
+              {!cell.getValue() ? (
+                <div className="avatar-xs">
+                  <span className="avatar-title rounded-circle">
+                    {cell.row.original.email.charAt(0)}{" "}
+                  </span>
+                </div>
+              ) : (
+                <div>
+                  <img
+                    className="rounded-circle avatar-xs"
+                    src={cell.getValue()}
+                    alt=""
+                  />
+                </div>
+              )}
             </>
-          )
+          ),
+          enableColumnFilter: false,
+          enableSorting: true,
         },
-      },
-      {
-        header: "Email",
-        accessorKey: "email",
-        enableColumnFilter: false,
-        enableSorting: true,
-      },
-      {
-        header: "Tags",
-        accessorKey: "role",
-        enableColumnFilter: false,
-        enableSorting: true,
-        cell: cell => {
-          return <div>{cell.getValue()}</div>
+        {
+          header: "username",
+          accessorKey: "username",
+          enableColumnFilter: false,
+          enableSorting: true,
+          cell: cell => {
+            return (
+              <>
+                <h5 className="font-size-14 mb-1">
+                  <Link to="#" className="text-dark">
+                    {cell.getValue()}
+                  </Link>
+                </h5>
+                <p className="text-muted mb-0">
+                  {cell.row.original.designation}
+                </p>
+              </>
+            )
+          },
         },
-      },
-      {
-        header: "Phone",
-        accessorKey: "phone",
-        enableColumnFilter: false,
-        enableSorting: true,
-      },
-      {
-        header: "Action",
-        cell: cellProps => {
-          return (
-            <div className="d-flex gap-3">
-              <Link
-                to="#"
-                className="text-success"
-                onClick={() => {
-                  const userData = cellProps.row.original
-                  handleUserClick(userData)
-                }}
-              >
-                <i className="mdi mdi-pencil font-size-18" id="edittooltip" />
-              </Link>
-              <Link
-                to="#"
-                className="text-danger"
-                onClick={() => {
-                  const userData = cellProps.row.original
-                  onClickDelete(userData)
-                }}
-              >
-                <i className="mdi mdi-delete font-size-18" id="deletetooltip" />
-              </Link>
-            </div>
-          )
+        {
+          header: "email",
+          accessorKey: "email",
+          enableColumnFilter: false,
+          enableSorting: true,
         },
-      },
-    ],
-    []
+        {
+          header: "role",
+          accessorKey: "role",
+          enableColumnFilter: false,
+          enableSorting: true,
+          cell: cell => {
+            return <div>{cell.getValue()}</div>
+          },
+        },
+        {
+          header: "phone",
+          accessorKey: "phone",
+          enableColumnFilter: false,
+          enableSorting: true,
+        },
+        currentUser?.role === "admin" && {
+          header: "Action",
+          cell: cellProps => {
+            return (
+              <div className="d-flex gap-3">
+                <Link
+                  to="#"
+                  className="text-success"
+                  onClick={() => {
+                    const userData = cellProps.row.original
+                    handleUserClick(userData)
+                  }}
+                >
+                  <i className="mdi mdi-pencil font-size-18" id="edittooltip" />
+                </Link>
+                <Link
+                  to="#"
+                  className="text-danger"
+                  onClick={() => {
+                    const userData = cellProps.row.original
+                    onClickDelete(userData)
+                  }}
+                >
+                  <i
+                    className="mdi mdi-delete font-size-18"
+                    id="deletetooltip"
+                  />
+                </Link>
+              </div>
+            )
+          },
+        },
+      ].filter(Boolean),
+    [currentUser]
   )
 
   return (
@@ -444,6 +470,7 @@ const ContactsList = () => {
                               : false
                           }
                         />
+
                         {validation.touched.username &&
                         validation.errors.username ? (
                           <FormFeedback type="invalid">
@@ -451,12 +478,11 @@ const ContactsList = () => {
                           </FormFeedback>
                         ) : null}
                       </div>
-
                       <div className="mb-3">
                         <Label className="form-label">Email</Label>
                         <Input
                           name="email"
-                          label="Email"
+                          label="email"
                           type="email"
                           placeholder="Insert Email"
                           onChange={validation.handleChange}
@@ -468,36 +494,40 @@ const ContactsList = () => {
                               : false
                           }
                         />
+
                         {validation.touched.email && validation.errors.email ? (
                           <FormFeedback type="invalid">
                             {validation.errors.email}
                           </FormFeedback>
                         ) : null}
                       </div>
-                      <div className="mb-3">
-                        <Label className="form-label">password</Label>
-                        <Input
-                          name="password"
-                          label="password"
-                          type="text"
-                          placeholder="Insert password"
-                          onChange={validation.handleChange}
-                          onBlur={validation.handleBlur}
-                          value={validation.values.password || ""}
-                          invalid={
-                            validation.touched.password &&
-                            validation.errors.password
-                              ? true
-                              : false
-                          }
-                        />
-                        {validation.touched.password &&
-                        validation.errors.password ? (
-                          <FormFeedback type="invalid">
-                            {validation.errors.password}
-                          </FormFeedback>
-                        ) : null}
-                      </div>
+                      {currentUser?.role === "admin" && (
+                        <div className="mb-3">
+                          <Label className="form-label">password</Label>
+                          <Input
+                            name="password"
+                            label="password"
+                            type="text"
+                            placeholder="Insert password"
+                            onChange={validation.handleChange}
+                            onBlur={validation.handleBlur}
+                            value={validation.values.password || ""}
+                            invalid={
+                              validation.touched.password &&
+                              validation.errors.password
+                                ? true
+                                : false
+                            }
+                          />
+
+                          {validation.touched.password &&
+                          validation.errors.password ? (
+                            <FormFeedback type="invalid">
+                              {validation.errors.password}
+                            </FormFeedback>
+                          ) : null}
+                        </div>
+                      )}
                       <div className="mb-3">
                         <Label className="form-label">role</Label>
                         <Input
@@ -514,13 +544,13 @@ const ContactsList = () => {
                               : false
                           }
                         />
+
                         {validation.touched.role && validation.errors.role ? (
                           <FormFeedback type="invalid">
                             {validation.errors.role}
                           </FormFeedback>
                         ) : null}
                       </div>
-
                       <div className="mb-3">
                         <Label className="form-label">phone</Label>
                         <Input
@@ -537,6 +567,7 @@ const ContactsList = () => {
                               : false
                           }
                         />
+
                         {validation.touched.phone && validation.errors.phone ? (
                           <FormFeedback type="invalid">
                             {validation.errors.phone}

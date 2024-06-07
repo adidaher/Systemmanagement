@@ -250,9 +250,9 @@ const SidebarContent = props => {
                 <li>
                   <Link to="/tasks-list">{props.t("Task List")}</Link>
                 </li>
-                <li>
+                {/*  <li>
                   <Link to="/tasks-kanban">{props.t("Kanban Board")}</Link>
-                </li>
+  </li> */}
                 <li>
                   <Link to="/tasks-create">{props.t("Create Task")}</Link>
                 </li>

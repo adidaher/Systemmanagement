@@ -5,7 +5,7 @@ const {
   GraphQLList,
   GraphQLString,
 } = require("graphql");
-const { UserType } = require("./types");
+const { UserType, TaskType } = require("./types");
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
@@ -66,6 +66,38 @@ const RootQuery = new GraphQLObjectType({
           .then((res) => res)
           .catch((err) => {
             console.error("Error in GetUserByEmail resolver:", err);
+          });
+      },
+    },
+
+    getTasksByStatus: {
+      type: new GraphQLList(TaskType),
+      args: {
+        status: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const { status } = args;
+        const query = `SELECT * FROM tasks WHERE task_status = $1`;
+        const values = [status];
+
+        return db
+          .manyOrNone(query, values)
+          .then((res) => res)
+          .catch((err) => {
+            console.error("Error in GetUserByEmail resolver:", err);
+          });
+      },
+    },
+
+    getAllTasks: {
+      type: new GraphQLList(TaskType),
+      resolve() {
+        const query = `SELECT * FROM tasks`;
+        return db
+          .manyOrNone(query)
+          .then((res) => res)
+          .catch((err) => {
+            console.error("Error in getAllTasks resolver:", err);
           });
       },
     },

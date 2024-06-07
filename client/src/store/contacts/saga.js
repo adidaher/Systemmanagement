@@ -55,8 +55,8 @@ function* fetchUserProfile() {
 
 function* onUpdateUser({ payload: user }) {
   try {
-    const response = yield call(updateUser, user)
-    yield put(updateUserSuccess(response))
+    //const response = yield call(updateUser, user)
+    yield put(updateUserSuccess(user))
     toast.success("Contact Updated Successfully", { autoClose: 2000 })
   } catch (error) {
     yield put(updateUserFail(error))

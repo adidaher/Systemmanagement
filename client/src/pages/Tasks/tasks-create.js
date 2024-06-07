@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 import {
   Container,
   Row,
@@ -10,46 +10,114 @@ import {
   FormGroup,
   Label,
   Button,
-} from "reactstrap";
+} from "reactstrap"
 
 // Import Editor
-import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-
+import { Editor } from "react-draft-wysiwyg"
+import { EditorState } from "draft-js"
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
+import { ToastContainer } from "react-toastify"
 // FlatPickr
-import "flatpickr/dist/themes/material_blue.css";
-import FlatPickr from "react-flatpickr";
+import "flatpickr/dist/themes/material_blue.css"
+import FlatPickr from "react-flatpickr"
 
-//Import Breadcrumb
+// Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb"
 
+import { useMutation, gql } from "@apollo/client"
+import { toast } from "react-toastify"
+
+const ADD_TASK = gql`
+  mutation AddTask(
+    $task_name: String!
+    $task_partners: String!
+    $task_status: String!
+    $task_deadline: String!
+    $task_description: String!
+  ) {
+    addTask(
+      task_name: $task_name
+      task_partners: $task_partners
+      task_status: $task_status
+      task_deadline: $task_deadline
+      task_description: $task_description
+    ) {
+      task_id
+      task_name
+      task_partners
+      task_status
+      task_deadline
+      task_description
+    }
+  }
+`
+
 const TasksCreate = () => {
+  // Meta title
+  document.title = "Create Task | Skote - React Admin & Dashboard Template"
 
-  //meta title
-  document.title = "Create Task | Skote - React Admin & Dashboard Template";
+  const inpRow = [{ name: "" }]
+  const [startDate, setStartDate] = useState(new Date())
+  const [inputFields, setInputFields] = useState(inpRow)
+  const [task_status] = useState("in Progress")
+  const [task_name, setTaskName] = useState("")
+  const [task_partners, setTaskPartners] = useState("")
+  const [task_description, setTaskDescription] = useState(
+    EditorState.createEmpty()
+  )
 
-  const inpRow = [{ name: "", file: "" }]
-  const [startDate, setstartDate] = useState(new Date())
-  const [endDate, setendDate] = useState(new Date())
-  const [inputFields, setinputFields] = useState(inpRow)
+  const [addTask, { loading, error, data }] = useMutation(ADD_TASK)
 
-  const startDateChange = date => {
-    setstartDate(date)
-  }
-
-  const endDateChange = date => {
-    setendDate(date)
-  }
-
-  // Function for Create Input Fields
+  // Function to create input fields
   function handleAddFields() {
-    const item1 = { name: "", file: "" }
-    setinputFields([...inputFields, item1])
+    const item = { name: "" }
+    setInputFields([...inputFields, item])
   }
 
-  // Function for Remove Input Fields
+  // Function to remove input fields
   function handleRemoveFields(idx) {
-    document.getElementById("nested" + idx).style.display = "none"
+    const fields = [...inputFields]
+    fields.splice(idx, 1)
+    setInputFields(fields)
+    setTaskPartners(fields.map(field => field.name).join(","))
+  }
+
+  const handlePartnerChange = (index, value) => {
+    const fields = [...inputFields]
+    fields[index].name = value
+    setInputFields(fields)
+    setTaskPartners(fields.map(field => field.name).join(","))
+  }
+
+  const handleSubmit = async e => {
+    e.preventDefault()
+    console.log("adding task started...")
+    const taskDescription = task_description.getCurrentContent().getPlainText()
+    const taskDeadline = startDate.toISOString().slice(0, 10)
+
+    console.log(
+      task_name,
+      task_partners,
+      task_status,
+      taskDeadline,
+      taskDescription
+    )
+    try {
+      await addTask({
+        variables: {
+          task_name,
+          task_partners,
+          task_status,
+          task_deadline: taskDeadline,
+          task_description: taskDescription,
+        },
+      }).then(result => {
+        console.log("Task created Successfully")
+        toast.success("Task created Successfully", { autoClose: 2000 })
+      })
+    } catch (err) {
+      toast.error("Task created Failded", { autoClose: 2000 })
+    }
   }
 
   return (
@@ -64,7 +132,7 @@ const TasksCreate = () => {
               <Card>
                 <CardBody>
                   <CardTitle className="mb-4">Create New Task</CardTitle>
-                  <form className="outer-repeater">
+                  <form className="outer-repeater" onSubmit={handleSubmit}>
                     <div data-repeater-list="outer-group" className="outer">
                       <div data-repeater-item className="outer">
                         <FormGroup className="mb-4" row>
@@ -81,6 +149,9 @@ const TasksCreate = () => {
                               type="text"
                               className="form-control"
                               placeholder="Enter Task Name..."
+                              onChange={e => {
+                                setTaskName(e.target.value)
+                              }}
                             />
                           </Col>
                         </FormGroup>
@@ -94,6 +165,8 @@ const TasksCreate = () => {
                               wrapperClassName="wrapperClassName"
                               editorClassName="editorClassName"
                               placeholder="Place Your Content Here..."
+                              editorState={task_description}
+                              onEditorStateChange={setTaskDescription}
                             />
                           </Col>
                         </FormGroup>
@@ -109,23 +182,11 @@ const TasksCreate = () => {
                                   className="form-control"
                                   name="joiningDate"
                                   options={{
-                                    dateFormat: "d M,Y"
+                                    dateFormat: "Y-m-d",
                                   }}
-                                  placeholder="Select time"
-                                  selected={startDate}
-                                  onChange={startDateChange}
-                                />
-                              </Col>
-                              <Col md={6} className="pl-0">
-                                <FlatPickr
-                                  className="form-control"
-                                  options={{
-                                    dateFormat: "d M,Y"
-                                  }}
-                                  name="joiningDate"
-                                  placeholder="Select time"
-                                  selected={endDate}
-                                  onChange={endDateChange}
+                                  placeholder="Select DeadLine time"
+                                  value={startDate}
+                                  onChange={date => setStartDate(date[0])}
                                 />
                               </Col>
                             </Row>
@@ -151,32 +212,20 @@ const TasksCreate = () => {
                                     <input
                                       type="text"
                                       className="inner form-control"
-                                      defaultValue={field.name}
-                                      placeholder="Enter Name..."
+                                      value={field.name}
+                                      placeholder="Enter email..."
+                                      onChange={e => {
+                                        handlePartnerChange(key, e.target.value)
+                                      }}
                                     />
                                   </Col>
-                                  <Col md="4">
-                                    <div className="mt-4 mt-md-0">
-                                      <Input
-                                        type="file"
-                                        className="form-control"
-                                        defaultValue={field.file}
-                                      />
-                                    </div>
-                                  </Col>
                                   <Col md="2">
-                                    <div className="mt-2 mt-md-0 d-grid">
-                                      <Button
-                                        color="primary"
-                                        className="inner"
-                                        onClick={() => {
-                                          handleRemoveFields(key)
-                                        }}
-                                        block
-                                      >
-                                        Delete
-                                      </Button>
-                                    </div>
+                                    <Button
+                                      color="danger"
+                                      onClick={() => handleRemoveFields(key)}
+                                    >
+                                      Remove
+                                    </Button>
                                   </Col>
                                 </div>
                               ))}
@@ -187,48 +236,30 @@ const TasksCreate = () => {
                               <Button
                                 color="success"
                                 className="inner"
-                                onClick={() => {
-                                  handleAddFields()
-                                }}
+                                onClick={handleAddFields}
                               >
-                                Add Number
+                                Assign Member
                               </Button>
                             </Col>
                           </Row>
                         </div>
-                        <FormGroup className="mb-4" row>
-                          <label
-                            htmlFor="taskbudget"
-                            className="col-form-label col-lg-2"
-                          >
-                            Budget
-                          </label>
-                          <div className="col-lg-10">
-                            <Input
-                              id="taskbudget"
-                              name="taskbudget"
-                              type="text"
-                              placeholder="Enter Task Budget..."
-                              className="form-control"
-                            />
-                          </div>
-                        </FormGroup>
                       </div>
                     </div>
+                    <Row className="justify-content-end">
+                      <Col lg="10">
+                        <Button type="submit" color="primary">
+                          Create Task
+                        </Button>
+                      </Col>
+                    </Row>
                   </form>
-                  <Row className="justify-content-end">
-                    <Col lg="10">
-                      <Button type="submit" color="primary">
-                        Create Task
-                      </Button>
-                    </Col>
-                  </Row>
                 </CardBody>
               </Card>
             </Col>
           </Row>
         </Container>
       </div>
+      <ToastContainer />
     </>
   )
 }

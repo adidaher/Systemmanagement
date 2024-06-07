@@ -20,7 +20,7 @@ const FileList = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/files")
+      .get("https://systemmanagement.onrender.com/files")
       .then(response => {
         console.log(response.data)
         setFiles(response.data)
@@ -43,7 +43,7 @@ const FileList = () => {
   const openFileInExplorer = filePath => {
     axios
       .get(
-        `http://localhost:3000/openFile?filePath=${encodeURIComponent(
+        `https://systemmanagement.onrender.com/openFile?filePath=${encodeURIComponent(
           filePath
         )}`
       )

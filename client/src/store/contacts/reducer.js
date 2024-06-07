@@ -55,7 +55,7 @@ const contacts = (state = INIT_STATE, action) => {
       return {
         ...state,
         users: state.users.map(user =>
-          user.id.toString() === action.payload.id.toString()
+          user.user_id.toString() === action.payload.user_id.toString()
             ? { user, ...action.payload }
             : user
         ),
