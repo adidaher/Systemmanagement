@@ -192,7 +192,12 @@ const SidebarContent = props => {
                 <span>{props.t("Office")}</span>
               </Link>
             </li>
-
+            <li>
+              <Link to="/customers">
+                <i className="bx bx-user"></i>
+                <span>{props.t("Customers")}</span>
+              </Link>
+            </li>
             {/*   <li>
               <Link to="/#" className="has-arrow ">
                 <i className="bx bx-envelope"></i>
@@ -269,9 +274,9 @@ const SidebarContent = props => {
                 <span>{props.t("Contacts")}</span>
               </Link>
               <ul className="sub-menu">
-                <li>
+                {/*  <li>
                   <Link to="/contacts-grid">{props.t("User Grid")}</Link>
-                </li>
+                </li> */}
                 <li>
                   <Link to="/contacts-list">{props.t("User List")}</Link>
                 </li>

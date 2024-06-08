@@ -215,7 +215,11 @@ const Login = props => {
                           className="btn btn-primary btn-block"
                           type="submit"
                         >
-                          Log In
+                          {loading ? (
+                            <i className="bx bx-loader-circle"></i>
+                          ) : (
+                            "Log In"
+                          )}
                         </button>
                       </div>
 

@@ -9,9 +9,9 @@ import { Provider } from "react-redux"
 import store from "./store"
 import { ApolloClient, InMemoryCache } from "@apollo/client"
 import { ApolloProvider } from "@apollo/client"
-
+//https://systemmanagement.onrender.com
 const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
+  uri: "https://systemmanagement.onrender.com/graphql",
   cache: new InMemoryCache(),
 })
 

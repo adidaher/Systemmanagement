@@ -75,6 +75,7 @@ import Pages500 from "../pages/Utility/pages-500"
 import ContactsGrid from "../pages/Contacts/contacts-grid"
 import ContactsList from "../pages/Contacts/ContactList/contacts-list"
 import ContactsProfile from "../pages/Contacts/ContactsProfile/contacts-profile"
+import Customers from "pages/Customers/Customers"
 
 const authProtectedRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
@@ -105,6 +106,8 @@ const authProtectedRoutes = [
   { path: "/tasks-list", component: <TasksList /> },
   { path: "/tasks-create", component: <TasksCreate /> },
   { path: "/tasks-kanban", component: <TasksKanban /> },
+
+  { path: "//customers", component: <Customers /> },
 
   //Projects
   { path: "/office-grid", component: <OfficesGrid /> },
@@ -160,6 +163,7 @@ const publicRoutes = [
   { path: "/auth-email-verification", component: <EmailVerification /> },
   { path: "/auth-email-verification-2", component: <EmailVerification2 /> },
   { path: "/auth-two-step-verification", component: <TwostepVerification /> },
+
   {
     path: "/auth-two-step-verification-2",
     component: <TwostepVerification2 />,
