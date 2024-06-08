@@ -20,7 +20,7 @@ const FileList = () => {
 
   useEffect(() => {
     axios
-      .get("https://systemmanagement.onrender.com/files")
+      .get("http://localhost:4000/files")
       .then(response => {
         console.log(response.data)
         setFiles(response.data)

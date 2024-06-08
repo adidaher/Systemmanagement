@@ -50,6 +50,11 @@ app.get("/", (req, res) => {
 
 app.get("/files", (req, res) => {
   const directoryPath = "C:\\react"; // Specify the path to the directory
+  if (!fs.existsSync(directoryPath)) {
+    console.error(`Directory does not exist: ${directoryPath}`);
+    res.status(404).json({ error: "Directory not found" });
+    return;
+  }
 
   fs.readdir(directoryPath, (err, files) => {
     if (err) {
@@ -102,7 +107,6 @@ app.get("/files", (req, res) => {
       });
   });
 });
-
 /*
 app.get("/files", (req, res) => {
   const directoryPath = "C:\\react"; // Change this to your directory path
@@ -153,8 +157,8 @@ app.get("/files", (req, res) => {
       });
     });
   });
-});
-*/
+});*/
+
 app.get("/openFile", (req, res) => {
   const { filePath } = req.query;
 
