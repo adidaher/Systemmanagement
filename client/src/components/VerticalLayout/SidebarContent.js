@@ -186,7 +186,7 @@ const SidebarContent = props => {
               </Link>
             </li>
 
-            <li>
+            {/*   <li>
               <Link to="/#" className="has-arrow ">
                 <i className="bx bx-envelope"></i>
                 <span>{props.t("Email")}</span>
@@ -216,7 +216,7 @@ const SidebarContent = props => {
                   </ul>
                 </li>
               </ul>
-            </li>
+  </li> */}
 
             <li>
               <Link to="/#" className="has-arrow ">

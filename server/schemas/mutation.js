@@ -1,7 +1,7 @@
 const graphql = require("graphql");
 const db = require("../pgAdaptor").db;
 const { GraphQLObjectType, GraphQLID, GraphQLString } = graphql;
-const { UserType, TaskType } = require("./types");
+const { UserType, TaskType, EventsType } = require("./types");
 
 const RootMutation = new GraphQLObjectType({
   name: "RootMutationType",
@@ -81,6 +81,82 @@ const RootMutation = new GraphQLObjectType({
           args.task_deadline,
           args.task_description,
         ];
+
+        return db
+          .one(query, values)
+          .then((res) => res)
+          .catch((err) => err);
+      },
+    },
+
+    updateEvent: {
+      type: EventsType,
+      args: {
+        id: { type: GraphQLID },
+        user_id: { type: GraphQLID },
+        title: { type: GraphQLString },
+        start_timestamp: { type: GraphQLString },
+        end_timestamp: { type: GraphQLString },
+        event_class: { type: GraphQLString },
+        shared_with: { type: GraphQLString },
+      },
+      resolve(parentValue, args) {
+        const query = `
+          UPDATE events 
+          SET user_id = $1, title = $2, start_timestamp = $3, end_timestamp = $4, event_class = $5, shared_with = $6
+          WHERE id = $7
+          RETURNING *`;
+        const values = [
+          args.user_id,
+          args.title,
+          args.start_timestamp,
+          args.end_timestamp,
+          args.event_class,
+          args.shared_with,
+          args.id,
+        ];
+
+        return db
+          .one(query, values)
+          .then((res) => res)
+          .catch((err) => err);
+      },
+    },
+
+    addEvent: {
+      type: EventsType,
+      args: {
+        user_id: { type: GraphQLID },
+        title: { type: GraphQLString },
+        start_timestamp: { type: GraphQLString },
+        event_class: { type: GraphQLString },
+        shared_with: { type: GraphQLString },
+      },
+      resolve(parentValue, args) {
+        const query = `INSERT INTO events(user_id, title, start_timestamp, event_class, shared_with) VALUES ($1, $2, $3, $4, $5) RETURNING *`;
+        const values = [
+          args.user_id,
+          args.title,
+          args.start_timestamp,
+          args.event_class,
+          args.shared_with,
+        ];
+
+        return db
+          .one(query, values)
+          .then((res) => res)
+          .catch((err) => err);
+      },
+    },
+
+    deleteEvent: {
+      type: EventsType,
+      args: {
+        id: { type: GraphQLID },
+      },
+      resolve(parentValue, args) {
+        const query = `DELETE FROM events WHERE id = $1 RETURNING *`;
+        const values = [args.id];
 
         return db
           .one(query, values)

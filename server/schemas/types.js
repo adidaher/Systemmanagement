@@ -32,5 +32,20 @@ const TaskType = new GraphQLObjectType({
   },
 });
 
+const EventsType = new GraphQLObjectType({
+  name: "Event",
+  type: "Query",
+  fields: {
+    id: { type: GraphQLID },
+    user_id: { type: GraphQLID },
+    title: { type: GraphQLString },
+    start_timestamp: { type: GraphQLString },
+    end_timestamp: { type: GraphQLString },
+    event_class: { type: GraphQLString },
+    shared_with: { type: GraphQLString },
+  },
+});
+
 exports.UserType = UserType;
 exports.TaskType = TaskType;
+exports.EventsType = EventsType;

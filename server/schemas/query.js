@@ -5,7 +5,7 @@ const {
   GraphQLList,
   GraphQLString,
 } = require("graphql");
-const { UserType, TaskType } = require("./types");
+const { UserType, TaskType, EventsType } = require("./types");
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
@@ -99,6 +99,34 @@ const RootQuery = new GraphQLObjectType({
           .catch((err) => {
             console.error("Error in getAllTasks resolver:", err);
           });
+      },
+    },
+
+    userEvents: {
+      type: new GraphQLList(EventsType),
+      args: {
+        userEmail: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const today = new Date();
+        const startOfToday = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
+        );
+
+        const query = `
+        SELECT * 
+        FROM events 
+        WHERE (user_id = (SELECT user_id FROM users WHERE email = $1) OR $1 IN (SELECT shared_with FROM events))
+          AND start_timestamp >= $2
+      `;
+        const values = [args.userEmail, startOfToday];
+
+        return db
+          .any(query, values)
+          .then((res) => res)
+          .catch((err) => err);
       },
     },
   },

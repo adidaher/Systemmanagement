@@ -45,12 +45,11 @@ const events = [
   {
     id: 8,
     title: "Long Event",
-    start: new Date().setDate(new Date().getDate() - 5),
-    end: new Date().setDate(new Date().getDate() - 3),
+    start: new Date("2024-06-01T13:00:00"),
+    end: new Date("2024-06-01T14:59:59"),
     className: "bg-warning text-white",
   },
-];
-
+]
 
 const calenderDefaultCategories = [
   {
