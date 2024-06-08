@@ -46,6 +46,20 @@ const EventsType = new GraphQLObjectType({
   },
 });
 
+const OfficeType = new GraphQLObjectType({
+  name: "office",
+  type: "Query",
+  fields: {
+    id: { type: GraphQLID },
+    office_id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    manager: { type: GraphQLString },
+    location: { type: GraphQLString },
+    phone: { type: GraphQLString },
+  },
+});
+
 exports.UserType = UserType;
 exports.TaskType = TaskType;
 exports.EventsType = EventsType;
+exports.OfficeType = OfficeType;

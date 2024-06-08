@@ -186,6 +186,13 @@ const SidebarContent = props => {
               </Link>
             </li>
 
+            <li>
+              <Link to="/office-grid">
+                <i className="bx bx-building-house"></i>
+                <span>{props.t("Office")}</span>
+              </Link>
+            </li>
+
             {/*   <li>
               <Link to="/#" className="has-arrow ">
                 <i className="bx bx-envelope"></i>
@@ -224,9 +231,6 @@ const SidebarContent = props => {
                 <span>{props.t("Projects")}</span>
               </Link>
               <ul className="sub-menu">
-                <li>
-                  <Link to="/projects-grid">{props.t("Projects Grid")}</Link>
-                </li>
                 <li>
                   <Link to="/projects-list">{props.t("Projects List")}</Link>
                 </li>

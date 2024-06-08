@@ -19,7 +19,7 @@ import TasksCreate from "../pages/Tasks/tasks-create"
 import TasksKanban from "../pages/Tasks/tasks-kanban"
 
 // //Projects
-import ProjectsGrid from "../pages/Projects/projects-grid"
+import OfficesGrid from "../pages/offices/office-grid"
 import ProjectsList from "../pages/Projects/projects-list"
 import ProjectsOverview from "../pages/Projects/ProjectOverview/projects-overview"
 import ProjectsCreate from "../pages/Projects/projects-create"
@@ -107,7 +107,7 @@ const authProtectedRoutes = [
   { path: "/tasks-kanban", component: <TasksKanban /> },
 
   //Projects
-  { path: "/projects-grid", component: <ProjectsGrid /> },
+  { path: "/office-grid", component: <OfficesGrid /> },
   { path: "/projects-list", component: <ProjectsList /> },
   { path: "/projects-overview", component: <ProjectsOverview /> },
   { path: "/projects-overview/:id", component: <ProjectsOverview /> },

@@ -5,7 +5,7 @@ const {
   GraphQLList,
   GraphQLString,
 } = require("graphql");
-const { UserType, TaskType, EventsType } = require("./types");
+const { UserType, TaskType, EventsType, OfficeType } = require("./types");
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
@@ -125,6 +125,22 @@ const RootQuery = new GraphQLObjectType({
 
         return db
           .any(query, values)
+          .then((res) => res)
+          .catch((err) => err);
+      },
+    },
+
+    allOffice: {
+      type: new GraphQLList(OfficeType),
+
+      resolve() {
+        const query = `
+        SELECT * 
+        FROM offices
+      `;
+
+        return db
+          .any(query)
           .then((res) => res)
           .catch((err) => err);
       },
