@@ -53,18 +53,10 @@ const UserProfile = () => {
     if (localStorage.getItem("authUser")) {
       const obj = JSON.parse(localStorage.getItem("authUser"))
 
-      if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
-        setname(obj.displayName)
-        setemail(obj.email)
-        setidx(obj.user_id)
-      } else if (
-        process.env.REACT_APP_DEFAULTAUTH === "fake" ||
-        process.env.REACT_APP_DEFAULTAUTH === "jwt"
-      ) {
-        setname(obj.username)
-        setemail(obj.email)
-        setidx(obj.user_id)
-      }
+      setname(obj.username)
+      setemail(obj.email)
+      setidx(obj.user_id)
+
       setTimeout(() => {
         dispatch(resetProfileFlag())
       }, 3000)

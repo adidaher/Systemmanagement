@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useMemo } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import withRouter from "components/Common/withRouter";
+import React, { useEffect, useState, useMemo } from "react"
+import PropTypes from "prop-types"
+import { connect } from "react-redux"
+import { Link } from "react-router-dom"
+import withRouter from "components/Common/withRouter"
 import {
   Card,
   CardBody,
@@ -11,32 +11,31 @@ import {
   Container,
   Row,
   Table,
-} from "reactstrap";
+} from "reactstrap"
 
 // TableContainer
 
-import TableContainer from "../../../components/Common/TableContainer";
+import TableContainer from "../../../components/Common/TableContainer"
 
 //Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb";
+import Breadcrumbs from "components/Common/Breadcrumb"
 
 //Import mini card widgets
-import MiniCards from "./mini-card";
+import MiniCards from "./mini-card"
 
 //Import Images
-import profile1 from "assets/images/profile-img.png";
+import profile1 from "assets/images/profile-img.png"
 
 // import charts
-import ApexRevenue from "../ApexRevenue";
-import { getUserProfile } from "store/actions";
+import ApexRevenue from "../ApexRevenue"
+import { getUserProfile } from "store/actions"
 
 const ContactsProfile = props => {
-
   //meta title
-  document.title = "Profile | Skote - React Admin & Dashboard Template";
+  document.title = "Profile | Skote - React Admin & Dashboard Template"
 
-  const { userProfile, onGetUserProfile } = props;
-
+  const { userProfile, onGetUserProfile } = props
+  const [currentUser, setCurrentUser] = useState()
   // eslint-disable-next-line no-unused-vars
   const [miniCards, setMiniCards] = useState([
     {
@@ -46,11 +45,20 @@ const ContactsProfile = props => {
     },
     { title: "Pending Projects", iconClass: "bx-hourglass", text: "12" },
     { title: "Total Revenue", iconClass: "bx-package", text: "$36,524" },
-  ]);
+  ])
 
   useEffect(() => {
-    onGetUserProfile();
-  }, [onGetUserProfile]);
+    onGetUserProfile()
+  }, [onGetUserProfile])
+
+  useEffect(() => {
+    if (!currentUser) {
+      if (localStorage.getItem("authUser")) {
+        const obj = JSON.parse(localStorage.getItem("authUser"))
+        setCurrentUser(obj)
+      }
+    }
+  }, [currentUser])
 
   const columns = useMemo(
     () => [
@@ -86,7 +94,7 @@ const ContactsProfile = props => {
       },
     ],
     []
-  );
+  )
 
   return (
     <React.Fragment>
@@ -114,18 +122,12 @@ const ContactsProfile = props => {
                 <CardBody className="pt-0">
                   <Row>
                     <Col sm="4">
-                      <div className="avatar-md profile-user-wid mb-4">
-                        <img
-                          src={userProfile.img}
-                          alt=""
-                          className="img-thumbnail rounded-circle"
-                        />
-                      </div>
-                      <h5 className="font-size-15 text-truncate">
-                        {userProfile.name}
+                      <h5 className="font-size-15 text-truncate mt-5">
+                        {currentUser?.username}
                       </h5>
+
                       <p className="text-muted mb-0 text-truncate">
-                        {userProfile.designation}
+                        {currentUser?.role}
                       </p>
                     </Col>
 
@@ -160,27 +162,21 @@ const ContactsProfile = props => {
               <Card>
                 <CardBody>
                   <CardTitle className="mb-4">Personal Information</CardTitle>
-                  <p className="text-muted mb-4">
-                    {userProfile.personalDetail}
-                  </p>
+                  <p className="text-muted mb-4">{currentUser?.username}</p>
                   <div className="table-responsive">
                     <Table className="table-nowrap mb-0">
                       <tbody>
                         <tr>
                           <th scope="row">Full Name :</th>
-                          <td>{userProfile.name}</td>
+                          <td>{currentUser?.username}</td>
                         </tr>
                         <tr>
                           <th scope="row">Mobile :</th>
-                          <td>{userProfile.phone}</td>
+                          <td>{currentUser?.phone}</td>
                         </tr>
                         <tr>
                           <th scope="row">E-mail :</th>
-                          <td>{userProfile.email}</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Location :</th>
-                          <td>{userProfile.location}</td>
+                          <td>{currentUser?.email}</td>
                         </tr>
                       </tbody>
                     </Table>
@@ -191,54 +187,24 @@ const ContactsProfile = props => {
               <Card>
                 <CardBody>
                   <CardTitle className="mb-5">Experience</CardTitle>
-                  <div >
+                  <div>
                     <ul className="verti-timeline list-unstyled">
-                      {(userProfile.experiences || [])?.map((experience, i) => (
-                        <li
-                          className={
-                            experience.id === 1
-                              ? "event-list active"
-                              : "event-list"
-                          }
-                          key={"_exp_" + i}
-                        >
-                          <div className="event-timeline-dot">
-                            <i
-                              className={
-                                experience.id === 1
-                                  ? "bx bx-right-arrow-circle bx-fade-right"
-                                  : "bx bx-right-arrow-circle"
-                              }
-                            />
-                          </div>
-                          <div className="d-flex">
-                            <div className="me-3">
-                              <i
-                                className={
-                                  "bx " +
-                                  experience.iconClass +
-                                  " h4 text-primary"
-                                }
-                              />
-                            </div>
-                            <div className="flex-grow-1">
-                              <div>
-                                <h5 className="font-size-15">
-                                  <Link
-                                    to={experience.link}
-                                    className="text-dark"
-                                  >
-                                    {experience.designation}
-                                  </Link>
-                                </h5>
-                                <span className="text-primary">
-                                  {experience.timeDuration}
-                                </span>
-                              </div>
+                      <li className="event-list active">
+                        <div className="event-timeline-dot">
+                          <i className="bx bx-right-arrow-circle bx-fade-right" />
+                        </div>
+                        <div className="d-flex">
+                          <div className="flex-grow-1">
+                            <div>
+                              <h5 className="font-size-15">
+                                <Link to="#" className="text-dark">
+                                  {currentUser?.role}
+                                </Link>
+                              </h5>
                             </div>
                           </div>
-                        </li>
-                      ))}
+                        </div>
+                      </li>
                     </ul>
                   </div>
                 </CardBody>
@@ -256,14 +222,7 @@ const ContactsProfile = props => {
                   />
                 ))}
               </Row>
-              <Card>
-                <CardBody>
-                  <CardTitle className="mb-4">Revenue</CardTitle>
-                  <div id="revenue-chart">
-                    <ApexRevenue dataColors='["--bs-primary"]' />
-                  </div>
-                </CardBody>
-              </Card>
+
               <Card>
                 <CardBody>
                   <CardTitle className="mb-4">My Projects</CardTitle>
@@ -272,7 +231,7 @@ const ContactsProfile = props => {
                     columns={columns}
                     data={userProfile.projects || []}
                     isGlobalFilter={false}
-                    tableClass='table-nowrap table-hover mb-00'
+                    tableClass="table-nowrap table-hover mb-00"
                   />
                 </CardBody>
               </Card>
@@ -281,23 +240,23 @@ const ContactsProfile = props => {
         </Container>
       </div>
     </React.Fragment>
-  );
-};
+  )
+}
 
 ContactsProfile.propTypes = {
   userProfile: PropTypes.any,
   onGetUserProfile: PropTypes.func,
-};
+}
 
 const mapStateToProps = ({ contacts }) => ({
   userProfile: contacts.userProfile,
-});
+})
 
 const mapDispatchToProps = dispatch => ({
   onGetUserProfile: () => dispatch(getUserProfile()),
-});
+})
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(ContactsProfile));
+)(withRouter(ContactsProfile))

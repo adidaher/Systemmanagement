@@ -49,6 +49,62 @@ app.get("/", (req, res) => {
 });
 
 app.get("/files", (req, res) => {
+  const directoryPath = "C:\\react"; // Specify the path to the directory
+
+  fs.readdir(directoryPath, (err, files) => {
+    if (err) {
+      console.error("Error reading directory:", err);
+      res.status(500).json({ error: "Internal server error" });
+      return;
+    }
+
+    // Create an array of promises for getting file stats
+    const statPromises = files.map((file) => {
+      const filePath = path.join(directoryPath, file);
+
+      return new Promise((resolve, reject) => {
+        fs.stat(filePath, (err, stats) => {
+          if (err) {
+            console.error("Error getting file stats:", err);
+            reject(err);
+            return;
+          }
+
+          // Determine file type based on file extension
+          let fileType = "file";
+          const fileExtension = path.extname(file).toLowerCase();
+          if (stats.isDirectory()) {
+            fileType = "directory";
+          } else if (fileExtension === ".pdf") {
+            fileType = "pdf";
+          } else if (fileExtension === ".txt") {
+            fileType = "txt";
+          }
+
+          // Resolve the promise with the file information
+          resolve({
+            name: file,
+            path: filePath,
+            size: stats.size, // Size of the file in bytes
+            fileType: fileType,
+          });
+        });
+      });
+    });
+
+    // Wait for all promises to be resolved
+    Promise.all(statPromises)
+      .then((fileInfo) => {
+        res.json(fileInfo);
+      })
+      .catch((err) => {
+        res.status(500).json({ error: "Internal server error" });
+      });
+  });
+});
+
+/*
+app.get("/files", (req, res) => {
   const directoryPath = "C:\\react"; // Change this to your directory path
   fs.readdir(directoryPath, (err, files) => {
     if (err) {
@@ -98,7 +154,7 @@ app.get("/files", (req, res) => {
     });
   });
 });
-
+*/
 app.get("/openFile", (req, res) => {
   const { filePath } = req.query;
 

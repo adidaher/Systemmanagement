@@ -29,6 +29,29 @@ const FileList = () => {
         console.error("Error fetching files:", error)
       })
   }, [])
+  /*
+  useEffect(() => {
+    handleDirectorySelection()
+  }, [])
+  const handleDirectorySelection = async () => {
+    try {
+      console.log("getting files...")
+      // Prompt user to select a directory
+      const directoryHandle = await window.showDirectoryPicker()
+
+      // Read the files in the directory
+      const filesArray = []
+      for await (const entry of directoryHandle.values()) {
+        if (entry.kind === "file") {
+          filesArray.push(entry.name)
+        }
+      }
+      console.log("files is ..", filesArray)
+      setFiles(filesArray)
+    } catch (err) {
+      console.error("Error accessing directory:", err)
+    }
+  }*/
 
   const filetype = fileType => {
     if (fileType == "file" || fileType == "directory")

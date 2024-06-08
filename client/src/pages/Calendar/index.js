@@ -39,6 +39,7 @@ import {
   getCategories as onGetCategories,
   getEvents as onGetEvents,
   updateEvent as onUpdateEvent,
+  getEventsSuccess,
 } from "../../store/actions"
 
 import DeleteModal from "./DeleteModal"
@@ -149,6 +150,7 @@ const Calender = props => {
           console.log(data.userEvents)
           //dispatch(getUsersSuccess(data.allUsers))
           setUserCalandar(data.userEvents)
+          dispatch(getEventsSuccess(data.userEvents))
         }
       },
     }
@@ -241,7 +243,7 @@ const Calender = props => {
               },
             ])
             // update event
-            //dispatch(onUpdateEvent(updateEvent))
+            dispatch(onUpdateEvent(updateEvent))
             toast.success("Event updated Successfully", { autoClose: 2000 })
             categoryValidation.resetForm()
           })
@@ -271,12 +273,13 @@ const Calender = props => {
 
   const CalendarProperties = createSelector(
     state => state.calendar,
+
     Calendar => ({
       categories: Calendar.categories,
     })
   )
 
-  const { categories } = useSelector(CalendarProperties)
+  const { categories, events } = useSelector(CalendarProperties)
 
   const [deleteModal, setDeleteModal] = useState(false)
   const [deleteId, setDeleteId] = useState()
