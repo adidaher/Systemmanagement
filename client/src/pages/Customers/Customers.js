@@ -46,7 +46,18 @@ const Customers = () => {
   const [customer, setCustomer] = useState(null)
   const [loading, setLoading] = useState(true)
   const [customerList, setCustomerList] = useState([])
-  const { loading: QueryLoading, error, data } = useQuery(GET_CUSTOMERS)
+  const {
+    loading: QueryLoading,
+    error,
+    data,
+  } = useQuery(GET_CUSTOMERS, {
+    onCompleted: data => {
+      if (data) {
+        setCustomerList(data.allcustomers)
+      }
+      setLoading(false)
+    },
+  })
 
   const columns = useMemo(
     () => [
@@ -161,15 +172,16 @@ const Customers = () => {
       <div className="page-content">
         <div className="container-fluid">
           <Breadcrumbs title="Customers" breadcrumbItem="Customers List" />
-
-          {!QueryLoading && (
+          {loading ? (
+            <Spinners setLoading={setLoading} />
+          ) : (
             <Row>
               <Col lg="12">
                 <Card>
                   <CardBody>
                     <TableContainer
                       columns={columns}
-                      data={data.allcustomers}
+                      data={customerList}
                       isPagination={true}
                       SearchPlaceholder="Search for customers..."
                     />
