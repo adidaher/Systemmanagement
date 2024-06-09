@@ -40,6 +40,7 @@ const OfficesGrid = props => {
 
   const [offices, setOffices] = useState([])
   const [officesList, setOfficesList] = useState([])
+  const [Loading, setLoading] = useState(true)
   /*
   const ProjectsProjectProperties = createSelector(
     state => state.projects,
@@ -61,6 +62,7 @@ const OfficesGrid = props => {
         if (data) {
           console.log(data)
           setOffices(data.allOffice)
+          setLoading(false)
         }
       },
     }
@@ -98,8 +100,8 @@ const OfficesGrid = props => {
 
           <Row>
             {/* Import Cards */}
-            {queryLoading ? (
-              <Spinners setLoading={queryLoading} />
+            {Loading ? (
+              <Spinners setLoading={setLoading} />
             ) : (
               <>
                 <CardProject offices={officesList} />

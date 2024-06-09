@@ -59,7 +59,20 @@ const OfficeType = new GraphQLObjectType({
   },
 });
 
+const CustomersType = new GraphQLObjectType({
+  name: "customers",
+  type: "Query",
+  fields: {
+    customer_id: { type: GraphQLID },
+    office_id: { type: GraphQLID },
+    last_name: { type: GraphQLString },
+    first_name: { type: GraphQLString },
+    email: { type: GraphQLString },
+    gov_id: { type: GraphQLString },
+  },
+});
 exports.UserType = UserType;
 exports.TaskType = TaskType;
 exports.EventsType = EventsType;
 exports.OfficeType = OfficeType;
+exports.CustomersType = CustomersType;
