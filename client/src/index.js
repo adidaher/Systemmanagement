@@ -12,7 +12,7 @@ import { ApolloProvider } from "@apollo/client"
 //https://systemmanagement.onrender.com
 //
 const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
+  uri: "https://systemmanagement.onrender.com/graphql",
   cache: new InMemoryCache(),
 })
 
