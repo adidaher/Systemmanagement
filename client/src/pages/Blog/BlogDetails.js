@@ -20,7 +20,7 @@ import avtar1 from "../../assets/images/users/avatar-2.jpg"
 
 const BlogDetails = () => {
   //meta title
-  document.title = "Blog Details | Skote - React Admin & Dashboard Template";
+  document.title = "Blog Details | CPALINK"
   return (
     <React.Fragment>
       <div className="page-content">
@@ -46,7 +46,8 @@ const BlogDetails = () => {
                             </div>
                             <h4>Beautiful Day with Friends</h4>
                             <p className="text-muted mb-4">
-                              <i className="mdi mdi-calendar me-1"></i> 10 Apr, 2020
+                              <i className="mdi mdi-calendar me-1"></i> 10 Apr,
+                              2020
                             </p>
                           </div>
 
@@ -68,7 +69,9 @@ const BlogDetails = () => {
                               <Col sm={4}>
                                 <div className="mt-4 mt-sm-0">
                                   <p className="text-muted mb-2">Post by</p>
-                                  <h5 className="font-size-15">Gilbert Smith</h5>
+                                  <h5 className="font-size-15">
+                                    Gilbert Smith
+                                  </h5>
                                 </div>
                               </Col>
                             </Row>
@@ -91,20 +94,22 @@ const BlogDetails = () => {
                                 Neque porro quisquam est, qui dolorem ipsum quia
                                 dolor sit amet, consectetur, adipisci velit, sed
                                 quia non numquam eius modi tempora incidunt ut
-                                labore et dolore magnam enim ad minima veniam quis
+                                labore et dolore magnam enim ad minima veniam
+                                quis
                               </p>
 
                               <p className="mb-4">
                                 Ut enim ad minima veniam, quis nostrum
-                                exercitationem ullam corporis suscipit laboriosam,
-                                nisi ut aliquid ex ea reprehenderit qui in ea
-                                voluptate velit esse quam nihil molestiae
-                                consequatur, vel illum qui dolorem eum fugiat quo
-                                voluptas nulla pariatur? At vero eos et accusamus et
-                                iusto odio dignissimos ducimus qui blanditiis
-                                praesentium voluptatum deleniti atque corrupti quos
-                                dolores et quas molestias excepturi sint occaecati
-                                cupiditate non provident, similique sunt
+                                exercitationem ullam corporis suscipit
+                                laboriosam, nisi ut aliquid ex ea reprehenderit
+                                qui in ea voluptate velit esse quam nihil
+                                molestiae consequatur, vel illum qui dolorem eum
+                                fugiat quo voluptas nulla pariatur? At vero eos
+                                et accusamus et iusto odio dignissimos ducimus
+                                qui blanditiis praesentium voluptatum deleniti
+                                atque corrupti quos dolores et quas molestias
+                                excepturi sint occaecati cupiditate non
+                                provident, similique sunt
                               </p>
 
                               <blockquote className="p-4 border-light border rounded mb-4">
@@ -116,21 +121,21 @@ const BlogDetails = () => {
                                     <p className="mb-0">
                                       {" "}
                                       At vero eos et accusamus et iusto odio
-                                      dignissimos ducimus qui blanditiis praesentium
-                                      deleniti atque corrupti quos dolores et quas
-                                      molestias excepturi sint quidem rerum facilis
-                                      est
+                                      dignissimos ducimus qui blanditiis
+                                      praesentium deleniti atque corrupti quos
+                                      dolores et quas molestias excepturi sint
+                                      quidem rerum facilis est
                                     </p>
                                   </div>
                                 </div>
                               </blockquote>
 
                               <p>
-                                Itaque earum rerum hic tenetur a sapiente delectus,
-                                ut aut reiciendis voluptatibus maiores alias
-                                consequatur aut perferendis doloribus asperiores
-                                repellat. Sed ut perspiciatis unde omnis iste natus
-                                error sit
+                                Itaque earum rerum hic tenetur a sapiente
+                                delectus, ut aut reiciendis voluptatibus maiores
+                                alias consequatur aut perferendis doloribus
+                                asperiores repellat. Sed ut perspiciatis unde
+                                omnis iste natus error sit
                               </p>
 
                               <div className="mt-4">
@@ -195,9 +200,9 @@ const BlogDetails = () => {
                                       </small>
                                     </h5>
                                     <p className="text-muted">
-                                      If several languages coalesce, the grammar of
-                                      the resulting language is more simple and
-                                      regular than that of the individual
+                                      If several languages coalesce, the grammar
+                                      of the resulting language is more simple
+                                      and regular than that of the individual
                                     </p>
                                     <div>
                                       <Link to="#" className="text-success">
@@ -224,8 +229,8 @@ const BlogDetails = () => {
                                       </small>
                                     </h5>
                                     <p className="text-muted">
-                                      Neque porro quisquam est, qui dolorem ipsum
-                                      quia dolor sit amet
+                                      Neque porro quisquam est, qui dolorem
+                                      ipsum quia dolor sit amet
                                     </p>
                                     <div>
                                       <Link to="#" className="text-success">
@@ -255,7 +260,8 @@ const BlogDetails = () => {
                                         </p>
                                         <div>
                                           <Link to="#" className="text-success">
-                                            <i className="mdi mdi-reply"></i> Reply
+                                            <i className="mdi mdi-reply"></i>{" "}
+                                            Reply
                                           </Link>
                                         </div>
                                       </div>
@@ -293,7 +299,9 @@ const BlogDetails = () => {
                             </div>
 
                             <div className="mt-4">
-                              <h5 className="font-size-16 mb-3">Leave a Message</h5>
+                              <h5 className="font-size-16 mb-3">
+                                Leave a Message
+                              </h5>
 
                               <Form>
                                 <Row>

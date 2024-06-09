@@ -1,59 +1,67 @@
-import PropTypes from "prop-types";
-import React from "react";
-import { Row, Col, Alert, Card, CardBody, Container, FormFeedback, Input, Label, Form } from "reactstrap";
+import PropTypes from "prop-types"
+import React from "react"
+import {
+  Row,
+  Col,
+  Alert,
+  Card,
+  CardBody,
+  Container,
+  FormFeedback,
+  Input,
+  Label,
+  Form,
+} from "reactstrap"
 
 //redux
-import { useSelector, useDispatch } from "react-redux";
-import { createSelector } from "reselect";
-import { Link } from "react-router-dom";
-import withRouter from "components/Common/withRouter";
+import { useSelector, useDispatch } from "react-redux"
+import { createSelector } from "reselect"
+import { Link } from "react-router-dom"
+import withRouter from "components/Common/withRouter"
 
 // Formik Validation
-import * as Yup from "yup";
-import { useFormik } from "formik";
+import * as Yup from "yup"
+import { useFormik } from "formik"
 
 // action
-import { userForgetPassword } from "../../store/actions";
+import { userForgetPassword } from "../../store/actions"
 
 // import images
-import profile from "../../assets/images/profile-img.png";
-import logo from "../../assets/images/logo.svg";
+import profile from "../../assets/images/profile-img.png"
+import logo from "../../assets/images/logo.svg"
 
 const ForgetPasswordPage = props => {
-
   //meta title
-  document.title = "Forget Password | Skote - React Admin & Dashboard Template";
+  document.title = "Forget Password | CPALINK"
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {
-      email: '',
+      email: "",
     },
     validationSchema: Yup.object({
       email: Yup.string().required("Please Enter Your Email"),
     }),
-    onSubmit: (values) => {
-      dispatch(userForgetPassword(values, props.history));
-    }
-  });
-
+    onSubmit: values => {
+      dispatch(userForgetPassword(values, props.history))
+    },
+  })
 
   const ForgotPasswordProperties = createSelector(
-    (state) => state.ForgetPassword,
-    (forgetPassword) => ({
+    state => state.ForgetPassword,
+    forgetPassword => ({
       forgetError: forgetPassword.forgetError,
       forgetSuccessMsg: forgetPassword.forgetSuccessMsg,
     })
-  );
+  )
 
-  const {
-    forgetError,
-    forgetSuccessMsg
-  } = useSelector(ForgotPasswordProperties);
+  const { forgetError, forgetSuccessMsg } = useSelector(
+    ForgotPasswordProperties
+  )
 
   return (
     <React.Fragment>
@@ -109,10 +117,10 @@ const ForgetPasswordPage = props => {
 
                     <Form
                       className="form-horizontal"
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        validation.handleSubmit();
-                        return false;
+                      onSubmit={e => {
+                        e.preventDefault()
+                        validation.handleSubmit()
+                        return false
                       }}
                     >
                       <div className="mb-3">
@@ -126,11 +134,15 @@ const ForgetPasswordPage = props => {
                           onBlur={validation.handleBlur}
                           value={validation.values.email || ""}
                           invalid={
-                            validation.touched.email && validation.errors.email ? true : false
+                            validation.touched.email && validation.errors.email
+                              ? true
+                              : false
                           }
                         />
                         {validation.touched.email && validation.errors.email ? (
-                          <FormFeedback type="invalid">{validation.errors.email}</FormFeedback>
+                          <FormFeedback type="invalid">
+                            {validation.errors.email}
+                          </FormFeedback>
                         ) : null}
                       </div>
                       <Row className="mb-3">
@@ -164,11 +176,11 @@ const ForgetPasswordPage = props => {
         </Container>
       </div>
     </React.Fragment>
-  );
-};
+  )
+}
 
 ForgetPasswordPage.propTypes = {
   history: PropTypes.object,
-};
+}
 
-export default withRouter(ForgetPasswordPage);
+export default withRouter(ForgetPasswordPage)

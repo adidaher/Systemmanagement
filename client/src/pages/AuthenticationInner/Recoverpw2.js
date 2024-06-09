@@ -1,32 +1,38 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Col, Container, Form, FormFeedback, Input, Label, Row } from "reactstrap";
+import React from "react"
+import { Link } from "react-router-dom"
+import {
+  Col,
+  Container,
+  Form,
+  FormFeedback,
+  Input,
+  Label,
+  Row,
+} from "reactstrap"
 // Formik Validation
-import * as Yup from "yup";
-import { useFormik } from "formik";
+import * as Yup from "yup"
+import { useFormik } from "formik"
 
-import logodark from "../../assets/images/logo-dark.png";
-import logolight from "../../assets/images/logo-light.png";
-import CarouselPage from "./CarouselPage";
+import logodark from "../../assets/images/logo-dark.png"
+import logolight from "../../assets/images/logo-light.png"
+import CarouselPage from "./CarouselPage"
 
 const Recoverpw2 = () => {
-
   //meta title
-  document.title = "Recover Password 2 | Skote - React Admin & Dashboard Template";
+  document.title = "Recover Password 2 | CPALINK"
 
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {
-      email: '',
+      email: "",
     },
     validationSchema: Yup.object({
       email: Yup.string().required("Please Enter Your Email"),
     }),
-    onSubmit: (values) => {
-    }
-  });
+    onSubmit: values => {},
+  })
   return (
     <React.Fragment>
       <div>
@@ -64,15 +70,15 @@ const Recoverpw2 = () => {
                           className="alert alert-success text-center mb-4"
                           role="alert"
                         >
-                          Enter your Email and instructions will be sent to
-                          you!
+                          Enter your Email and instructions will be sent to you!
                         </div>
 
-                        <Form className="form-horizontal"
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            validation.handleSubmit();
-                            return false;
+                        <Form
+                          className="form-horizontal"
+                          onSubmit={e => {
+                            e.preventDefault()
+                            validation.handleSubmit()
+                            return false
                           }}
                         >
                           <div className="mb-3">
@@ -86,18 +92,26 @@ const Recoverpw2 = () => {
                               onBlur={validation.handleBlur}
                               value={validation.values.email || ""}
                               invalid={
-                                validation.touched.email && validation.errors.email ? true : false
+                                validation.touched.email &&
+                                validation.errors.email
+                                  ? true
+                                  : false
                               }
                             />
-                            {validation.touched.email && validation.errors.email ? (
-                              <FormFeedback type="invalid">{validation.errors.email}</FormFeedback>
+                            {validation.touched.email &&
+                            validation.errors.email ? (
+                              <FormFeedback type="invalid">
+                                {validation.errors.email}
+                              </FormFeedback>
                             ) : null}
                           </div>
                           <div className="text-end">
                             <button
                               className="btn btn-primary w-md "
                               type="submit"
-                            >Reset</button>
+                            >
+                              Reset
+                            </button>
                           </div>
                         </Form>
 
@@ -130,7 +144,7 @@ const Recoverpw2 = () => {
         </Container>
       </div>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default Recoverpw2;
+export default Recoverpw2

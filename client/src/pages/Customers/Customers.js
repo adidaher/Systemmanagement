@@ -24,6 +24,8 @@ import { Link } from "react-router-dom"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { ToastContainer } from "react-toastify"
+import { withTranslation } from "react-i18next"
+import withRouter from "components/Common/withRouter"
 
 const GET_CUSTOMERS = gql`
   query {
@@ -38,8 +40,8 @@ const GET_CUSTOMERS = gql`
   }
 `
 
-const Customers = () => {
-  document.title = "Customers List | CPALINK"
+const Customers = props => {
+  document.title = `${props.t("Customers List")} | CPALINK`
 
   const [modal, setModal] = useState(false)
   const [isEdit, setIsEdit] = useState(false)
@@ -62,37 +64,37 @@ const Customers = () => {
   const columns = useMemo(
     () => [
       {
-        header: "Customer ID",
+        header: `${props.t("Customers ID")}`,
         accessorKey: "customer_id",
         enableSorting: true,
       },
       {
-        header: "Office ID",
+        header: `${props.t("Office ID")}`,
         accessorKey: "office_id",
         enableSorting: true,
       },
       {
-        header: "First Name",
+        header: `${props.t("First Name")}`,
         accessorKey: "first_name",
         enableSorting: true,
       },
       {
-        header: "Last Name",
+        header: `${props.t("Last Name")}`,
         accessorKey: "last_name",
         enableSorting: true,
       },
       {
-        header: "Email",
+        header: `${props.t("Email")}`,
         accessorKey: "email",
         enableSorting: true,
       },
       {
-        header: "Government ID",
+        header: `${props.t("Government ID")}`,
         accessorKey: "gov_id",
         enableSorting: true,
       },
       {
-        header: "Action",
+        header: `${props.t("Action")}`,
         cell: cellProps => (
           <ul className="list-unstyled hstack gap-1 mb-0">
             <li>
@@ -171,7 +173,10 @@ const Customers = () => {
     <React.Fragment>
       <div className="page-content">
         <div className="container-fluid">
-          <Breadcrumbs title="Customers" breadcrumbItem="Customers List" />
+          <Breadcrumbs
+            title={props.t("Customers")}
+            breadcrumbItem={props.t("Customers List")}
+          />
           {loading ? (
             <Spinners setLoading={setLoading} />
           ) : (
@@ -242,7 +247,7 @@ const Customers = () => {
                     )}
                 </div>
                 <div className="mb-3">
-                  <Label for="last_name">Last Name</Label>
+                  <Label for="last_name"> {props.t("Last Name")}</Label>
                   <Input
                     name="last_name"
                     type="text"
@@ -324,7 +329,7 @@ const Customers = () => {
                     Save
                   </Button>
                   <Button color="secondary" onClick={toggle}>
-                    Cancel
+                    {props.t("Cancel")}
                   </Button>
                 </div>
               </Col>
@@ -337,4 +342,4 @@ const Customers = () => {
   )
 }
 
-export default Customers
+export default withRouter(withTranslation()(Customers))

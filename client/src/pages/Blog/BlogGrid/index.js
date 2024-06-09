@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import { Container, Row } from "reactstrap"
 
 //Import Breadcrumb
@@ -8,8 +8,8 @@ import BlogGrid from "./BlogGrid"
 import RightBar from "../BlogList/RightBar"
 
 const Index = props => {
-    //meta title
-    document.title="Blog Grid | Skote - React Admin & Dashboard Template";
+  //meta title
+  document.title = "Blog Grid | CPALINK"
   return (
     <React.Fragment>
       <div className="page-content">

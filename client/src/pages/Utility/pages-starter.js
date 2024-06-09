@@ -1,13 +1,12 @@
-import React from "react";
-import { Container } from "reactstrap";
+import React from "react"
+import { Container } from "reactstrap"
 
 //Import Breadcrumb
-import Breadcrumbs from "../../components/Common/Breadcrumb";
+import Breadcrumbs from "../../components/Common/Breadcrumb"
 
 const PagesStarter = () => {
-
-    //meta title
-    document.title="Stater Page | Skote - React Admin & Dashboard Template";
+  //meta title
+  document.title = "Stater Page | CPALINK"
 
   return (
     <React.Fragment>
@@ -21,4 +20,4 @@ const PagesStarter = () => {
   )
 }
 
-export default PagesStarter;
+export default PagesStarter

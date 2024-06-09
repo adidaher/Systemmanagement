@@ -161,5 +161,19 @@
   "Hours": "שעות",
   "Latest Transaction": "עדכונים אחרונים",
   "Office": "סניפים",
-  "Office Grid": "רשימת סניפים"
+  "Office Grid": "רשימת סניפים",
+  "Customers List": "רשימת לקוחות",
+  "Customers ID": "מספר לקוח",
+  "Office ID": "מספר משרד",
+  "First Name": "שם",
+  "Last Name": "משפחה",
+  "Government ID": "תעודה זהות",
+  "Action": "פעולות",
+  "Full Calendar": "לוח זמנים",
+  "Event Name": "שם אירוע",
+  "Category": "קטגטריה",
+  "Share event with": "שיתוף עם",
+  "Close": "סגור",
+  "Delete": "מחק",
+  "Save": "שמור"
 }

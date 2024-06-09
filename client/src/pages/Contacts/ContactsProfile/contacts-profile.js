@@ -32,7 +32,7 @@ import { getUserProfile } from "store/actions"
 
 const ContactsProfile = props => {
   //meta title
-  document.title = "Profile | Skote - React Admin & Dashboard Template"
+  document.title = "Profile | CPALINK"
 
   const { userProfile, onGetUserProfile } = props
   const [currentUser, setCurrentUser] = useState()

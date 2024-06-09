@@ -1,33 +1,40 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Col, Container, Row, Button, Form, Label, Input, FormFeedback } from "reactstrap";
+import React from "react"
+import { Link } from "react-router-dom"
+import {
+  Col,
+  Container,
+  Row,
+  Button,
+  Form,
+  Label,
+  Input,
+  FormFeedback,
+} from "reactstrap"
 // Formik Validation
-import * as Yup from "yup";
-import { useFormik } from "formik";
+import * as Yup from "yup"
+import { useFormik } from "formik"
 
 // import images
-import logodark from "../../assets/images/logo-dark.png";
-import logolight from "../../assets/images/logo-light.png";
-import CarouselPage from "./CarouselPage";
+import logodark from "../../assets/images/logo-dark.png"
+import logolight from "../../assets/images/logo-light.png"
+import CarouselPage from "./CarouselPage"
 
 const ForgetPassword2 = () => {
-
   //meta title
-  document.title="Forget Password 2 | Skote - React Admin & Dashboard Template";
+  document.title = "Forget Password 2 | CPALINK"
 
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {
-      email: '',
+      email: "",
     },
     validationSchema: Yup.object({
       email: Yup.string().required("Please Enter Your Email"),
     }),
-    onSubmit: (values) => {
-    }
-  });
+    onSubmit: values => {},
+  })
   return (
     <React.Fragment>
       <div>
@@ -58,21 +65,23 @@ const ForgetPassword2 = () => {
                     <div className="my-auto">
                       <div>
                         <h5 className="text-primary">Reset Password</h5>
-                        <p className="text-muted">Re-Password with Skote.
-                        </p>
+                        <p className="text-muted">Re-Password with Skote.</p>
                       </div>
 
                       <div className="mt-4">
-
-                        <div className="alert alert-success text-center mb-4" role="alert">
+                        <div
+                          className="alert alert-success text-center mb-4"
+                          role="alert"
+                        >
                           Enter your Email and instructions will be sent to you!
                         </div>
 
-                        <Form className="form-horizontal"
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            validation.handleSubmit();
-                            return false;
+                        <Form
+                          className="form-horizontal"
+                          onSubmit={e => {
+                            e.preventDefault()
+                            validation.handleSubmit()
+                            return false
                           }}
                         >
                           <div className="mb-3">
@@ -86,11 +95,17 @@ const ForgetPassword2 = () => {
                               onBlur={validation.handleBlur}
                               value={validation.values.email || ""}
                               invalid={
-                                validation.touched.email && validation.errors.email ? true : false
+                                validation.touched.email &&
+                                validation.errors.email
+                                  ? true
+                                  : false
                               }
                             />
-                            {validation.touched.email && validation.errors.email ? (
-                              <FormFeedback type="invalid">{validation.errors.email}</FormFeedback>
+                            {validation.touched.email &&
+                            validation.errors.email ? (
+                              <FormFeedback type="invalid">
+                                {validation.errors.email}
+                              </FormFeedback>
                             ) : null}
                           </div>
                           <div className="mt-3 text-end">
@@ -101,7 +116,6 @@ const ForgetPassword2 = () => {
                               Reset
                             </Button>
                           </div>
-
                         </Form>
                         <div className="mt-5 text-center">
                           <p>
@@ -133,7 +147,7 @@ const ForgetPassword2 = () => {
         </Container>
       </div>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default ForgetPassword2;
+export default ForgetPassword2

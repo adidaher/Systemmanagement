@@ -7,7 +7,7 @@ import Breadcrumbs from "../../components/Common/Breadcrumb"
 
 const EmailAlertTemplte = props => {
   //meta title
-  document.title="Alert Email | Skote - React Admin & Dashboard Template";
+  document.title = "Alert Email |CPALINK"
   return (
     <React.Fragment>
       <div className="page-content">
@@ -24,7 +24,7 @@ const EmailAlertTemplte = props => {
                   fontSize: "14px",
                   width: "100%",
                   margin: "0",
-                  color: "#495057"
+                  color: "#495057",
                 }}
               >
                 <tbody>
@@ -38,8 +38,7 @@ const EmailAlertTemplte = props => {
                   >
                     <td
                       style={{
-                        fontFamily:
-                          "Helvetica Neue,Helvetica,Arial,sans-serif",
+                        fontFamily: "Helvetica Neue,Helvetica,Arial,sans-serif",
                         boxSizing: "border-box",
                         fontSize: "14px",
                         verticalAlign: "top",
@@ -51,8 +50,7 @@ const EmailAlertTemplte = props => {
                       className="container"
                       width="600"
                       style={{
-                        fontFamily:
-                          "Helvetica Neue,Helvetica,Arial,sans-serif",
+                        fontFamily: "Helvetica Neue,Helvetica,Arial,sans-serif",
                         boxSizing: "border-box",
                         fontSize: "14px",
                         verticalAlign: "top",
@@ -121,8 +119,8 @@ const EmailAlertTemplte = props => {
                                 align="center"
                                 valign="top"
                               >
-                                Warning: You&apos;re approaching your limit. Please
-                                upgrade.
+                                Warning: You&apos;re approaching your limit.
+                                Please upgrade.
                               </td>
                             </tr>
                             <tr
@@ -229,10 +227,9 @@ const EmailAlertTemplte = props => {
                                         }}
                                         valign="top"
                                       >
-                                        Add your credit card now to upgrade
-                                        your account to a premium plan to
-                                        ensure you don&apos;t miss out on any
-                                        reports.
+                                        Add your credit card now to upgrade your
+                                        account to a premium plan to ensure you
+                                        don&apos;t miss out on any reports.
                                       </td>
                                     </tr>
                                     <tr
@@ -307,8 +304,7 @@ const EmailAlertTemplte = props => {
                                         }}
                                         valign="top"
                                       >
-                                        Thanks for choosing <b>Skote</b>{" "}
-                                        Admin.
+                                        Thanks for choosing <b>Skote</b> Admin.
                                       </td>
                                     </tr>
                                     <tr

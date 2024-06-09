@@ -54,7 +54,7 @@ const ADD_TASK = gql`
 
 const TasksCreate = () => {
   // Meta title
-  document.title = "Create Task | Skote - React Admin & Dashboard Template"
+  document.title = "Create Task | CPALINK"
 
   const inpRow = [{ name: "" }]
   const [startDate, setStartDate] = useState(new Date())

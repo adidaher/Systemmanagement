@@ -1,8 +1,8 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from "react"
+import { Link } from "react-router-dom"
 // Formik Validation
-import * as Yup from "yup";
-import { useFormik } from "formik";
+import * as Yup from "yup"
+import { useFormik } from "formik"
 import {
   Card,
   CardBody,
@@ -13,31 +13,29 @@ import {
   Input,
   Label,
   Row,
-} from "reactstrap";
+} from "reactstrap"
 
 // import images
-import profile from "../../assets/images/profile-img.png";
-import logoImg from "../../assets/images/logo.svg";
-import lightlogo from "../../assets/images/logo-light.svg";
+import profile from "../../assets/images/profile-img.png"
+import logoImg from "../../assets/images/logo.svg"
+import lightlogo from "../../assets/images/logo-light.svg"
 
 const Recoverpw = () => {
-
   //meta title
-  document.title="Recover Password | Skote - React Admin & Dashboard Template";
+  document.title = "Recover Password | CPALINK"
 
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {
-      email: '',
+      email: "",
     },
     validationSchema: Yup.object({
       email: Yup.string().required("Please Enter Your Email"),
     }),
-    onSubmit: (values) => {
-    }
-  });
+    onSubmit: values => {},
+  })
 
   return (
     <React.Fragment>
@@ -46,7 +44,7 @@ const Recoverpw = () => {
           <Row className="justify-content-center">
             <Col md={8} lg={6} xl={5}>
               <Card className="overflow-hidden">
-              <div className="bg-primary-subtle">
+                <div className="bg-primary-subtle">
                   <Row>
                     <Col xs={7}>
                       <div className="text-primary p-4">
@@ -55,55 +53,55 @@ const Recoverpw = () => {
                       </div>
                     </Col>
                     <Col xs={5} className="align-self-end">
-                      <img
-                        src={profile}
-                        alt=""
-                        className="img-fluid"
-                      />
+                      <img src={profile} alt="" className="img-fluid" />
                     </Col>
                   </Row>
                 </div>
                 <CardBody className="pt-0">
                   <div>
-                  <div className="auth-logo">
-                    <Link to="/" className="auth-logo-light">
-                      <div className="avatar-md profile-user-wid mb-4">
-                        <span className="avatar-title rounded-circle bg-light">
-                          <img
-                            src={lightlogo}
-                            alt=""
-                            className="rounded-circle"
-                            height="34"
-                          />
-                        </span>
-                      </div>
-                    </Link>
-                    <Link to="/" className="auth-logo-dark">
-                      <div className="avatar-md profile-user-wid mb-4">
-                        <span className="avatar-title rounded-circle bg-light">
-                          <img
-                            src={logoImg}
-                            alt=""
-                            className="rounded-circle"
-                            height="34"
-                          />
-                        </span>
-                      </div>
-                    </Link>
-                  </div>
+                    <div className="auth-logo">
+                      <Link to="/" className="auth-logo-light">
+                        <div className="avatar-md profile-user-wid mb-4">
+                          <span className="avatar-title rounded-circle bg-light">
+                            <img
+                              src={lightlogo}
+                              alt=""
+                              className="rounded-circle"
+                              height="34"
+                            />
+                          </span>
+                        </div>
+                      </Link>
+                      <Link to="/" className="auth-logo-dark">
+                        <div className="avatar-md profile-user-wid mb-4">
+                          <span className="avatar-title rounded-circle bg-light">
+                            <img
+                              src={logoImg}
+                              alt=""
+                              className="rounded-circle"
+                              height="34"
+                            />
+                          </span>
+                        </div>
+                      </Link>
+                    </div>
                   </div>
 
                   <div className="p-2">
                     <div
                       className="alert alert-success text-center mb-4"
                       role="alert"
-                    > Enter your Email and instructions will be sent to you! </div>
+                    >
+                      {" "}
+                      Enter your Email and instructions will be sent to you!{" "}
+                    </div>
 
-                    <Form className="form-horizontal"
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        validation.handleSubmit();
-                        return false;
+                    <Form
+                      className="form-horizontal"
+                      onSubmit={e => {
+                        e.preventDefault()
+                        validation.handleSubmit()
+                        return false
                       }}
                     >
                       <div className="mb-3">
@@ -117,18 +115,19 @@ const Recoverpw = () => {
                           onBlur={validation.handleBlur}
                           value={validation.values.email || ""}
                           invalid={
-                            validation.touched.email && validation.errors.email ? true : false
+                            validation.touched.email && validation.errors.email
+                              ? true
+                              : false
                           }
                         />
                         {validation.touched.email && validation.errors.email ? (
-                          <FormFeedback type="invalid">{validation.errors.email}</FormFeedback>
+                          <FormFeedback type="invalid">
+                            {validation.errors.email}
+                          </FormFeedback>
                         ) : null}
                       </div>
                       <div className="text-end">
-                        <button
-                          className="btn btn-primary w-md "
-                          type="submit"
-                        >
+                        <button className="btn btn-primary w-md " type="submit">
                           Reset
                         </button>
                       </div>
@@ -139,10 +138,7 @@ const Recoverpw = () => {
               <div className="mt-5 text-center">
                 <p>
                   Remember It ?{" "}
-                  <Link
-                    to="pages-login"
-                    className="fw-medium text-primary"
-                  >
+                  <Link to="pages-login" className="fw-medium text-primary">
                     {" "}
                     Sign In here
                   </Link>{" "}
@@ -157,7 +153,7 @@ const Recoverpw = () => {
         </Container>
       </div>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default Recoverpw;
+export default Recoverpw

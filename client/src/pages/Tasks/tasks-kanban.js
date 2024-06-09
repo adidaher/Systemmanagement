@@ -40,7 +40,7 @@ import { ToastContainer } from "react-toastify"
 import Spinners from "components/Common/Spinner"
 
 const TasksKanban = () => {
-  document.title = "Kanban Board | Skote - React Admin & Dashboard Template"
+  document.title = "Kanban Board | CPALINK"
   const dispatch = useDispatch()
   const [images, setImages] = useState([])
 
@@ -55,11 +55,13 @@ const TasksKanban = () => {
     }
   }
 
-  const TasksKanbanProperties = createSelector((state) => state.tasks,
-    (Tasks) => ({
+  const TasksKanbanProperties = createSelector(
+    state => state.tasks,
+    Tasks => ({
       kanbanTasks: Tasks.tasks,
-      loading: Tasks.loading
-    }))
+      loading: Tasks.loading,
+    })
+  )
 
   const { kanbanTasks, loading } = useSelector(TasksKanbanProperties)
   const [isLoading, setLoading] = useState(loading)
@@ -102,9 +104,9 @@ const TasksKanban = () => {
       taskdesc: Yup.string().required("Please Enter Your Task Description"),
       budget: Yup.string().required("Please Enter Your budget"),
       badgeText: Yup.string().required("Please Enter Your Status"),
-      userImages: Yup.array().required("Select at least one team member")
+      userImages: Yup.array().required("Select at least one team member"),
     }),
-    onSubmit: (values) => {
+    onSubmit: values => {
       if (isEdit) {
         const updatedCards = {
           id: card ? card.id : 0,
@@ -166,14 +168,13 @@ const TasksKanban = () => {
 
     toggle()
   }
-  const handleImage = (image) => {
+  const handleImage = image => {
     const updatedImages = images.includes(image)
       ? images.filter(item => item !== image)
-      : [...images, image];
+      : [...images, image]
 
-    setImages(updatedImages);
-    validation.setFieldValue('userImages', updatedImages)
-
+    setImages(updatedImages)
+    validation.setFieldValue("userImages", updatedImages)
   }
 
   useEffect(() => {
@@ -187,9 +188,9 @@ const TasksKanban = () => {
     setIsEdit(false)
     toggle()
     setKanbanTasksCards(line.id)
-  };
+  }
 
-  const handleDragEnd = (result) => {
+  const handleDragEnd = result => {
     if (!result.destination) return // If dropped outside a valid drop area, do nothing
 
     const { source, destination } = result
@@ -232,16 +233,16 @@ const TasksKanban = () => {
     }
   }
 
-  const getBadgeColor = (text) => {
+  const getBadgeColor = text => {
     switch (text) {
       case "Waiting":
-        return 'secondary';
+        return "secondary"
       case "Approved":
-        return 'primary';
+        return "primary"
       case "Pending":
-        return 'warning';
+        return "warning"
       default:
-        return 'success';
+        return "success"
     }
   }
 
@@ -250,215 +251,256 @@ const TasksKanban = () => {
       <div className="page-content">
         <Container fluid>
           <Breadcrumbs title="Tasks" breadcrumbItem="Kanban Board" />
-          {
-            isLoading ? <Spinners setLoading={setLoading} /> :
-              <Row>
-                <DragDropContext onDragEnd={handleDragEnd}>
-                  {(cards || []).map(line => (
-                    <Col lg={4} key={line.id}>
-                      <Card>
-                        <CardBody>
-                          <UncontrolledDropdown className="float-end">
-                            <DropdownToggle
-                              className="arrow-none"
-                              tag="a"
-                              color="white"
+          {isLoading ? (
+            <Spinners setLoading={setLoading} />
+          ) : (
+            <Row>
+              <DragDropContext onDragEnd={handleDragEnd}>
+                {(cards || []).map(line => (
+                  <Col lg={4} key={line.id}>
+                    <Card>
+                      <CardBody>
+                        <UncontrolledDropdown className="float-end">
+                          <DropdownToggle
+                            className="arrow-none"
+                            tag="a"
+                            color="white"
+                          >
+                            <i className="mdi mdi-dots-vertical m-0 text-muted h5"></i>
+                          </DropdownToggle>
+                          <DropdownMenu className="dropdown-menu-end">
+                            <DropdownItem>Edit</DropdownItem>
+                            <DropdownItem>Delete</DropdownItem>
+                          </DropdownMenu>
+                        </UncontrolledDropdown>
+                        <h4 className="card-title mb-4">{line.name}</h4>
+                        <Droppable droppableId={line.id}>
+                          {provided => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.droppableProps}
                             >
-                              <i className="mdi mdi-dots-vertical m-0 text-muted h5"></i>
-                            </DropdownToggle>
-                            <DropdownMenu className="dropdown-menu-end">
-                              <DropdownItem>Edit</DropdownItem>
-                              <DropdownItem>Delete</DropdownItem>
-                            </DropdownMenu>
-                          </UncontrolledDropdown>
-                          <h4 className="card-title mb-4">{line.name}</h4>
-                          <Droppable droppableId={line.id}>
-                            {provided => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.droppableProps}
-                              >
-                                {line.cards.map((card, index) => {
-                                  const badgeColor = getBadgeColor(card.badgeText)
-                                  return (
-                                    <Draggable
-                                      key={card.id}
-                                      draggableId={card.id}
-                                      index={index}
-                                    >
-                                      {provided => (
+                              {line.cards.map((card, index) => {
+                                const badgeColor = getBadgeColor(card.badgeText)
+                                return (
+                                  <Draggable
+                                    key={card.id}
+                                    draggableId={card.id}
+                                    index={index}
+                                  >
+                                    {provided => (
+                                      <div
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                        // className="card task-list"
+                                        className="pb-1 task-list"
+                                        id={line.name + "-task"}
+                                      >
                                         <div
-                                          ref={provided.innerRef}
-                                          {...provided.draggableProps}
-                                          {...provided.dragHandleProps}
-                                          // className="card task-list"
-                                          className="pb-1 task-list"
-                                          id={line.name + "-task"}
+                                          className="card task-box"
+                                          id="uptask-1"
                                         >
-                                          <div className="card task-box" id="uptask-1">
-                                            <CardBody>
-                                              <UncontrolledDropdown className="float-end">
-                                                <DropdownToggle
-                                                  className="arrow-none"
-                                                  tag="a"
-                                                  color="white"
-                                                >
-                                                  <i className="mdi mdi-dots-vertical m-0 text-muted h5"></i>
-                                                </DropdownToggle>
-                                                <DropdownMenu className="dropdown-menu-end">
-                                                  <DropdownItem
-                                                    className="edittask-details"
-                                                    onClick={() =>
-                                                      handleCardEdit(card, line)
-                                                    }
-                                                  >
-                                                    Edit
-                                                  </DropdownItem>
-                                                  <DropdownItem
-                                                    className="deletetask"
-                                                    onClick={() =>
-                                                      onClickDelete(card)
-                                                    }
-                                                  >
-                                                    Delete
-                                                  </DropdownItem>
-                                                </DropdownMenu>
-                                              </UncontrolledDropdown>
-                                              <div className="float-end ms-2">
-                                                <span
-                                                  className={`badge rounded-pill badge-soft-${badgeColor} font-size-12`}
-                                                  id="task-status"
-                                                >
-                                                  {card.badgeText}
-                                                </span>
-                                              </div>
-                                              <div>
-                                                <h5 className="font-size-15">
-                                                  <Link
-                                                    to="#"
-                                                    className="text-dark"
-                                                    id="task-name"
-                                                  >
-                                                    {card.title}
-                                                  </Link>
-                                                </h5>
-                                                <p className="text-muted">
-                                                  {card.date}
-                                                </p>
-                                              </div>
-                                              {
-                                                card.taskdesc1 &&
-                                                <ul className="ps-3 mb-4 text-muted" id="task-desc">
-                                                  <li className="py-1">{card.taskdesc}</li>
-                                                  <li className="py-1">{card.taskdesc1}</li>
-                                                </ul>
-                                              }
-                                              {
-                                                card.brandLogo &&
-                                                <ul className="list-inine ps-0 mb-4" id="task-desc">
-                                                  {
-                                                    card.brandLogo.map((logo, inx) => (
-                                                      <li key={inx} className="list-inline-item">
-                                                        <Link to="#">
-                                                          {
-                                                            logo.imges ?
-                                                              <div>
-                                                                <img src={logo.imges} className="rounded" height={48} alt="" />
-                                                              </div>
-
-                                                              :
-                                                              <div className="border rounded avatar-sm">
-                                                                <span className="avatar-title bg-transparent">
-                                                                  <img src={logo.img} className="avatar-xs" alt="" />
-                                                                </span>
-                                                              </div>
-
-                                                          }
-                                                        </Link>
-                                                      </li>
-                                                    ))
+                                          <CardBody>
+                                            <UncontrolledDropdown className="float-end">
+                                              <DropdownToggle
+                                                className="arrow-none"
+                                                tag="a"
+                                                color="white"
+                                              >
+                                                <i className="mdi mdi-dots-vertical m-0 text-muted h5"></i>
+                                              </DropdownToggle>
+                                              <DropdownMenu className="dropdown-menu-end">
+                                                <DropdownItem
+                                                  className="edittask-details"
+                                                  onClick={() =>
+                                                    handleCardEdit(card, line)
                                                   }
-                                                </ul>
-                                              }
-                                              <div className="avatar-group float-start task-assigne">
-                                                {
-                                                  card.userImages && card.userImages.map(
-                                                    (usrimg, key) => (
-                                                      usrimg.img &&
-                                                      <div key={key}
-                                                        className="avatar-group-item">
+                                                >
+                                                  Edit
+                                                </DropdownItem>
+                                                <DropdownItem
+                                                  className="deletetask"
+                                                  onClick={() =>
+                                                    onClickDelete(card)
+                                                  }
+                                                >
+                                                  Delete
+                                                </DropdownItem>
+                                              </DropdownMenu>
+                                            </UncontrolledDropdown>
+                                            <div className="float-end ms-2">
+                                              <span
+                                                className={`badge rounded-pill badge-soft-${badgeColor} font-size-12`}
+                                                id="task-status"
+                                              >
+                                                {card.badgeText}
+                                              </span>
+                                            </div>
+                                            <div>
+                                              <h5 className="font-size-15">
+                                                <Link
+                                                  to="#"
+                                                  className="text-dark"
+                                                  id="task-name"
+                                                >
+                                                  {card.title}
+                                                </Link>
+                                              </h5>
+                                              <p className="text-muted">
+                                                {card.date}
+                                              </p>
+                                            </div>
+                                            {card.taskdesc1 && (
+                                              <ul
+                                                className="ps-3 mb-4 text-muted"
+                                                id="task-desc"
+                                              >
+                                                <li className="py-1">
+                                                  {card.taskdesc}
+                                                </li>
+                                                <li className="py-1">
+                                                  {card.taskdesc1}
+                                                </li>
+                                              </ul>
+                                            )}
+                                            {card.brandLogo && (
+                                              <ul
+                                                className="list-inine ps-0 mb-4"
+                                                id="task-desc"
+                                              >
+                                                {card.brandLogo.map(
+                                                  (logo, inx) => (
+                                                    <li
+                                                      key={inx}
+                                                      className="list-inline-item"
+                                                    >
+                                                      <Link to="#">
+                                                        {logo.imges ? (
+                                                          <div>
+                                                            <img
+                                                              src={logo.imges}
+                                                              className="rounded"
+                                                              height={48}
+                                                              alt=""
+                                                            />
+                                                          </div>
+                                                        ) : (
+                                                          <div className="border rounded avatar-sm">
+                                                            <span className="avatar-title bg-transparent">
+                                                              <img
+                                                                src={logo.img}
+                                                                className="avatar-xs"
+                                                                alt=""
+                                                              />
+                                                            </span>
+                                                          </div>
+                                                        )}
+                                                      </Link>
+                                                    </li>
+                                                  )
+                                                )}
+                                              </ul>
+                                            )}
+                                            <div className="avatar-group float-start task-assigne">
+                                              {card.userImages &&
+                                                card.userImages.map(
+                                                  (usrimg, key) =>
+                                                    usrimg.img && (
+                                                      <div
+                                                        key={key}
+                                                        className="avatar-group-item"
+                                                      >
                                                         <Link
                                                           to="#"
                                                           className="d-inline-block"
-                                                          defaultValue="member-4">
-                                                          <img src={usrimg.img} alt="" className="rounded-circle avatar-xs" />
+                                                          defaultValue="member-4"
+                                                        >
+                                                          <img
+                                                            src={usrimg.img}
+                                                            alt=""
+                                                            className="rounded-circle avatar-xs"
+                                                          />
                                                         </Link>
                                                       </div>
                                                     )
-                                                  )
-                                                }
-                                                {
-                                                  card.kanbanImgtext && card.kanbanImgtext.map((imgtext, inx) => (
-                                                    <div key={inx}
-                                                      className="avatar-group-item">
-                                                      <Link to="#" className="d-inline-block" defaultValue="member-4">
+                                                )}
+                                              {card.kanbanImgtext &&
+                                                card.kanbanImgtext.map(
+                                                  (imgtext, inx) => (
+                                                    <div
+                                                      key={inx}
+                                                      className="avatar-group-item"
+                                                    >
+                                                      <Link
+                                                        to="#"
+                                                        className="d-inline-block"
+                                                        defaultValue="member-4"
+                                                      >
                                                         <div className="avatar-xs">
-                                                          <span className={`avatar-title rounded-circle ${card.kanbanImgtextColor} text-white font-size-16`}>
+                                                          <span
+                                                            className={`avatar-title rounded-circle ${card.kanbanImgtextColor} text-white font-size-16`}
+                                                          >
                                                             {imgtext.imageText}
                                                           </span>
                                                         </div>
                                                       </Link>
                                                     </div>
-                                                  ))
-                                                }
+                                                  )
+                                                )}
+                                            </div>
 
-                                              </div>
-
-                                              <div className="text-end">
-                                                <h5
-                                                  className="font-size-15 mb-1"
-                                                  id="task-budget"
-                                                >
-                                                  $ {card.budget}
-                                                </h5>
-                                                <p className="mb-0 text-muted">
-                                                  Budget
-                                                </p>
-                                              </div>
-                                            </CardBody>
-                                          </div>
+                                            <div className="text-end">
+                                              <h5
+                                                className="font-size-15 mb-1"
+                                                id="task-budget"
+                                              >
+                                                $ {card.budget}
+                                              </h5>
+                                              <p className="mb-0 text-muted">
+                                                Budget
+                                              </p>
+                                            </div>
+                                          </CardBody>
                                         </div>
-                                      )}
-                                    </Draggable>
-                                  )
-                                })}
-                                {provided.placeholder}
-                                <div className="text-center d-grid">
-                                  <Link
-                                    to="#"
-                                    className="btn btn-primary waves-effect waves-light addtask-btn"
-                                    data-bs-toggle="modal"
-                                    data-bs-target=".bs-example-modal-lg"
-                                    data-id="#upcoming-task"
-                                    onClick={() => handleAddNewCard(line)}
-                                  >
-                                    <i className="mdi mdi-plus me-1"></i> Add New
-                                  </Link>
-                                </div>
+                                      </div>
+                                    )}
+                                  </Draggable>
+                                )
+                              })}
+                              {provided.placeholder}
+                              <div className="text-center d-grid">
+                                <Link
+                                  to="#"
+                                  className="btn btn-primary waves-effect waves-light addtask-btn"
+                                  data-bs-toggle="modal"
+                                  data-bs-target=".bs-example-modal-lg"
+                                  data-id="#upcoming-task"
+                                  onClick={() => handleAddNewCard(line)}
+                                >
+                                  <i className="mdi mdi-plus me-1"></i> Add New
+                                </Link>
                               </div>
-                            )}
-                          </Droppable>
-                        </CardBody>
-                      </Card>
-                    </Col>
-                  ))}
-                </DragDropContext>
-              </Row>
-          }
+                            </div>
+                          )}
+                        </Droppable>
+                      </CardBody>
+                    </Card>
+                  </Col>
+                ))}
+              </DragDropContext>
+            </Row>
+          )}
         </Container>
       </div>
 
-      <Modal id="modalForm" isOpen={modal} toggle={toggle} centered={true} size="lg">
+      <Modal
+        id="modalForm"
+        isOpen={modal}
+        toggle={toggle}
+        centered={true}
+        size="lg"
+      >
         <ModalHeader toggle={toggle}>
           {!!isEdit ? "Update Task" : "Add New Task"}
         </ModalHeader>
@@ -510,8 +552,7 @@ const TasksKanban = () => {
                   onBlur={validation.handleBlur}
                   value={validation.values.taskdesc || ""}
                 ></textarea>
-                {validation.touched.taskdesc &&
-                  validation.errors.taskdesc ? (
+                {validation.touched.taskdesc && validation.errors.taskdesc ? (
                   <FormFeedback type="invalid" className="d-block">
                     {validation.errors.taskdesc}
                   </FormFeedback>
@@ -529,7 +570,7 @@ const TasksKanban = () => {
                   id="taskassignee"
                 >
                   {(AddTeamMember || []).map((image, index) => {
-                    const isChecked = images.some(item => item.id === image.id);
+                    const isChecked = images.some(item => item.id === image.id)
                     return (
                       <li key={index}>
                         <div className="form-check form-check-primary mb-2 d-flex align-items-center">
@@ -539,11 +580,14 @@ const TasksKanban = () => {
                             id={"member" + image.id}
                             name="userImages"
                             onBlur={validation.handleBlur}
-                            value={validation.values.userImages || ''}
+                            value={validation.values.userImages || ""}
                             onChange={() => handleImage(image)}
                             checked={isChecked}
                           />
-                          <label className="form-check-label ms-2" htmlFor={"member" + image.id}>
+                          <label
+                            className="form-check-label ms-2"
+                            htmlFor={"member" + image.id}
+                          >
                             {image.name}
                           </label>
                           <img
@@ -556,7 +600,7 @@ const TasksKanban = () => {
                     )
                   })}
                   {validation.touched.userImages &&
-                    validation.errors.userImages ? (
+                  validation.errors.userImages ? (
                     <FormFeedback type="invalid" className="d-block">
                       {validation.errors.userImages}
                     </FormFeedback>
@@ -584,8 +628,7 @@ const TasksKanban = () => {
                   <option defaultValue="warning">Pending</option>
                   <option defaultValue="success">Complete</option>
                 </select>
-                {validation.touched.badgeText &&
-                  validation.errors.badgeText ? (
+                {validation.touched.badgeText && validation.errors.badgeText ? (
                   <FormFeedback type="invalid" className="d-block">
                     {validation.errors.badgeText}
                   </FormFeedback>

@@ -8,8 +8,8 @@ import BlogList from "./BlogList"
 import RightBar from "./RightBar"
 
 const Index = () => {
-    //meta title
-    document.title="Blog List | Skote - React Admin & Dashboard Template";
+  //meta title
+  document.title = "Blog List | CPALINK"
   return (
     <React.Fragment>
       <div className="page-content">

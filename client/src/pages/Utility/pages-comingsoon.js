@@ -6,8 +6,8 @@ import { Container, Row, Col } from "reactstrap"
 import Countdown from "react-countdown"
 
 //Import Images
-import logoDark from "../../assets/images/logo-dark.png";
-import logoLight from "../../assets/images/logo-light.png";
+import logoDark from "../../assets/images/logo-dark.png"
+import logoLight from "../../assets/images/logo-light.png"
 import maintanence from "../../assets/images/coming-soon.svg"
 
 const PagesComingsoon = () => {
@@ -36,7 +36,7 @@ const PagesComingsoon = () => {
   }
 
   //meta title
-  document.title = "Coming Soon | Skote - React Admin & Dashboard Template";
+  document.title = "Coming Soon | CPALINK"
 
   return (
     <React.Fragment>
@@ -52,8 +52,18 @@ const PagesComingsoon = () => {
             <Col lg={12}>
               <div className="text-center">
                 <Link to="/dashboard" className="d-block auth-logo">
-                  <img src={logoDark} alt="logo" className="auth-logo-dark mx-auto" height="20" />
-                  <img src={logoLight} alt="logo" className="auth-logo-light mx-auto" height="20" />
+                  <img
+                    src={logoDark}
+                    alt="logo"
+                    className="auth-logo-dark mx-auto"
+                    height="20"
+                  />
+                  <img
+                    src={logoLight}
+                    alt="logo"
+                    className="auth-logo-light mx-auto"
+                    height="20"
+                  />
                 </Link>
                 <Row className="justify-content-center mt-5">
                   <Col sm="4">
@@ -84,7 +94,7 @@ const PagesComingsoon = () => {
           </Row>
         </Container>
       </div>
-    </React.Fragment >
+    </React.Fragment>
   )
 }
 

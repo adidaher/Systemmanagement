@@ -30,7 +30,7 @@ const GET_TASKS_BY_STATUS = gql`
 
 const TasksList = () => {
   //meta title
-  document.title = "Task List | Skote - React Admin & Dashboard Template"
+  document.title = "Task List | CPALINK"
 
   const dispatch = useDispatch()
   const [completedTask, setCompletedTask] = useState([])

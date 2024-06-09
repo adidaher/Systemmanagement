@@ -7,9 +7,8 @@ import logodark from "../../assets/images/logo-dark.png"
 import logolight from "../../assets/images/logo-light.png"
 
 const EmailVerification = () => {
-
   //meta title
-  document.title="Email Verification | Skote - React Admin & Dashboard Template";
+  document.title = "Email Verification | CPALINK"
 
   return (
     <React.Fragment>
@@ -51,16 +50,11 @@ const EmailVerification = () => {
                         <h4>Verify your email</h4>
                         <p>
                           We have sent you verification email{" "}
-                          <span className="fw-semibold">
-                            example@abc.com
-                          </span>
-                          , Please check it
+                          <span className="fw-semibold">example@abc.com</span>,
+                          Please check it
                         </p>
                         <div className="mt-4">
-                          <a
-                            href="/"
-                            className="btn btn-success w-md"
-                          >
+                          <a href="/" className="btn btn-success w-md">
                             Verify email
                           </a>
                         </div>

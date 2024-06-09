@@ -32,6 +32,8 @@ import Breadcrumbs from "../../components/Common/Breadcrumb"
 
 //import Images
 import verification from "../../assets/images/verification-img.png"
+import { withTranslation } from "react-i18next"
+import withRouter from "components/Common/withRouter"
 
 import {
   addNewEvent as onAddNewEvent,
@@ -132,7 +134,7 @@ const DELETE_EVENT = gql`
 `
 const Calender = props => {
   //meta title
-  document.title = "Calendar | Skote - React Admin & Dashboard Template"
+  document.title = "Calendar | CPALINK"
 
   const dispatch = useDispatch()
 
@@ -176,7 +178,6 @@ const Calender = props => {
 
   useEffect(() => {
     if (!userCalandar && currentUser) {
-      console.log("getting the events")
       getUserCalendar({
         variables: { userEmail: currentUser.email },
       })
@@ -348,13 +349,11 @@ const Calender = props => {
    */
   const handleEventClick = arg => {
     const event = arg.event
-    console.log("id is ..", event.id)
-    console.log("shared_with is ..", event.extendedProps.shared_with)
 
     setEvent({
       id: event.id,
       title: event.title,
-      // title_category: event.title_category,
+
       start: event.start,
       className: event.classNames,
       category: event.classNames[0],
@@ -373,7 +372,6 @@ const Calender = props => {
   const handleDeleteEvent = () => {
     if (deleteId) {
       deleteEvent({ variables: { id: deleteId } }).then(result => {
-        console.log("Event Deleted Successfully")
         toast.success("Event Deleted Successfully", { autoClose: 2000 })
       })
     }
@@ -455,7 +453,10 @@ const Calender = props => {
       <div className="page-content">
         <Container fluid={true}>
           {/* Render Breadcrumb */}
-          <Breadcrumbs title="Calendar" breadcrumbItem="Full Calendar" />
+          <Breadcrumbs
+            title={props.t("Calendar")}
+            breadcrumbItem={props.t("Full Calendar")}
+          />
           <Row>
             <Col xs={12}>
               <Row>
@@ -573,7 +574,7 @@ const Calender = props => {
                         <Row>
                           <Col xs={12}>
                             <div className="mb-3">
-                              <Label>Event Name</Label>
+                              <Label>{props.t("Event Name")}</Label>
                               <Input
                                 name="title"
                                 type="text"
@@ -598,7 +599,7 @@ const Calender = props => {
                           </Col>
                           <Col xs={12}>
                             <div className="mb-3">
-                              <Label>Category</Label>
+                              <Label>{props.t("Category")}</Label>
                               <Input
                                 type="select"
                                 name="category"
@@ -631,7 +632,7 @@ const Calender = props => {
 
                           <Col xs={12}>
                             <div className="mb-3">
-                              <Label>Share event with </Label>
+                              <Label>{props.t("Share event with")}</Label>
                               <Input
                                 name="shared_with"
                                 type="text"
@@ -670,7 +671,7 @@ const Calender = props => {
                                   setDeleteModal(true)
                                 }}
                               >
-                                Delete
+                                {props.t("Delete")}
                               </Button>
                             )}
                           </Col>
@@ -682,14 +683,14 @@ const Calender = props => {
                               className="me-1"
                               onClick={toggle}
                             >
-                              Close
+                              {props.t("Close")}
                             </Button>
                             <Button
                               type="submit"
                               color="success"
                               id="btn-save-event"
                             >
-                              Save
+                              {props.t("Save")}
                             </Button>
                           </Col>
                         </Row>
@@ -718,4 +719,4 @@ Calender.propTypes = {
   onGetCategories: PropTypes.func,
 }
 
-export default Calender
+export default withRouter(withTranslation()(Calender))

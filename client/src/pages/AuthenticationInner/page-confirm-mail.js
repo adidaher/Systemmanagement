@@ -7,14 +7,12 @@ import logodark from "../../assets/images/logo-dark.png"
 import logolight from "../../assets/images/logo-light.png"
 
 const ConfirmMail = () => {
-
   //meta title
-  document.title="Confirm Mail | Skote - React Admin & Dashboard Template";
+  document.title = "Confirm Mail | CPALINK"
 
   return (
     <React.Fragment>
       <div className="account-pages my-5 pt-sm-5">
-
         <Container>
           <Row>
             <Col lg={12}>
@@ -52,8 +50,8 @@ const ConfirmMail = () => {
                         <h4>Success !</h4>
                         <p className="text-muted">
                           At vero eos et accusamus et iusto odio dignissimos
-                          ducimus qui blanditiis praesentium voluptatum
-                          deleniti atque corrupti quos dolores et
+                          ducimus qui blanditiis praesentium voluptatum deleniti
+                          atque corrupti quos dolores et
                         </p>
                         <div className="mt-4">
                           <Link to="/dashboard" className="btn btn-success">

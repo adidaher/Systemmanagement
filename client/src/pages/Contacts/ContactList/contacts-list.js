@@ -112,7 +112,7 @@ const DELETE_USER = gql`
 
 const ContactsList = () => {
   //meta title
-  document.title = "User List | Skote - React Admin & Dashboard Template"
+  document.title = "User List | CPALINK"
 
   const dispatch = useDispatch()
   const [contact, setContact] = useState()

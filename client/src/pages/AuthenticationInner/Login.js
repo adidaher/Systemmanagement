@@ -1,49 +1,58 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 
 // Redux
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"
 
-import { Row, Col, CardBody, Card, Container, Form, Input, Label, FormFeedback } from "reactstrap";
+import {
+  Row,
+  Col,
+  CardBody,
+  Card,
+  Container,
+  Form,
+  Input,
+  Label,
+  FormFeedback,
+} from "reactstrap"
 
 // Formik validation
-import * as Yup from "yup";
-import { useFormik } from "formik";
+import * as Yup from "yup"
+import { useFormik } from "formik"
 
 // import images
-import profile from "../../assets/images/profile-img.png";
-import logo from "../../assets/images/logo.svg";
-import lightlogo from "../../assets/images/logo-light.svg";
+import profile from "../../assets/images/profile-img.png"
+import logo from "../../assets/images/logo.svg"
+import lightlogo from "../../assets/images/logo-light.svg"
 
 const Login = () => {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false)
 
   //meta title
-  document.title = "Login | Skote - React Admin & Dashboard Template";
+  document.title = "Login | CPALINK"
 
-  // Form validation 
+  // Form validation
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
     },
     validationSchema: Yup.object({
       username: Yup.string().required("Please Enter Your username"),
       password: Yup.string().required("Please Enter Your Password"),
     }),
-    onSubmit: (values) => {
-    }
-  });
+    onSubmit: values => {},
+  })
   return (
-    <React.Fragment>      
+    <React.Fragment>
       <div className="account-pages my-5 pt-sm-5">
         <Container>
           <Row className="justify-content-center">
             <Col md={8} lg={6} xl={5}>
               <Card className="overflow-hidden">
-              <div className="bg-primary-subtle">
+                <div className="bg-primary-subtle">
                   <Row>
                     <Col className="col-7">
                       <div className="text-primary p-4">
@@ -84,11 +93,12 @@ const Login = () => {
                     </Link>
                   </div>
                   <div className="p-2">
-                    <Form className="form-horizontal"
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        validation.handleSubmit();
-                        return false;
+                    <Form
+                      className="form-horizontal"
+                      onSubmit={e => {
+                        e.preventDefault()
+                        validation.handleSubmit()
+                        return false
                       }}
                     >
                       <div className="mb-3">
@@ -102,11 +112,17 @@ const Login = () => {
                           onBlur={validation.handleBlur}
                           value={validation.values.username || ""}
                           invalid={
-                            validation.touched.username && validation.errors.username ? true : false
+                            validation.touched.username &&
+                            validation.errors.username
+                              ? true
+                              : false
                           }
                         />
-                        {validation.touched.username && validation.errors.username ? (
-                          <FormFeedback type="invalid">{validation.errors.username}</FormFeedback>
+                        {validation.touched.username &&
+                        validation.errors.username ? (
+                          <FormFeedback type="invalid">
+                            {validation.errors.username}
+                          </FormFeedback>
                         ) : null}
                       </div>
 
@@ -121,14 +137,26 @@ const Login = () => {
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
                             invalid={
-                              validation.touched.password && validation.errors.password ? true : false
+                              validation.touched.password &&
+                              validation.errors.password
+                                ? true
+                                : false
                             }
                           />
-                          <button onClick={() => setShow(!show)} className="btn btn-light " type="button" id="password-addon">
-                            <i className="mdi mdi-eye-outline"></i></button>
+                          <button
+                            onClick={() => setShow(!show)}
+                            className="btn btn-light "
+                            type="button"
+                            id="password-addon"
+                          >
+                            <i className="mdi mdi-eye-outline"></i>
+                          </button>
                         </div>
-                        {validation.touched.password && validation.errors.password ? (
-                          <FormFeedback type="invalid">{validation.errors.password}</FormFeedback>
+                        {validation.touched.password &&
+                        validation.errors.password ? (
+                          <FormFeedback type="invalid">
+                            {validation.errors.password}
+                          </FormFeedback>
                         ) : null}
                       </div>
 
@@ -198,10 +226,10 @@ const Login = () => {
               </Card>
               <div className="mt-5 text-center">
                 <p>
-                  Don&apos;t have an account ?{" "} <Link
-                    to="pages-register"
-                    className="fw-medium text-primary"
-                  > Signup now{" "}
+                  Don&apos;t have an account ?{" "}
+                  <Link to="pages-register" className="fw-medium text-primary">
+                    {" "}
+                    Signup now{" "}
                   </Link>{" "}
                 </p>
                 <p>
@@ -214,7 +242,7 @@ const Login = () => {
         </Container>
       </div>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

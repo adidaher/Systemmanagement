@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 import { Link } from "react-router-dom"
 import {
@@ -17,9 +17,8 @@ import logodark from "../../assets/images/logo-dark.png"
 import logolight from "../../assets/images/logo-light.png"
 
 const TwostepVerification = () => {
-
   //meta title
-  document.title = "Two Step Verification | Skote - React Admin & Dashboard Template";
+  document.title = "Two Step Verification | CPALINK"
 
   return (
     <React.Fragment>
@@ -61,54 +60,80 @@ const TwostepVerification = () => {
                         <h4>Verify your email</h4>
                         <p className="mb-5">
                           Please enter the 4 digit code sent to{" "}
-                          <span className="fw-semibold">
-                            example@abc.com
-                          </span>
+                          <span className="fw-semibold">example@abc.com</span>
                         </p>
 
                         <Form>
                           <Row>
                             <Col className="col-3">
                               <div className="mb-3">
-                                <Label htmlFor="digit1-input" className="visually-hidden">Dight 1</Label>
-                                <Input type="text"
+                                <Label
+                                  htmlFor="digit1-input"
+                                  className="visually-hidden"
+                                >
+                                  Dight 1
+                                </Label>
+                                <Input
+                                  type="text"
                                   className="form-control form-control-lg text-center two-step"
                                   maxLength="1"
                                   data-value="1"
-                                  id="digit1-input"/>
+                                  id="digit1-input"
+                                />
                               </div>
                             </Col>
 
                             <Col>
                               <div className="mb-3">
-                                <Label htmlFor="digit2-input" className="visually-hidden">Dight 2</Label>
-                                <Input type="text"
+                                <Label
+                                  htmlFor="digit2-input"
+                                  className="visually-hidden"
+                                >
+                                  Dight 2
+                                </Label>
+                                <Input
+                                  type="text"
                                   className="form-control form-control-lg text-center two-step"
                                   maxLength="1"
                                   data-value="2"
-                                  id="digit2-input"/>
+                                  id="digit2-input"
+                                />
                               </div>
                             </Col>
 
                             <Col>
                               <div className="mb-3">
-                                <Label htmlFor="digit3-input" className="visually-hidden">Dight 3</Label>
-                                <Input type="text"
+                                <Label
+                                  htmlFor="digit3-input"
+                                  className="visually-hidden"
+                                >
+                                  Dight 3
+                                </Label>
+                                <Input
+                                  type="text"
                                   className="form-control form-control-lg text-center two-step"
                                   maxLength="1"
                                   data-value="3"
-                                  id="digit3-input"/>
+                                  id="digit3-input"
+                                />
                               </div>
                             </Col>
 
                             <Col>
                               <div className="mb-3">
-                                <Label htmlFor="digit4-input" className="visually-hidden">Dight 4</Label>
-                                <Input type="text"
+                                <Label
+                                  htmlFor="digit4-input"
+                                  className="visually-hidden"
+                                >
+                                  Dight 4
+                                </Label>
+                                <Input
+                                  type="text"
                                   className="form-control form-control-lg text-center two-step"
                                   maxLength="1"
                                   data-value="4"
-                                  id="digit4-input"/>
+                                  id="digit4-input"
+                                />
                               </div>
                             </Col>
                           </Row>
@@ -147,4 +172,4 @@ const TwostepVerification = () => {
     </React.Fragment>
   )
 }
-export default TwostepVerification;
+export default TwostepVerification

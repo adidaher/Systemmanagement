@@ -1,6 +1,5 @@
 import React from "react"
-import { Container, Row, Col } from "reactstrap";
-
+import { Container, Row, Col } from "reactstrap"
 
 //Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb"
@@ -9,9 +8,8 @@ import Breadcrumbs from "../../components/Common/Breadcrumb"
 import CardPricing from "./card-pricing"
 
 const PagesPricing = () => {
-
   //meta title
-  document.title = "Pricing | Skote - React Admin & Dashboard Template";
+  document.title = "Pricing | CPALINK"
 
   const pricings = [
     {

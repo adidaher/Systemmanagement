@@ -1,47 +1,44 @@
-import React, { useEffect } from "react";
-import { Container, Row, Col, Card, CardBody } from "reactstrap";
-import { useDispatch } from "react-redux";
-import { createSelector } from "reselect";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react"
+import { Container, Row, Col, Card, CardBody } from "reactstrap"
+import { useDispatch } from "react-redux"
+import { createSelector } from "reselect"
+import { useSelector } from "react-redux"
 
 //Import Image
-import avatar2 from "../../assets/images/users/avatar-2.jpg";
+import avatar2 from "../../assets/images/users/avatar-2.jpg"
 //Import Breadcrumb
-import Breadcrumbs from "../../components/Common/Breadcrumb";
+import Breadcrumbs from "../../components/Common/Breadcrumb"
 
 //Import Email Sidebar
-import EmailSideBar from "./email-sidebar";
+import EmailSideBar from "./email-sidebar"
 
-import {
-  getMailsListsId as onGetMailsListsId,
-} from "store/mails/actions";
-import withRouter from "components/Common/withRouter";
+import { getMailsListsId as onGetMailsListsId } from "store/mails/actions"
+import withRouter from "components/Common/withRouter"
 
-const EmailRead = (props) => {
+const EmailRead = props => {
   //meta title
-  document.title = "Read Email | Skote - React Admin & Dashboard Template";
+  document.title = "Read Email | CPALINK"
 
-  const id = props.router.params.id;
+  const id = props.router.params.id
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
   const selectProperties = createSelector(
-    (state) => state.mails,
-    (Mails) => ({
-      mailsListsId: Mails.mailsListsId
+    state => state.mails,
+    Mails => ({
+      mailsListsId: Mails.mailsListsId,
     })
-  );
+  )
 
-  const { mailsListsId } = useSelector(selectProperties);
+  const { mailsListsId } = useSelector(selectProperties)
 
   useEffect(() => {
     if (id) {
-      dispatch(onGetMailsListsId(id));
+      dispatch(onGetMailsListsId(id))
     } else {
-      dispatch(onGetMailsListsId("1"));
+      dispatch(onGetMailsListsId("1"))
     }
-  }, [dispatch, id]);
-
+  }, [dispatch, id])
 
   return (
     <React.Fragment>
@@ -78,11 +75,13 @@ const EmailRead = (props) => {
 
                     <p>Dear Lorem Ipsum,</p>
                     <div className="col-mail col-mail-2">
-                      {mailsListsId.description && <div
-                        dangerouslySetInnerHTML={{
-                          __html: mailsListsId.description,
-                        }}
-                      ></div>}
+                      {mailsListsId.description && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: mailsListsId.description,
+                          }}
+                        ></div>
+                      )}
                     </div>
                     <p>
                       Praesent dui ex, dapibus eget mauris ut, finibus

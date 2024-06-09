@@ -49,7 +49,7 @@ const GET_USER_BY_EMAIL = gql`
 
 const Login = props => {
   //meta title
-  document.title = "Login | Skote - React Admin & Dashboard Template"
+  document.title = "Login | CPALINK"
 
   const dispatch = useDispatch()
 

@@ -1,38 +1,45 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Col, Container, Form, Row, Input, Label, FormFeedback } from "reactstrap";
+import React, { useState } from "react"
+import { Link } from "react-router-dom"
+import {
+  Col,
+  Container,
+  Form,
+  Row,
+  Input,
+  Label,
+  FormFeedback,
+} from "reactstrap"
 
 // Formik validation
-import * as Yup from "yup";
-import { useFormik } from "formik";
+import * as Yup from "yup"
+import { useFormik } from "formik"
 
 // import images
-import logodark from "../../assets/images/logo-dark.png";
-import logolight from "../../assets/images/logo-light.png";
-import CarouselPage from "./CarouselPage";
+import logodark from "../../assets/images/logo-dark.png"
+import logolight from "../../assets/images/logo-light.png"
+import CarouselPage from "./CarouselPage"
 
 const Login2 = () => {
-  const [passwordShow, setPasswordShow] = useState(false);
+  const [passwordShow, setPasswordShow] = useState(false)
 
   //meta title
-  document.title = "Login 2 | Skote - React Admin & Dashboard Template";
+  document.title = "Login 2 | CPALINK"
 
-  // Form validation 
+  // Form validation
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
     },
     validationSchema: Yup.object({
       username: Yup.string().required("Please Enter Your Username"),
       password: Yup.string().required("Please Enter Your Password"),
     }),
-    onSubmit: (values) => {
-    }
-  });
+    onSubmit: values => {},
+  })
   return (
     <React.Fragment>
       <div>
@@ -69,11 +76,12 @@ const Login2 = () => {
                       </div>
 
                       <div className="mt-4">
-                        <Form className="form-horizontal"
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            validation.handleSubmit();
-                            return false;
+                        <Form
+                          className="form-horizontal"
+                          onSubmit={e => {
+                            e.preventDefault()
+                            validation.handleSubmit()
+                            return false
                           }}
                         >
                           <div className="mb-3">
@@ -87,17 +95,28 @@ const Login2 = () => {
                               onBlur={validation.handleBlur}
                               value={validation.values.username || ""}
                               invalid={
-                                validation.touched.username && validation.errors.username ? true : false
+                                validation.touched.username &&
+                                validation.errors.username
+                                  ? true
+                                  : false
                               }
                             />
-                            {validation.touched.username && validation.errors.username ? (
-                              <FormFeedback type="invalid">{validation.errors.username}</FormFeedback>
+                            {validation.touched.username &&
+                            validation.errors.username ? (
+                              <FormFeedback type="invalid">
+                                {validation.errors.username}
+                              </FormFeedback>
                             ) : null}
                           </div>
 
                           <div className="mb-3">
                             <div className="float-end">
-                              <Link to="/auth-recoverpw-2" className="text-muted">Forgot password?</Link>
+                              <Link
+                                to="/auth-recoverpw-2"
+                                className="text-muted"
+                              >
+                                Forgot password?
+                              </Link>
                             </div>
                             <Label className="form-label">Password</Label>
                             <div className="input-group auth-pass-inputgroup">
@@ -109,14 +128,26 @@ const Login2 = () => {
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 invalid={
-                                  validation.touched.password && validation.errors.password ? true : false
+                                  validation.touched.password &&
+                                  validation.errors.password
+                                    ? true
+                                    : false
                                 }
                               />
-                              <button onClick={() => setPasswordShow(!passwordShow)} className="btn btn-light " type="button" id="password-addon">
-                                <i className="mdi mdi-eye-outline"></i></button>
+                              <button
+                                onClick={() => setPasswordShow(!passwordShow)}
+                                className="btn btn-light "
+                                type="button"
+                                id="password-addon"
+                              >
+                                <i className="mdi mdi-eye-outline"></i>
+                              </button>
                             </div>
-                            {validation.touched.password && validation.errors.password ? (
-                              <FormFeedback type="invalid">{validation.errors.password}</FormFeedback>
+                            {validation.touched.password &&
+                            validation.errors.password ? (
+                              <FormFeedback type="invalid">
+                                {validation.errors.password}
+                              </FormFeedback>
                             ) : null}
                           </div>
 
@@ -142,14 +173,11 @@ const Login2 = () => {
                               Log In
                             </button>
                           </div>
-
                         </Form>
 
                         <Form action="dashboard">
                           <div className="mt-4 text-center">
-                            <h5 className="font-size-14 mb-3">
-                              Sign in with
-                            </h5>
+                            <h5 className="font-size-14 mb-3">Sign in with</h5>
 
                             <ul className="list-inline">
                               <li className="list-inline-item">
@@ -181,7 +209,8 @@ const Login2 = () => {
                         </Form>
                         <div className="mt-5 text-center">
                           <p>
-                            Don&apos;t have an account ?  <Link
+                            Don&apos;t have an account ?{" "}
+                            <Link
                               to="pages-register-2"
                               className="fw-medium text-primary"
                             >
@@ -207,7 +236,7 @@ const Login2 = () => {
         </Container>
       </div>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default Login2;
+export default Login2

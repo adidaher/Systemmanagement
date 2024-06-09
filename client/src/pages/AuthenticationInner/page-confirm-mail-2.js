@@ -8,9 +8,8 @@ import { Col, Container, Row } from "reactstrap"
 import { Link } from "react-router-dom"
 
 const ConfirmMail2 = () => {
-
   //meta title
-  document.title = "Confirm Mail 2 | Skote - React Admin & Dashboard Template";
+  document.title = "Confirm Mail 2 | CPALINK"
 
   return (
     <React.Fragment>

@@ -43,7 +43,7 @@ const DashboardSaas = () => {
   ]
 
   //meta title
-  document.title = "Saas Dashboard | Skote - React Admin & Dashboard Template"
+  document.title = "Saas Dashboard | CPALINK"
 
   return (
     <React.Fragment>

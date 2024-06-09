@@ -57,7 +57,7 @@ import { handleSearchData } from "components/Common/searchFile";
 const Chat = () => {
 
   //meta title
-  document.title = "Chat | Skote - React Admin & Dashboard Template";
+  document.title = "Chat | CPALINK";
 
   const dispatch = useDispatch();
 

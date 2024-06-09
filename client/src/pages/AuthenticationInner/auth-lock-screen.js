@@ -1,38 +1,47 @@
-import React from "react";
+import React from "react"
 
 // Formik Validation
-import * as Yup from "yup";
-import { useFormik } from "formik";
+import * as Yup from "yup"
+import { useFormik } from "formik"
 
-import { Container, Row, Col, CardBody, Card, Button, Form, Label, Input, FormFeedback } from "reactstrap";
+import {
+  Container,
+  Row,
+  Col,
+  CardBody,
+  Card,
+  Button,
+  Form,
+  Label,
+  Input,
+  FormFeedback,
+} from "reactstrap"
 
 // import images
-import profileImg from "../../assets/images/profile-img.png";
-import logoImg from "../../assets/images/logo.svg";
-import lightlogo from "../../assets/images/logo-light.svg";
-import avatar from "../../assets/images/users/avatar-1.jpg";
-import { Link } from "react-router-dom";
+import profileImg from "../../assets/images/profile-img.png"
+import logoImg from "../../assets/images/logo.svg"
+import lightlogo from "../../assets/images/logo-light.svg"
+import avatar from "../../assets/images/users/avatar-1.jpg"
+import { Link } from "react-router-dom"
 
 const LockScreen = () => {
-
   //meta title
-  document.title="Lock Screen 2 | Skote - React Admin & Dashboard Template";
+  document.title = "Lock Screen | CPALINK"
 
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {
-      password: '',
+      password: "",
     },
     validationSchema: Yup.object({
       password: Yup.string().required("Please Enter Your Password"),
     }),
-    onSubmit: (values) => {
-    }
-  });
+    onSubmit: values => {},
+  })
   return (
-    <React.Fragment>     
+    <React.Fragment>
       <div className="account-pages my-5 pt-sm-5">
         <Container>
           <Row className="justify-content-center">
@@ -79,11 +88,12 @@ const LockScreen = () => {
                     </Link>
                   </div>
                   <div className="p-2">
-                    <Form className="form-horizontal"
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        validation.handleSubmit();
-                        return false;
+                    <Form
+                      className="form-horizontal"
+                      onSubmit={e => {
+                        e.preventDefault()
+                        validation.handleSubmit()
+                        return false
                       }}
                     >
                       <div className="user-thumb text-center mb-4">
@@ -106,11 +116,17 @@ const LockScreen = () => {
                           onBlur={validation.handleBlur}
                           value={validation.values.password || ""}
                           invalid={
-                            validation.touched.password && validation.errors.password ? true : false
+                            validation.touched.password &&
+                            validation.errors.password
+                              ? true
+                              : false
                           }
                         />
-                        {validation.touched.password && validation.errors.password ? (
-                          <FormFeedback type="invalid">{validation.errors.password}</FormFeedback>
+                        {validation.touched.password &&
+                        validation.errors.password ? (
+                          <FormFeedback type="invalid">
+                            {validation.errors.password}
+                          </FormFeedback>
                         ) : null}
                       </div>
 
@@ -132,16 +148,13 @@ const LockScreen = () => {
               <div className="mt-5 text-center">
                 <p>
                   Not you ? return{" "}
-                  <Link
-                    to="/login"
-                    className="fw-medium text-primary"
-                  >
+                  <Link to="/login" className="fw-medium text-primary">
                     {" "}
                     Sign In{" "}
                   </Link>{" "}
                 </p>
                 <p>
-                  © {(new Date().getFullYear())} Skote. Crafted with{" "}
+                  © {new Date().getFullYear()} Skote. Crafted with{" "}
                   <i className="mdi mdi-heart text-danger" /> by Themesbrand
                 </p>
               </div>
@@ -150,6 +163,6 @@ const LockScreen = () => {
         </Container>
       </div>
     </React.Fragment>
-  );
-};
-export default LockScreen;
+  )
+}
+export default LockScreen

@@ -9,7 +9,7 @@ import { Link } from "react-router-dom"
 
 const EmailVerification2 = () => {
   //meta title
-  document.title = "Email Verification 2 | Skote - React Admin & Dashboard Template";
+  document.title = "Email Verification  | CPALINK"
   return (
     <React.Fragment>
       <div>
@@ -48,16 +48,11 @@ const EmailVerification2 = () => {
                           <h4>Verify your email</h4>
                           <p>
                             We have sent you verification email{" "}
-                            <span className="fw-semibold">
-                              example@abc.com
-                            </span>
+                            <span className="fw-semibold">example@abc.com</span>
                             , Please check it
                           </p>
                           <div className="mt-4">
-                            <a
-                              href="/"
-                              className="btn btn-success w-md"
-                            >
+                            <a href="/" className="btn btn-success w-md">
                               Verify email
                             </a>
                           </div>
@@ -83,4 +78,4 @@ const EmailVerification2 = () => {
   )
 }
 
-export default EmailVerification2;
+export default EmailVerification2

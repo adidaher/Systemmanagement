@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 
 import {
   Container,
@@ -12,18 +12,17 @@ import {
   NavLink,
   TabContent,
   TabPane,
-} from "reactstrap";
-import classnames from "classnames";
+} from "reactstrap"
+import classnames from "classnames"
 
 //Import Breadcrumb
-import Breadcrumbs from "../../components/Common/Breadcrumb";
+import Breadcrumbs from "../../components/Common/Breadcrumb"
 
 const PagesFaqs = () => {
-
   //meta title
-  document.title = "FAQs | Skote - React Admin & Dashboard Template";
-  
-  const [activeTab, setactiveTab] = useState("1");
+  document.title = "FAQs | CPALINK"
+
+  const [activeTab, setactiveTab] = useState("1")
 
   return (
     <React.Fragment>
@@ -40,7 +39,7 @@ const PagesFaqs = () => {
                     <NavLink
                       className={classnames({ active: activeTab === "1" })}
                       onClick={() => {
-                        setactiveTab("1");
+                        setactiveTab("1")
                       }}
                     >
                       <i className="bx bx-question-mark d-block check-nav-icon mt-4 mb-2" />
@@ -51,7 +50,7 @@ const PagesFaqs = () => {
                     <NavLink
                       className={classnames({ active: activeTab === "2" })}
                       onClick={() => {
-                        setactiveTab("2");
+                        setactiveTab("2")
                       }}
                     >
                       <i className="bx bx-check-shield d-block check-nav-icon mt-4 mb-2" />
@@ -62,7 +61,7 @@ const PagesFaqs = () => {
                     <NavLink
                       className={classnames({ active: activeTab === "3" })}
                       onClick={() => {
-                        setactiveTab("3");
+                        setactiveTab("3")
                       }}
                     >
                       <i className="bx bx-support d-block check-nav-icon mt-4 mb-2" />
@@ -318,7 +317,7 @@ const PagesFaqs = () => {
         </Container>
       </div>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default PagesFaqs;
+export default PagesFaqs

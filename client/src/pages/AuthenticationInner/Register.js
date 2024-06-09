@@ -1,22 +1,31 @@
-import React from "react";
+import React from "react"
 
 // Formik Validation
-import * as Yup from "yup";
-import { useFormik } from "formik";
+import * as Yup from "yup"
+import { useFormik } from "formik"
 
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"
 
-import { Row, Col, CardBody, Card, Container, Form, Label, Input, FormFeedback } from "reactstrap";
+import {
+  Row,
+  Col,
+  CardBody,
+  Card,
+  Container,
+  Form,
+  Label,
+  Input,
+  FormFeedback,
+} from "reactstrap"
 
 // import images
-import profileImg from "../../assets/images/profile-img.png";
-import logoImg from "../../assets/images/logo.svg";
-import lightlogo from "../../assets/images/logo-light.svg";
+import profileImg from "../../assets/images/profile-img.png"
+import logoImg from "../../assets/images/logo.svg"
+import lightlogo from "../../assets/images/logo-light.svg"
 
 const Register = () => {
-
   //meta title
-  document.title = "Register | Skote - React Admin & Dashboard Template";
+  document.title = "Register | CPALINK"
 
   //form validation
   const validation = useFormik({
@@ -24,18 +33,17 @@ const Register = () => {
     enableReinitialize: true,
 
     initialValues: {
-      email: '',
-      username: '',
-      password: '',
+      email: "",
+      username: "",
+      password: "",
     },
     validationSchema: Yup.object({
       email: Yup.string().required("Please Enter Your Email"),
       username: Yup.string().required("Please Enter Your Username"),
       password: Yup.string().required("Please Enter Your Password"),
     }),
-    onSubmit: (values) => {
-    }
-  });
+    onSubmit: values => {},
+  })
   return (
     <React.Fragment>
       <div className="account-pages my-5 pt-sm-5">
@@ -86,11 +94,12 @@ const Register = () => {
                     </div>
                   </div>
                   <div className="p-2">
-                    <Form className="form-horizontal"
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        validation.handleSubmit();
-                        return false;
+                    <Form
+                      className="form-horizontal"
+                      onSubmit={e => {
+                        e.preventDefault()
+                        validation.handleSubmit()
+                        return false
                       }}
                     >
                       <div className="mb-3">
@@ -105,11 +114,15 @@ const Register = () => {
                           onBlur={validation.handleBlur}
                           value={validation.values.email || ""}
                           invalid={
-                            validation.touched.email && validation.errors.email ? true : false
+                            validation.touched.email && validation.errors.email
+                              ? true
+                              : false
                           }
                         />
                         {validation.touched.email && validation.errors.email ? (
-                          <FormFeedback type="invalid">{validation.errors.email}</FormFeedback>
+                          <FormFeedback type="invalid">
+                            {validation.errors.email}
+                          </FormFeedback>
                         ) : null}
                       </div>
 
@@ -123,11 +136,17 @@ const Register = () => {
                           onBlur={validation.handleBlur}
                           value={validation.values.username || ""}
                           invalid={
-                            validation.touched.username && validation.errors.username ? true : false
+                            validation.touched.username &&
+                            validation.errors.username
+                              ? true
+                              : false
                           }
                         />
-                        {validation.touched.username && validation.errors.username ? (
-                          <FormFeedback type="invalid">{validation.errors.username}</FormFeedback>
+                        {validation.touched.username &&
+                        validation.errors.username ? (
+                          <FormFeedback type="invalid">
+                            {validation.errors.username}
+                          </FormFeedback>
                         ) : null}
                       </div>
                       <div className="mb-3">
@@ -140,11 +159,17 @@ const Register = () => {
                           onBlur={validation.handleBlur}
                           value={validation.values.password || ""}
                           invalid={
-                            validation.touched.password && validation.errors.password ? true : false
+                            validation.touched.password &&
+                            validation.errors.password
+                              ? true
+                              : false
                           }
                         />
-                        {validation.touched.password && validation.errors.password ? (
-                          <FormFeedback type="invalid">{validation.errors.password}</FormFeedback>
+                        {validation.touched.password &&
+                        validation.errors.password ? (
+                          <FormFeedback type="invalid">
+                            {validation.errors.password}
+                          </FormFeedback>
                         ) : null}
                       </div>
 
@@ -202,10 +227,9 @@ const Register = () => {
               </Card>
               <div className="mt-5 text-center">
                 <p>
-                  Already have an account ?{" "} <Link
-                    to="/pages-login"
-                    className="fw-medium text-primary"
-                  >Login
+                  Already have an account ?{" "}
+                  <Link to="/pages-login" className="fw-medium text-primary">
+                    Login
                   </Link>{" "}
                 </p>
                 <p>
@@ -218,7 +242,7 @@ const Register = () => {
         </Container>
       </div>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default Register;
+export default Register
