@@ -4,16 +4,14 @@ import withRouter from "components/Common/withRouter"
 import { Card, CardBody, Col, Container, Row, CardTitle } from "reactstrap"
 //Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb"
-import ReactApexChart from "react-apexcharts"
-
-import { getTasks as onGetTasks } from "../../store/tasks/actions"
-import { options, recentTasksData, series } from "common/data/tasks"
+import { Spinner } from "reactstrap"
 
 //redux
 import { useSelector, useDispatch } from "react-redux"
 import { createSelector } from "reselect"
 
 import { useQuery, gql, useLazyQuery, useMutation } from "@apollo/client"
+import Spinners from "components/Common/Spinner"
 
 const GET_TASKS_BY_STATUS = gql`
   query GetTasksByStatus($status: String!) {
@@ -84,176 +82,224 @@ const TasksList = () => {
           <Breadcrumbs title="Tasks" breadcrumbItem="Task List" />
           {/* Render Breadcrumbs */}
           <Row>
-            <Col lg={8}>
-              <Card>
-                <CardBody>
-                  <h4 className="card-title mb-4">Completed Tasks</h4>
-                  <div className="table-responsive">
-                    <table className="table table-nowrap align-middle mb-0">
-                      <tbody>
-                        {completedTask.map((task, index) => (
-                          <tr key={index} onClick={() => setSelectedTask(task)}>
-                            <td style={{ width: "40px" }}>
-                              <div className="form-check font-size-16">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  id={`completedTaskCheck${index}`}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor={`completedTaskCheck${index}`}
-                                ></label>
-                              </div>
-                            </td>
-                            <td>
-                              <h5 className="text-truncate font-size-14 m-0">
-                                <Link to="#" className="text-dark">
-                                  {task.task_name}
-                                </Link>
-                              </h5>
-                            </td>
-                            <td>
-                              <div className="avatar-group">
-                                {task.task_partners.map((partner, idx) => (
-                                  <div className="avatar-group-item" key={idx}>
-                                    <div className="avatar-xs">
-                                      <span className="avatar-title rounded-circle bg-primary text-white font-size-16">
-                                        {partner.charAt(0).toUpperCase()}
-                                      </span>
+            {loading ? (
+              <Spinner
+                color="primary"
+                className="position-absolute top-50 start-50"
+              />
+            ) : (
+              !loading && (
+                <Col lg={8}>
+                  <Card>
+                    <CardBody>
+                      <h4 className="card-title mb-4">Completed Tasks</h4>
+                      <div className="table-responsive">
+                        <table className="table table-nowrap align-middle mb-0">
+                          <tbody>
+                            {completedTask &&
+                              completedTask.map((task, index) => (
+                                <tr
+                                  key={index}
+                                  onClick={() => setSelectedTask(task)}
+                                >
+                                  <td style={{ width: "40px" }}>
+                                    <div className="form-check font-size-16">
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        id={`completedTaskCheck${index}`}
+                                      />
+                                      <label
+                                        className="form-check-label"
+                                        htmlFor={`completedTaskCheck${index}`}
+                                      ></label>
                                     </div>
-                                  </div>
-                                ))}
-                              </div>
-                            </td>
+                                  </td>
+                                  <td>
+                                    <h5 className="text-truncate font-size-14 m-0">
+                                      <Link to="#" className="text-dark">
+                                        {task.task_name}
+                                      </Link>
+                                    </h5>
+                                  </td>
+                                  <td>
+                                    <div className="avatar-group">
+                                      {task.task_partners.map(
+                                        (partner, idx) => (
+                                          <div
+                                            className="avatar-group-item"
+                                            key={idx}
+                                          >
+                                            <div className="avatar-xs">
+                                              <span className="avatar-title rounded-circle bg-primary text-white font-size-16">
+                                                {partner
+                                                  .charAt(0)
+                                                  .toUpperCase()}
+                                              </span>
+                                            </div>
+                                          </div>
+                                        )
+                                      )}
+                                    </div>
+                                  </td>
 
-                            <td>
-                              <div className="text-center">
-                                <span className="badge rounded-pill badge-soft-success font-size-11">
-                                  {task.task_status}
-                                </span>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </CardBody>
-              </Card>
-              {/* Upcoming Tasks */}
-              <Card>
-                <CardBody>
-                  <h4 className="card-title mb-4">Upcoming Tasks</h4>
-                  <div className="table-responsive">
-                    <table className="table table-nowrap align-middle mb-0">
-                      <tbody>
-                        {upcomingTask.map((task, index) => (
-                          <tr key={index} onClick={() => setSelectedTask(task)}>
-                            <td style={{ width: "40px" }}>
-                              <div className="form-check font-size-16">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  id={`upcomingTaskCheck${index}`}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor={`upcomingTaskCheck${index}`}
-                                ></label>
-                              </div>
-                            </td>
-                            <td>
-                              <h5 className="text-truncate font-size-14 m-0">
-                                <Link to="#" className="text-dark">
-                                  {task.task_name}
-                                </Link>
-                              </h5>
-                            </td>
-                            <td>
-                              <div className="avatar-group">
-                                {task.task_partners.map((partner, idx) => (
-                                  <div className="avatar-group-item" key={idx}>
-                                    <div className="avatar-xs">
-                                      <span className="avatar-title rounded-circle bg-primary text-white font-size-16">
-                                        {partner.charAt(0).toUpperCase()}
+                                  <td>
+                                    <div className="text-center">
+                                      <span className="badge rounded-pill badge-soft-success font-size-11">
+                                        {task.task_status}
                                       </span>
                                     </div>
-                                  </div>
-                                ))}
-                              </div>
-                            </td>
-                            <td>
-                              <div className="text-center">
-                                <span className="badge rounded-pill badge-soft-warning font-size-11">
-                                  {task.task_status}
-                                </span>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </CardBody>
-              </Card>
+                                  </td>
+                                </tr>
+                              ))}
 
-              <Card>
-                <CardBody>
-                  <h4 className="card-title mb-4">In Progress Tasks</h4>
-                  <div className="table-responsive">
-                    <table className="table table-nowrap align-middle mb-0">
-                      <tbody>
-                        {inProgressTask.map((task, index) => (
-                          <tr key={index} onClick={() => setSelectedTask(task)}>
-                            <td style={{ width: "40px" }}>
-                              <div className="form-check font-size-16">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  id={`inProgressTaskCheck${index}`}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor={`inProgressTaskCheck${index}`}
-                                ></label>
-                              </div>
-                            </td>
-                            <td>
-                              <h5 className="text-truncate font-size-14 m-0">
-                                <Link to="#" className="text-dark">
-                                  {task.task_name}
-                                </Link>
-                              </h5>
-                            </td>
-                            <td>
-                              <div className="avatar-group">
-                                {task.task_partners.map((partner, idx) => (
-                                  <div className="avatar-group-item" key={idx}>
-                                    <div className="avatar-xs">
-                                      <span className="avatar-title rounded-circle bg-primary text-white font-size-16">
-                                        {partner.charAt(0).toUpperCase()}
+                            {!completedTask && <span> No Completed Task</span>}
+                          </tbody>
+                        </table>
+                      </div>
+                    </CardBody>
+                  </Card>
+                  {/* Upcoming Tasks */}
+                  <Card>
+                    <CardBody>
+                      <h4 className="card-title mb-4">Upcoming Tasks</h4>
+                      <div className="table-responsive">
+                        <table className="table table-nowrap align-middle mb-0">
+                          <tbody>
+                            {upcomingTask &&
+                              upcomingTask.map((task, index) => (
+                                <tr
+                                  key={index}
+                                  onClick={() => setSelectedTask(task)}
+                                >
+                                  <td style={{ width: "40px" }}>
+                                    <div className="form-check font-size-16">
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        id={`upcomingTaskCheck${index}`}
+                                      />
+                                      <label
+                                        className="form-check-label"
+                                        htmlFor={`upcomingTaskCheck${index}`}
+                                      ></label>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <h5 className="text-truncate font-size-14 m-0">
+                                      <Link to="#" className="text-dark">
+                                        {task.task_name}
+                                      </Link>
+                                    </h5>
+                                  </td>
+                                  <td>
+                                    <div className="avatar-group">
+                                      {task.task_partners.map(
+                                        (partner, idx) => (
+                                          <div
+                                            className="avatar-group-item"
+                                            key={idx}
+                                          >
+                                            <div className="avatar-xs">
+                                              <span className="avatar-title rounded-circle bg-primary text-white font-size-16">
+                                                {partner
+                                                  .charAt(0)
+                                                  .toUpperCase()}
+                                              </span>
+                                            </div>
+                                          </div>
+                                        )
+                                      )}
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div className="text-center">
+                                      <span className="badge rounded-pill badge-soft-warning font-size-11">
+                                        {task.task_status}
                                       </span>
                                     </div>
-                                  </div>
-                                ))}
-                              </div>
-                            </td>
-                            <td>
-                              <div className="text-center">
-                                <span className="badge rounded-pill badge-soft-primary font-size-11">
-                                  {task.task_status}
-                                </span>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </CardBody>
-              </Card>
-            </Col>
+                                  </td>
+                                </tr>
+                              ))}
+                          </tbody>
+                          {!upcomingTask && <span> No up-coming Task </span>}
+                        </table>
+                      </div>
+                    </CardBody>
+                  </Card>
+
+                  <Card>
+                    <CardBody>
+                      <h4 className="card-title mb-4">In Progress Tasks</h4>
+                      <div className="table-responsive">
+                        <table className="table table-nowrap align-middle mb-0">
+                          <tbody>
+                            {inProgressTask &&
+                              inProgressTask.map((task, index) => (
+                                <tr
+                                  key={index}
+                                  onClick={() => setSelectedTask(task)}
+                                >
+                                  <td style={{ width: "40px" }}>
+                                    <div className="form-check font-size-16">
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        id={`inProgressTaskCheck${index}`}
+                                      />
+                                      <label
+                                        className="form-check-label"
+                                        htmlFor={`inProgressTaskCheck${index}`}
+                                      ></label>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <h5 className="text-truncate font-size-14 m-0">
+                                      <Link to="#" className="text-dark">
+                                        {task.task_name}
+                                      </Link>
+                                    </h5>
+                                  </td>
+                                  <td>
+                                    <div className="avatar-group">
+                                      {task.task_partners.map(
+                                        (partner, idx) => (
+                                          <div
+                                            className="avatar-group-item"
+                                            key={idx}
+                                          >
+                                            <div className="avatar-xs">
+                                              <span className="avatar-title rounded-circle bg-primary text-white font-size-16">
+                                                {partner
+                                                  .charAt(0)
+                                                  .toUpperCase()}
+                                              </span>
+                                            </div>
+                                          </div>
+                                        )
+                                      )}
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div className="text-center">
+                                      <span className="badge rounded-pill badge-soft-primary font-size-11">
+                                        {task.task_status}
+                                      </span>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
+                          </tbody>
+                          {!inProgressTask && (
+                            <span> No in Progress Task </span>
+                          )}
+                        </table>
+                      </div>
+                    </CardBody>
+                  </Card>
+                </Col>
+              )
+            )}
 
             <Col lg={4}>
               {selectedTask && (
