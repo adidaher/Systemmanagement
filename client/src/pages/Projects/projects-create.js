@@ -386,7 +386,7 @@ const ProjectsCreate = () => {
               <Col lg={4}>
                 <Card>
                   <CardBody>
-                    <h5 className="card-title mb-3">Publish</h5>
+                    <h5 className="card-title mb-3 ">Publish</h5>
                     <div className="mb-3">
                       <Label htmlFor="project-status-input">Status</Label>
                       <select

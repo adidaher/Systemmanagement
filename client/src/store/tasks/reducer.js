@@ -12,8 +12,9 @@ import {
 
 const INIT_STATE = {
   tasks: [],
+
   error: {},
-  loading : true
+  loading: true,
 }
 
 const tasks = (state = INIT_STATE, action) => {
@@ -22,7 +23,7 @@ const tasks = (state = INIT_STATE, action) => {
       return {
         ...state,
         tasks: action.payload,
-        loading : true
+        loading: true,
       }
 
     case GET_TASKS_FAIL:
