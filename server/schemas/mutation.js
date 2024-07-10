@@ -164,6 +164,22 @@ const RootMutation = new GraphQLObjectType({
           .catch((err) => err);
       },
     },
+
+    deleteTask: {
+      type: TaskType,
+      args: {
+        id: { type: GraphQLID },
+      },
+      resolve(parentValue, args) {
+        const query = `DELETE FROM tasks WHERE task_id = $1 RETURNING *`;
+        const values = [args.id];
+
+        return db
+          .one(query, values)
+          .then((res) => res)
+          .catch((err) => err);
+      },
+    },
   },
 });
 

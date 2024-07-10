@@ -2,7 +2,7 @@ import {
   GET_TASKS_SUCCESS,
   GET_TASKS_FAIL,
   DELETE_KANBAN,
-  DELETE_KANBAN_SUCCESS,
+  DELETE_TASK_SUCCESS,
   DELETE_KANBAN_FAIL,
   ADD_CARD_DATA_SUCCESS,
   ADD_CARD_DATA_FAIL,
@@ -12,7 +12,6 @@ import {
 
 const INIT_STATE = {
   tasks: [],
-
   error: {},
   loading: true,
 }
@@ -35,16 +34,7 @@ const tasks = (state = INIT_STATE, action) => {
     case ADD_CARD_DATA_SUCCESS:
       return {
         ...state,
-
-        tasks: state.tasks.map(task => {
-          if (task.id === action.payload.kanId) {
-            return {
-              ...task,
-              cards: [...task.cards, action.payload],
-            }
-          }
-          return task
-        }),
+        tasks: [...state.tasks, action.payload],
       }
 
     case ADD_CARD_DATA_FAIL:
@@ -88,11 +78,11 @@ const tasks = (state = INIT_STATE, action) => {
         }),
       }
 
-    case DELETE_KANBAN_SUCCESS:
+    case DELETE_TASK_SUCCESS:
       return {
         ...state,
         tasks: state.tasks.filter(
-          task => task.id.toString() !== action.payload.toString()
+          task => task.task_id !== action.payload.task_id
         ),
       }
 

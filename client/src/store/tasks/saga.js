@@ -10,7 +10,6 @@ import {
 import {
   getTasksSuccess,
   getTasksFail,
-  deleteKanbanSuccess,
   deleteKanbanFail,
   addCardDataSuccess,
   addCardDataFail,
@@ -40,11 +39,11 @@ function* fetchTasks() {
 function* onDeleteKanban({ payload: kanban }) {
   try {
     const response = yield call(deleteKanban, kanban)
-    yield put(deleteKanbanSuccess(response))
-    toast.success("KanBan Delete Successfully", { autoClose: 2000 });
+    //yield put(deleteKanbanSuccess(response))
+    toast.success("KanBan Delete Successfully", { autoClose: 2000 })
   } catch (error) {
     yield put(deleteKanbanFail(error))
-    toast.error("KanBan Delete Failed", { autoClose: 2000 });
+    toast.error("KanBan Delete Failed", { autoClose: 2000 })
   }
 }
 
@@ -52,10 +51,10 @@ function* onAddCardData({ payload: cardData }) {
   try {
     const response = yield call(addCardData, cardData)
     yield put(addCardDataSuccess(response))
-    toast.success("KanBan Added Successfully", { autoClose: 2000 });
+    toast.success("KanBan Added Successfully", { autoClose: 2000 })
   } catch (error) {
     yield put(addCardDataFail(error))
-    toast.error("KanBan Added Failed", { autoClose: 2000 });
+    toast.error("KanBan Added Failed", { autoClose: 2000 })
   }
 }
 
@@ -63,10 +62,10 @@ function* onUpdateCardData({ payload: card }) {
   try {
     const response = yield call(updateCardData, card)
     yield put(updateCardDataSuccess(response))
-    toast.success("KanBan Update Successfully", { autoClose: 2000 });
+    toast.success("KanBan Update Successfully", { autoClose: 2000 })
   } catch (error) {
     yield put(updateCardDataFail(error))
-    toast.error("KanBan Update Failed", { autoClose: 2000 });
+    toast.error("KanBan Update Failed", { autoClose: 2000 })
   }
 }
 

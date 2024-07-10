@@ -26,6 +26,8 @@ import Breadcrumbs from "../../components/Common/Breadcrumb"
 
 import { useMutation, gql } from "@apollo/client"
 import { toast } from "react-toastify"
+import { addCardDataSuccess } from "store/tasks/actions"
+import { useSelector, useDispatch } from "react-redux"
 
 const ADD_TASK = gql`
   mutation AddTask(
@@ -65,7 +67,7 @@ const TasksCreate = () => {
   const [task_description, setTaskDescription] = useState(
     EditorState.createEmpty()
   )
-
+  const dispatch = useDispatch()
   const [addTask, { loading, error, data }] = useMutation(ADD_TASK)
 
   // Function to create input fields
@@ -112,10 +114,12 @@ const TasksCreate = () => {
           task_description: taskDescription,
         },
       }).then(result => {
-        console.log("Task created Successfully")
+        dispatch(addCardDataSuccess(result.data.addTask))
+        //console.log("Task created Successfully")
         toast.success("Task created Successfully", { autoClose: 2000 })
       })
     } catch (err) {
+      //console.log(err)
       toast.error("Task created Failded", { autoClose: 2000 })
     }
   }

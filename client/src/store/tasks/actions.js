@@ -2,7 +2,7 @@ import {
   GET_TASKS,
   GET_TASKS_FAIL,
   GET_TASKS_SUCCESS,
-  DELETE_KANBAN_SUCCESS,
+  DELETE_TASK_SUCCESS,
   DELETE_KANBAN_FAIL,
   DELETE_KANBAN,
   ADD_CARD_DATA,
@@ -27,14 +27,14 @@ export const getTasksFail = error => ({
   payload: error,
 })
 
-export const deleteKanban = kanban => ({
+export const deleteKanban = task => ({
   type: DELETE_KANBAN,
   payload: kanban,
 })
 
-export const deleteKanbanSuccess = kanban => ({
-  type: DELETE_KANBAN_SUCCESS,
-  payload: kanban,
+export const deleteTaskSuccess = task => ({
+  type: DELETE_TASK_SUCCESS,
+  payload: task,
 })
 
 export const deleteKanbanFail = kanban => ({
