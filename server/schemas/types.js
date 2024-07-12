@@ -75,8 +75,57 @@ const CustomersType = new GraphQLObjectType({
     gov_id: { type: GraphQLString },
   },
 });
+
+const CaseType = new GraphQLObjectType({
+  name: "Case",
+  type: "Query",
+  fields: {
+    id: { type: GraphQLID },
+    office_id: { type: GraphQLID },
+    case_description: { type: GraphQLString },
+  },
+});
+/*
+const CaseOfCustomersType = new GraphQLObjectType({
+  name: "CaseOfCustomers",
+  description: "Represents a case associated with a customer and an office.",
+  fields: () => ({
+    case_id: { type: GraphQLID },
+    customer_id: { type: GraphQLID },
+    office_id: { type: GraphQLID },
+  }),
+});*/
+
+const CaseOfCustomersType = new GraphQLObjectType({
+  name: "CaseOfCustomers",
+  description: "Represents a case associated with a customer and an office.",
+  fields: {
+    case_id: { type: GraphQLID },
+    customer: { type: CustomersType }, // Nesting customer details
+    office: { type: OfficeType }, // Nesting office details
+    case_details: { type: CaseType }, // Nesting case details
+  },
+});
+
+const CaseDetailsType = new GraphQLObjectType({
+  name: "CaseDetails",
+  description: "Represents a case associated with a customer and an office.",
+  fields: () => ({
+    case_id: { type: GraphQLID },
+    customer_id: { type: GraphQLID },
+    office_id: { type: GraphQLID },
+    first_name: { type: GraphQLString },
+    email: { type: GraphQLString },
+    office_name: { type: GraphQLString },
+    case_description: { type: GraphQLString },
+  }),
+});
+
 exports.UserType = UserType;
 exports.TaskType = TaskType;
 exports.EventsType = EventsType;
 exports.OfficeType = OfficeType;
 exports.CustomersType = CustomersType;
+exports.CaseType = CaseType;
+exports.CaseOfCustomersType = CaseOfCustomersType;
+exports.CaseDetailsType = CaseDetailsType;

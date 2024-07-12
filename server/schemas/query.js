@@ -11,6 +11,9 @@ const {
   EventsType,
   OfficeType,
   CustomersType,
+  CaseType,
+  CaseOfCustomersType,
+  CaseDetailsType,
 } = require("./types");
 
 const RootQuery = new GraphQLObjectType({
@@ -165,6 +168,120 @@ const RootQuery = new GraphQLObjectType({
           .any(query)
           .then((res) => res)
           .catch((err) => err);
+      },
+    },
+
+    casesOfCustomersDetails: {
+      type: new GraphQLList(CaseOfCustomersType),
+      args: {
+        customer_id: { type: GraphQLID },
+      },
+      resolve: (parent, args, context) => {
+        const { customer_id } = args;
+        const query = `
+          SELECT 
+            cc.case_id, 
+            c.customer_id, 
+            c.office_id AS customer_office_id,
+            c.first_name,
+            c.last_name,
+            c.email,
+            o.office_id AS office_id,
+            o.name AS office_name,
+            ca.id AS case_id,
+            ca.case_description
+          FROM case_of_customers cc
+          JOIN customers c ON cc.customer_id = c.customer_id
+          JOIN offices o ON cc.office_id = o.office_id
+          JOIN cases ca ON cc.case_id = ca.id
+          WHERE cc.customer_id = $1;
+        `;
+        const values = [customer_id];
+
+        return db
+          .manyOrNone(query, values)
+          .then((res) => {
+            return res.map((row) => ({
+              case_id: row.case_id,
+              customer: {
+                customer_id: row.customer_id,
+                office_id: row.customer_office_id,
+                first_name: row.first_name,
+                last_name: row.last_name,
+                email: row.email,
+              },
+              office: {
+                office_id: row.office_id,
+                name: row.office_name,
+              },
+              case_details: {
+                id: row.case_id,
+                office_id: row.office_id,
+                case_description: row.case_description,
+              },
+            }));
+          })
+          .catch((err) => {
+            console.error("Error fetching cases of customers:", err);
+            throw err;
+          });
+      },
+    },
+
+    casesOfCustomersDetailsByOfficeID: {
+      type: new GraphQLList(CaseOfCustomersType),
+      args: {
+        office_id: { type: GraphQLID },
+      },
+      resolve: (parent, args) => {
+        const { office_id } = args;
+        const query = `
+          SELECT 
+            cc.case_id, 
+            c.customer_id, 
+            c.office_id AS customer_office_id,
+            c.first_name,
+            c.last_name,
+            c.email,
+            o.office_id AS office_id,
+            o.name AS office_name,
+            ca.id AS case_id,
+            ca.case_description
+          FROM case_of_customers cc
+          JOIN customers c ON cc.customer_id = c.customer_id
+          JOIN offices o ON cc.office_id = o.office_id
+          JOIN cases ca ON cc.case_id = ca.id
+          WHERE cc.office_id = $1;
+        `;
+        const values = [office_id];
+
+        return db
+          .manyOrNone(query, values)
+          .then((res) => {
+            return res.map((row) => ({
+              case_id: row.case_id,
+              customer: {
+                customer_id: row.customer_id,
+                office_id: row.customer_office_id,
+                first_name: row.first_name,
+                last_name: row.last_name,
+                email: row.email,
+              },
+              office: {
+                office_id: row.office_id,
+                name: row.office_name,
+              },
+              case_details: {
+                id: row.case_id,
+                office_id: row.office_id,
+                case_description: row.case_description,
+              },
+            }));
+          })
+          .catch((err) => {
+            console.error("Error fetching cases of customers:", err);
+            throw err;
+          });
       },
     },
   },
