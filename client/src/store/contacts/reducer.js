@@ -55,7 +55,7 @@ const contacts = (state = INIT_STATE, action) => {
       return {
         ...state,
         users: state.users.map(user =>
-          user.user_id.toString() === action.payload.user_id.toString()
+          user.user_id === action.payload.user_id
             ? { user, ...action.payload }
             : user
         ),
@@ -70,9 +70,7 @@ const contacts = (state = INIT_STATE, action) => {
     case DELETE_USER_SUCCESS:
       return {
         ...state,
-        users: state.users.filter(
-          user => user.id.toString() !== action.payload.toString()
-        ),
+        users: state.users.filter(user => user.user_id !== action.payload),
       }
 
     case DELETE_USER_FAIL:

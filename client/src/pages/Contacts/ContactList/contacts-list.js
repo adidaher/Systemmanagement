@@ -29,16 +29,17 @@ import {
   updateUser as onUpdateUser,
   deleteUser as onDeleteUser,
   getUsersSuccess,
+  updateUserSuccess,
 } from "store/contacts/actions"
-import { isEmpty } from "lodash"
-
+import { isEmpty, last } from "lodash"
+import { toast } from "react-toastify"
 //redux
 import { useSelector, useDispatch } from "react-redux"
 import { createSelector } from "reselect"
 import Spinners from "components/Common/Spinner"
 import { ToastContainer } from "react-toastify"
 import { useQuery, gql, useLazyQuery, useMutation } from "@apollo/client"
-
+import { deleteUserSuccess } from "../../../store/contacts/actions"
 const GET_ALL_USERS = gql`
   query {
     allUsers {
@@ -48,6 +49,10 @@ const GET_ALL_USERS = gql`
       password
       phone
       role
+      first_name
+      last_name
+      manager_id
+      office_id
     }
   }
 `
@@ -56,16 +61,24 @@ const ADD_USER = gql`
   mutation AddUser(
     $username: String!
     $email: String!
-    $password: String!
     $phone: String!
     $role: String!
+    $password: String!
+    $first_name: String!
+    $last_name: String!
+    $manager_id: ID!
+    $office_id: ID
   ) {
     addUser(
       username: $username
       email: $email
-      password: $password
       phone: $phone
       role: $role
+      password: $password
+      first_name: $first_name
+      last_name: $last_name
+      manager_id: $manager_id
+      office_id: $office_id
     ) {
       user_id
       username
@@ -73,6 +86,10 @@ const ADD_USER = gql`
       password
       phone
       role
+      first_name
+      last_name
+      manager_id
+      office_id
     }
   }
 `
@@ -84,6 +101,10 @@ const UPDATE_USER = gql`
     $phone: String!
     $role: String!
     $password: String!
+    $first_name: String!
+    $last_name: String!
+    $manager_id: ID!
+    $office_id: ID
   ) {
     updateUser(
       user_id: $user_id
@@ -92,12 +113,21 @@ const UPDATE_USER = gql`
       phone: $phone
       role: $role
       password: $password
+      first_name: $first_name
+      last_name: $last_name
+      manager_id: $manager_id
+      office_id: $office_id
     ) {
       user_id
       username
       email
+      password
       phone
       role
+      first_name
+      last_name
+      manager_id
+      office_id
     }
   }
 `
@@ -134,6 +164,9 @@ const ContactsList = () => {
       email: (contact && contact.email) || "",
       password: (contact && contact.password) || "",
       phone: (contact && contact.phone) || "",
+      first_name: (contact && contact.first_name) || "",
+      last_name: (contact && contact.last_name) || "",
+      manager_id: (contact && contact?.manager_id) || "",
     },
     validationSchema: Yup.object({
       username: Yup.string().required("Please Enter Your username"),
@@ -143,18 +176,25 @@ const ContactsList = () => {
         .required("Please Enter Your Email"),
       password: Yup.string().required("Please Enter password"),
       phone: Yup.string().required("Please Enter phone"),
+      first_name: Yup.string().required("Please Enter first name"),
+      last_name: Yup.string().required("Please Enter last name"),
+      manager_id: Yup.string().required("Please Select a Manager"),
     }),
 
     onSubmit: values => {
       if (isEdit) {
+        /*console.log("update start..")
         console.log(
           contact.user_id,
           values.username,
           values.email,
           values.phone,
           values.role,
-          contact.password
-        )
+          contact.password,
+          values.first_name,
+          values.last_name,
+          values.manager_id
+        )*/
         updateUserMutation({
           variables: {
             user_id: contact.user_id,
@@ -163,23 +203,20 @@ const ContactsList = () => {
             phone: values.phone,
             role: values.role,
             password: contact.password,
+            first_name: values.first_name,
+            last_name: values.last_name,
+            manager_id: values.manager_id,
           },
         })
           .then(result => {
-            // Handle success
-            console.log("User updated successfully:", result.data.updateUser)
-            // update user
-            dispatch(onUpdateUser(result.data.updateUser))
+            dispatch(updateUserSuccess(result.data.updateUser))
             setIsEdit(false)
-            //validation.resetForm()
+            validation.resetForm()
           })
           .catch(error => {
             console.log("Error updating user:", error)
           })
-
-        if (updateError) console.log(updateError)
       } else {
-        console.log("adding user started...")
         addUserMutation({
           variables: {
             username: values["username"],
@@ -187,10 +224,13 @@ const ContactsList = () => {
             password: values["password"],
             phone: values["phone"],
             role: values["role"],
+            first_name: values["first_name"],
+            last_name: values["last_name"],
+            manager_id: values["manager_id"],
           },
         }).then(result => {
           // Handle success
-          console.log("User added successfully:", result.data.addUser)
+
           dispatch(onAddNewUser(result.data.addUser))
           validation.resetForm()
         })
@@ -213,18 +253,27 @@ const ContactsList = () => {
   const [isEdit, setIsEdit] = useState(false)
   const [isLoading, setLoading] = useState(loading)
   const [usersdetails, setUsersdetails] = useState(loading)
+  const [ManagerList, setManagerList] = useState([])
 
   const [getUsers, { data, loading: queryLoading }] = useLazyQuery(
     GET_ALL_USERS,
     {
       onCompleted: data => {
         if (data?.allUsers) {
-          console.log(data.allUsers)
           dispatch(getUsersSuccess(data.allUsers))
+          const managers = data.allUsers.filter(user => user.role === "manager")
+          const managersObject = managers.reduce((acc, manager) => {
+            acc[manager.manager_id] = manager
+            return acc
+          }, {})
+
+          setManagerList(managersObject)
         }
       },
     }
   )
+
+  const [deleteUser] = useMutation(DELETE_USER)
 
   //getting the current user
   useEffect(() => {
@@ -232,7 +281,6 @@ const ContactsList = () => {
       if (localStorage.getItem("authUser")) {
         const obj = JSON.parse(localStorage.getItem("authUser"))
         setCurrentUser(obj)
-        console.log(obj)
       }
     }
   }, [currentUser])
@@ -269,29 +317,33 @@ const ContactsList = () => {
       phone: user.phone,
       role: user.role,
       password: user.password,
+      first_name: user.first_name,
+      last_name: user.last_name,
     })
     setIsEdit(true)
 
     toggle()
   }
 
-  //delete customer
+  //delete
   const [deleteModal, setDeleteModal] = useState(false)
 
   const onClickDelete = users => {
-    setContact(users.id)
+    setContact(users)
     setDeleteModal(true)
   }
 
   const handleDeleteUser = () => {
-    if (contact && contact.id) {
-      dispatch(onDeleteUser(contact.id))
-    }
-    setDeleteModal(false)
+    deleteUser({ variables: { id: contact.user_id } }).then(result => {
+      dispatch(deleteUserSuccess(contact.user_id))
+      toast.success("Event Deleted Successfully", { autoClose: 2000 })
+    })
+    // Dispatch delete action
+    setDeleteModal(false) // Close the delete modal
   }
 
   const handleUserClicks = () => {
-    setContact("")
+    setContact(null)
     setIsEdit(false)
     toggle()
   }
@@ -365,6 +417,32 @@ const ContactsList = () => {
           enableColumnFilter: false,
           enableSorting: true,
         },
+        {
+          header: "first name",
+          accessorKey: "first_name",
+          enableColumnFilter: false,
+          enableSorting: true,
+        },
+        {
+          header: "last name",
+          accessorKey: "last_name",
+          enableColumnFilter: false,
+          enableSorting: true,
+        },
+        {
+          header: "Manager",
+          accessorKey: "manager_id",
+          enableColumnFilter: false,
+          enableSorting: true,
+          cell: cell => {
+            const manager = ManagerList[cell.getValue()]
+            return (
+              <div>
+                {manager ? `${manager.first_name} ${manager.last_name}` : ""}
+              </div>
+            )
+          },
+        },
         currentUser?.role === "admin" && {
           header: "Action",
           cell: cellProps => {
@@ -398,7 +476,7 @@ const ContactsList = () => {
           },
         },
       ].filter(Boolean),
-    [currentUser]
+    [currentUser, ManagerList]
   )
 
   return (
@@ -426,10 +504,13 @@ const ContactsList = () => {
                       isPagination={true}
                       SearchPlaceholder="Search..."
                       isCustomPageSize={true}
-                      isAddButton={currentUser?.role === "admin"}
+                      isAddButton={
+                        currentUser?.role === "admin" ||
+                        currentUser?.role === "manager"
+                      }
                       handleUserClick={handleUserClicks}
                       buttonClass="btn btn-success btn-rounded waves-effect waves-light addContact-modal mb-2"
-                      buttonName="New Contact"
+                      buttonName="New Customer"
                       tableClass="align-middle table-nowrap table-hover dt-responsive nowrap w-100 dataTable no-footer dtr-inline"
                       theadClass="table-light"
                       paginationWrapper="dataTables_paginate paging_simple_numbers pagination-rounded"
@@ -453,7 +534,7 @@ const ContactsList = () => {
                   }}
                 >
                   <Row>
-                    <Col xs={12}>
+                    <Col md={6}>
                       <div className="mb-3">
                         <Label className="form-label">username</Label>
                         <Input
@@ -478,6 +559,8 @@ const ContactsList = () => {
                           </FormFeedback>
                         ) : null}
                       </div>
+                    </Col>
+                    <Col md={6}>
                       <div className="mb-3">
                         <Label className="form-label">Email</Label>
                         <Input
@@ -501,6 +584,8 @@ const ContactsList = () => {
                           </FormFeedback>
                         ) : null}
                       </div>
+                    </Col>
+                    <Col md={6}>
                       {currentUser?.role === "admin" && (
                         <div className="mb-3">
                           <Label className="form-label">password</Label>
@@ -528,6 +613,8 @@ const ContactsList = () => {
                           ) : null}
                         </div>
                       )}
+                    </Col>
+                    <Col md={6}>
                       <div className="mb-3">
                         <Label className="form-label">role</Label>
                         <Input
@@ -551,6 +638,8 @@ const ContactsList = () => {
                           </FormFeedback>
                         ) : null}
                       </div>
+                    </Col>
+                    <Col md={6}>
                       <div className="mb-3">
                         <Label className="form-label">phone</Label>
                         <Input
@@ -575,6 +664,88 @@ const ContactsList = () => {
                         ) : null}
                       </div>
                     </Col>
+                    <Col md={6}>
+                      <div className="mb-3">
+                        <Label className="form-label">first name</Label>
+                        <Input
+                          name="first_name"
+                          label="first_name"
+                          type="text"
+                          placeholder="Insert first name"
+                          onChange={validation.handleChange}
+                          onBlur={validation.handleBlur}
+                          value={validation.values.first_name || ""}
+                          invalid={
+                            validation.touched.first_name &&
+                            validation.errors.first_name
+                              ? true
+                              : false
+                          }
+                        />
+
+                        {validation.touched.first_name &&
+                        validation.errors.first_name ? (
+                          <FormFeedback type="invalid">
+                            {validation.errors.first_name}
+                          </FormFeedback>
+                        ) : null}
+                      </div>
+                    </Col>
+                    <Col md={6}>
+                      <div className="mb-3">
+                        <Label className="form-label">last name</Label>
+                        <Input
+                          name="last_name"
+                          label="last_name"
+                          type="text"
+                          placeholder="Insert last name"
+                          onChange={validation.handleChange}
+                          onBlur={validation.handleBlur}
+                          value={validation.values.last_name || ""}
+                          invalid={
+                            validation.touched.last_name &&
+                            validation.errors.last_name
+                              ? true
+                              : false
+                          }
+                        />
+
+                        {validation.touched.last_name &&
+                        validation.errors.last_name ? (
+                          <FormFeedback type="invalid">
+                            {validation.errors.last_name}
+                          </FormFeedback>
+                        ) : null}
+                      </div>
+                    </Col>
+                    <Col md={6}>
+                      <div className="mb-3">
+                        <Label className="form-label">Manager</Label>
+                        <Input
+                          name="manager_id"
+                          type="select"
+                          value={validation.values.manager_id}
+                          onChange={validation.handleChange}
+                          onBlur={validation.handleBlur}
+                          invalid={
+                            validation.touched.manager_id &&
+                            !!validation.errors.manager_id
+                          }
+                        >
+                          <option value="" disabled>
+                            Select Manager
+                          </option>
+                          {Object.values(ManagerList).map(manager => (
+                            <option
+                              key={manager.user_id}
+                              value={manager.user_id}
+                            >
+                              {`${manager.first_name} ${manager.last_name}`}
+                            </option>
+                          ))}
+                        </Input>
+                      </div>
+                    </Col>
                   </Row>
                   <Row>
                     <Col>
@@ -582,6 +753,9 @@ const ContactsList = () => {
                         <button
                           type="submit"
                           className="btn btn-success save-user"
+                          onClick={() => {
+                            validation.handleSubmit()
+                          }}
                         >
                           Save
                         </button>
