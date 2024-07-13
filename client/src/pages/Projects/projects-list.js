@@ -15,6 +15,7 @@ import {
   FormFeedback,
   Input,
   Form,
+  Spinner,
 } from "reactstrap"
 import * as Yup from "yup"
 import { useFormik } from "formik"
@@ -28,7 +29,7 @@ import { toast } from "react-toastify"
 //redux
 import { useSelector, useDispatch } from "react-redux"
 import { createSelector } from "reselect"
-import Spinners from "components/Common/Spinner"
+
 import { ToastContainer } from "react-toastify"
 import { useQuery, gql, useLazyQuery, useMutation } from "@apollo/client"
 
@@ -55,7 +56,16 @@ const GET_PROJECTS_BY_OFFICE_ID = gql`
   }
 `
 
-const ProkectssList = () => {
+const DELETE_CASE = gql`
+  mutation deleteCase($id: ID!) {
+    deleteCase(id: $id) {
+      success
+      message
+    }
+  }
+`
+
+const ProjectsList = () => {
   //meta title
   document.title = "Project List | CPALINK"
 
@@ -75,6 +85,7 @@ const ProkectssList = () => {
       },
     }
   )
+  const [deleteCaseMutation] = useMutation(DELETE_CASE)
 
   useEffect(() => {
     getProjects()
@@ -96,34 +107,18 @@ const ProkectssList = () => {
     }),
 
     onSubmit: values => {
-      /*if (isEdit) {
+      if (isEdit) {
         console.log("update start..")
-        console.log(
-          contact.user_id,
-          values.username,
-          values.email,
-          values.phone,
-          values.role,
-          contact.password,
-          values.first_name,
-          values.last_name,
-          values.manager_id
-        )
+        console.log(project.office_id, project.customer_id)
         updateUserMutation({
           variables: {
-            user_id: contact.user_id,
-            username: values.username,
-            email: values.email,
-            phone: values.phone,
-            role: values.role,
-            password: contact.password,
-            first_name: values.first_name,
-            last_name: values.last_name,
-            manager_id: values.manager_id,
+            case_id: project.case_id,
+            office_id: project.office_id,
+            customer_id: project.customer_id,
           },
         })
           .then(result => {
-            dispatch(updateUserSuccess(result.data.updateUser))
+            // dispatch(updateUserSuccess(result.data.updateUser))
             setIsEdit(false)
             validation.resetForm()
           })
@@ -131,6 +126,7 @@ const ProkectssList = () => {
             console.log("Error updating user:", error)
           })
       } else {
+        /*
         addUserMutation({
           variables: {
             username: values["username"],
@@ -148,7 +144,8 @@ const ProkectssList = () => {
           dispatch(onAddNewUser(result.data.addUser))
           validation.resetForm()
         })
-      }*/
+        */
+      }
       toggle()
     },
   })
@@ -192,17 +189,12 @@ const ProkectssList = () => {
   }
 
   const handleUserClick = arg => {
-    const user = arg
+    const project = arg
 
     setProject({
-      user_id: user.user_id,
-      username: user.username,
-      email: user.email,
-      phone: user.phone,
-      role: user.role,
-      password: user.password,
-      first_name: user.first_name,
-      last_name: user.last_name,
+      case_id: project.case_id,
+      customer_id: project.customer.customer_id,
+      office_id: project.office.office_id,
     })
     setIsEdit(true)
 
@@ -212,16 +204,30 @@ const ProkectssList = () => {
   //delete
   const [deleteModal, setDeleteModal] = useState(false)
 
-  const onClickDelete = userData => {
-    setProject(userData)
+  const onClickDelete = projectData => {
+    setProject(projectData)
     setDeleteModal(true)
   }
 
-  const handleDeleteUser = () => {
-    deleteUser({ variables: { id: contact.user_id } }).then(result => {
-      dispatch(deleteUserSuccess(contact.user_id))
-      toast.success("Event Deleted Successfully", { autoClose: 2000 })
-    })
+  const handleDeleteUser = async () => {
+    try {
+      const response = await deleteCaseMutation({
+        variables: { id: project.case_id },
+      })
+      const { success, message } = response.data.deleteCase
+
+      if (success) {
+        toast.success("Case deleted successfully", { autoClose: 2000 })
+        // Update the projects state to reflect the deletion
+        setProjects(projects.filter(p => p.case_id !== project.case_id))
+      } else {
+        toast.error(`Failed to delete case: ${message}`)
+      }
+    } catch (error) {
+      console.error("Error deleting case:", error)
+      toast.error("Failed to delete case")
+    }
+
     // Dispatch delete action
     setDeleteModal(false) // Close the delete modal
   }
@@ -352,6 +358,7 @@ const ProkectssList = () => {
     <React.Fragment>
       <DeleteModal
         show={deleteModal}
+        onDeleteClick={handleDeleteUser}
         onCloseClick={() => setDeleteModal(false)}
       />
       <div className="page-content">
@@ -360,7 +367,7 @@ const ProkectssList = () => {
           <Breadcrumbs title="Project" breadcrumbItem="Project List" />
           <Row>
             {queryLoading ? (
-              <Spinners setLoading={setLoading} />
+              <Spinner />
             ) : (
               <Col lg="12">
                 <Card>
@@ -484,4 +491,4 @@ const ProkectssList = () => {
   )
 }
 
-export default withRouter(ProkectssList)
+export default withRouter(ProjectsList)

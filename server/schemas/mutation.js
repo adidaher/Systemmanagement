@@ -1,7 +1,14 @@
 const graphql = require("graphql");
 const db = require("../pgAdaptor").db;
-const { GraphQLObjectType, GraphQLID, GraphQLString } = graphql;
-const { UserType, TaskType, EventsType, CustomersType } = require("./types");
+const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean } = graphql;
+const {
+  UserType,
+  TaskType,
+  EventsType,
+  CustomersType,
+  CaseType,
+  CaseOfCustomersType,
+} = require("./types");
 
 const RootMutation = new GraphQLObjectType({
   name: "RootMutationType",
@@ -281,6 +288,41 @@ const RootMutation = new GraphQLObjectType({
           .one(query, values)
           .then((res) => res)
           .catch((err) => err);
+      },
+    },
+
+    deleteCase: {
+      type: new GraphQLObjectType({
+        name: "DeleteCaseResponse",
+        fields: {
+          case_id: { type: GraphQLID },
+          success: { type: GraphQLBoolean },
+          message: { type: GraphQLString },
+        },
+      }),
+      args: {
+        id: { type: GraphQLID },
+      },
+      resolve(parentValue, args) {
+        return db
+          .tx((t) => {
+            const deleteCaseOfCustomers = t.none(
+              `DELETE FROM case_of_customers WHERE case_id = $1`,
+              [args.id]
+            );
+            const deleteCase = t.one(
+              `DELETE FROM cases WHERE id = $1 RETURNING id`,
+              [args.id]
+            );
+
+            return t.batch([deleteCaseOfCustomers, deleteCase]);
+          })
+          .then((data) => ({
+            case_id: data[1].id,
+            success: true,
+            message: "Case deleted successfully",
+          }))
+          .catch((err) => ({ success: false, message: err.message }));
       },
     },
   },
