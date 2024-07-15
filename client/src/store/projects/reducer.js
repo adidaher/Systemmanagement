@@ -9,14 +9,14 @@ import {
   UPDATE_PROJECT_FAIL,
   DELETE_PROJECT_SUCCESS,
   DELETE_PROJECT_FAIL,
-} from "./actionTypes";
+} from "./actionTypes"
 
 const INIT_STATE = {
   projects: [],
   projectDetail: {},
   error: {},
-  loading: true
-};
+  loading: true,
+}
 
 const projects = (state = INIT_STATE, action) => {
   switch (action.type) {
@@ -24,31 +24,31 @@ const projects = (state = INIT_STATE, action) => {
       return {
         ...state,
         projects: action.payload,
-        loading: true
-      };
+        loading: true,
+      }
 
     case GET_PROJECTS_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
     case ADD_PROJECT_SUCCESS:
       return {
         ...state,
         projects: [action.payload, ...state.projects],
-      };
+      }
 
     case ADD_PROJECT_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
 
     case GET_PROJECT_DETAIL_SUCCESS:
       return {
         ...state,
         projectDetail: action.payload,
-      };
+      }
 
     case UPDATE_PROJECT_SUCCESS:
       return {
@@ -58,38 +58,37 @@ const projects = (state = INIT_STATE, action) => {
             ? { project, ...action.payload }
             : project
         ),
-      };
+      }
 
     case UPDATE_PROJECT_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
 
     case DELETE_PROJECT_SUCCESS:
       return {
         ...state,
         projects: state.projects.filter(
-          project => project.id.toString() !== action.payload.toString()
+          project => project.case_id !== action.payload.case_id
         ),
-      };
+      }
 
     case DELETE_PROJECT_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
-
+      }
 
     case GET_PROJECT_DETAIL_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
 
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default projects;
+export default projects

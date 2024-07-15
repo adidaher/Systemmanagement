@@ -63,12 +63,13 @@ const RootQuery = new GraphQLObjectType({
       type: UserType,
       args: {
         email: { type: GraphQLString },
+        password: { type: GraphQLString },
       },
 
       resolve(parent, args) {
-        const { email } = args;
-        const query = `SELECT * FROM users WHERE email = $1`;
-        const values = [email];
+        const { email, password } = args;
+        const query = `SELECT * FROM users WHERE email = $1 and password = $2`;
+        const values = [email, password];
 
         return db
           .one(query, values)

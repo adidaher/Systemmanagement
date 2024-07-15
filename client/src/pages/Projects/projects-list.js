@@ -33,6 +33,11 @@ import { createSelector } from "reselect"
 import { ToastContainer } from "react-toastify"
 import { useQuery, gql, useLazyQuery, useMutation } from "@apollo/client"
 
+import {
+  getProjectsSuccess,
+  deleteProjectSuccess,
+} from "../../store/projects/actions"
+
 const GET_PROJECTS_BY_OFFICE_ID = gql`
   query GetProjectsByOfficeID($office_id: ID!) {
     casesOfCustomersDetailsByOfficeID(office_id: $office_id) {
@@ -72,24 +77,33 @@ const ProjectsList = () => {
   const dispatch = useDispatch()
   const [project, setProject] = useState()
   const [currentUser, setCurrentUser] = useState()
-  const [projects, setProjects] = useState()
+  //const [projects, setProjects] = useState()
 
   const [getProjects, { data, loading: queryLoading, error }] = useLazyQuery(
     GET_PROJECTS_BY_OFFICE_ID,
     {
-      variables: { office_id: 1 },
       onCompleted: data => {
         if (data?.casesOfCustomersDetailsByOfficeID) {
-          setProjects(data.casesOfCustomersDetailsByOfficeID)
+          dispatch(getProjectsSuccess(data.casesOfCustomersDetailsByOfficeID))
+          //setProjects(data.casesOfCustomersDetailsByOfficeID)
         }
       },
     }
   )
   const [deleteCaseMutation] = useMutation(DELETE_CASE)
 
+  const projectsSelector = createSelector(
+    state => state.projects,
+    projects => projects.projects
+  )
+
+  const projects = useSelector(projectsSelector)
+
   useEffect(() => {
-    getProjects()
-  }, [getProjects])
+    if (currentUser) {
+      getProjects({ variables: { office_id: currentUser.office_id } })
+    }
+  }, [currentUser, projects])
 
   // validation
 
@@ -209,7 +223,7 @@ const ProjectsList = () => {
     setDeleteModal(true)
   }
 
-  const handleDeleteUser = async () => {
+  const handleDeleteProject = async () => {
     try {
       const response = await deleteCaseMutation({
         variables: { id: project.case_id },
@@ -218,8 +232,7 @@ const ProjectsList = () => {
 
       if (success) {
         toast.success("Case deleted successfully", { autoClose: 2000 })
-        // Update the projects state to reflect the deletion
-        setProjects(projects.filter(p => p.case_id !== project.case_id))
+        dispatch(deleteProjectSuccess(project.case_id))
       } else {
         toast.error(`Failed to delete case: ${message}`)
       }
@@ -358,7 +371,7 @@ const ProjectsList = () => {
     <React.Fragment>
       <DeleteModal
         show={deleteModal}
-        onDeleteClick={handleDeleteUser}
+        onDeleteClick={handleDeleteProject}
         onCloseClick={() => setDeleteModal(false)}
       />
       <div className="page-content">
@@ -379,13 +392,8 @@ const ProjectsList = () => {
                       isPagination={true}
                       SearchPlaceholder="Search..."
                       isCustomPageSize={true}
-                      isAddButton={
-                        currentUser?.role === "admin" ||
-                        currentUser?.role === "manager"
-                      }
+                      isAddButton={false}
                       handleUserClick={handleUserClicks}
-                      buttonClass="btn btn-success btn-rounded waves-effect waves-light addContact-modal mb-2"
-                      buttonName="New Customer"
                       tableClass="align-middle table-nowrap table-hover dt-responsive nowrap w-100 dataTable no-footer dtr-inline"
                       theadClass="table-light"
                       paginationWrapper="dataTables_paginate paging_simple_numbers pagination-rounded"

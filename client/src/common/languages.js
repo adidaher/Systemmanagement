@@ -10,22 +10,6 @@ const languages = {
     label: "Hebrew",
     flag: isr,
   },
-  sp: {
-    label: "Spanish",
-    flag: spain,
-  },
-  gr: {
-    label: "German",
-    flag: germany,
-  },
-  it: {
-    label: "Italian",
-    flag: italy,
-  },
-  rs: {
-    label: "Russian",
-    flag: russia,
-  },
   en: {
     label: "English",
     flag: usFlag,

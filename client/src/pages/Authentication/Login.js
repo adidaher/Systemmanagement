@@ -35,14 +35,17 @@ import loginUsername from "../../store/auth/login/apiCalls"
 import { useQuery, gql, useLazyQuery } from "@apollo/client"
 
 const GET_USER_BY_EMAIL = gql`
-  query GetUserByEmail($email: String!) {
-    GetUserByEmail(email: $email) {
+  query GetUserByEmail($email: String!, $password: String!) {
+    GetUserByEmail(email: $email, password: $password) {
       user_id
       username
       email
-      password
       phone
       role
+      first_name
+      last_name
+      manager_id
+      office_id
     }
   }
 `
@@ -69,15 +72,12 @@ const Login = props => {
     }),
     onSubmit: async values => {
       await getUserByEmail({
-        variables: { email: values.email },
+        variables: { email: values.email, password: values.password },
       })
       if (data && data.GetUserByEmail) {
-        const userPassword = data.GetUserByEmail.password
-        if (userPassword === validation.values.password) {
-          dispatch(loginUser(data.GetUserByEmail, props.router.navigate))
-        } else {
-          console.error("Invalid login credentials")
-        }
+        dispatch(loginUser(data.GetUserByEmail, props.router.navigate))
+      } else {
+        console.error("Invalid login credentials")
       }
     },
   })

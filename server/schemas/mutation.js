@@ -325,6 +325,69 @@ const RootMutation = new GraphQLObjectType({
           .catch((err) => ({ success: false, message: err.message }));
       },
     },
+
+    /*createCase: {
+      type: CaseType,
+      args: {
+        office_id: { type: GraphQLID },
+        case_description: { type: GraphQLString },
+      },
+      resolve(parentValue, args) {
+        const query = `INSERT INTO cases(office_id, case_description) VALUES ($1, $2) RETURNING *`;
+        const values = [args.office_id, args.case_description];
+
+        return db
+          .one(query, values)
+          .then((res) => res)
+          .catch((err) => err);
+      },
+    },*/
+
+    createCase: {
+      type: CaseType,
+      args: {
+        office_id: { type: GraphQLID },
+        case_description: { type: GraphQLString },
+        customer_id: { type: GraphQLID },
+      },
+      resolve(parentValue, args) {
+        return db
+          .tx(async (t) => {
+            // Step 1: Insert into the 'cases' table and get the new case_id
+            const insertCaseQuery = `
+            INSERT INTO cases(office_id, case_description) 
+            VALUES ($1, $2) 
+            RETURNING id, office_id, case_description`;
+            const caseValues = [args.office_id, args.case_description];
+            const caseResult = await t.one(insertCaseQuery, caseValues);
+
+            // Step 2: Insert into the 'case_of_customers' table using the returned case_id
+            const insertCaseOfCustomersQuery = `
+            INSERT INTO case_of_customers(case_id, customer_id, office_id)
+            VALUES ($1, $2, $3) 
+            RETURNING *`;
+            const caseOfCustomersValues = [
+              caseResult.id,
+              args.customer_id,
+              args.office_id,
+            ];
+            const caseOfCustomersResult = await t.one(
+              insertCaseOfCustomersQuery,
+              caseOfCustomersValues
+            );
+
+            // Combine the results if needed, or just return one of them
+            return {
+              ...caseResult,
+              customer_id: caseOfCustomersResult.customer_id,
+            };
+          })
+          .catch((err) => {
+            console.error("Error in createCase resolver:", err);
+            throw new Error("Error creating case");
+          });
+      },
+    },
   },
 });
 
