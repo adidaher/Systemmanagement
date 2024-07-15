@@ -37,6 +37,7 @@ import {
   getProjectsSuccess,
   deleteProjectSuccess,
 } from "../../store/projects/actions"
+import { useNavigate } from "react-router-dom"
 
 const GET_PROJECTS_BY_OFFICE_ID = gql`
   query GetProjectsByOfficeID($office_id: ID!) {
@@ -78,6 +79,7 @@ const ProjectsList = () => {
   const [project, setProject] = useState()
   const [currentUser, setCurrentUser] = useState()
   //const [projects, setProjects] = useState()
+  const navigate = useNavigate()
 
   const [getProjects, { data, loading: queryLoading, error }] = useLazyQuery(
     GET_PROJECTS_BY_OFFICE_ID,
@@ -87,6 +89,10 @@ const ProjectsList = () => {
           dispatch(getProjectsSuccess(data.casesOfCustomersDetailsByOfficeID))
           //setProjects(data.casesOfCustomersDetailsByOfficeID)
         }
+      },
+      onError: error => {
+        console.error("Error fetching projects:", error)
+        navigate("/pages-500")
       },
     }
   )
@@ -359,6 +365,14 @@ const ProjectsList = () => {
                     id="deletetooltip"
                   />
                 </Link>
+
+                <i
+                  className="mdi mdi-arrow-left-bold-circle-outline font-size-20 cursor-pointer"
+                  onClick={() => {
+                    const userData = cellProps.row.original
+                    navigate("/projects-overview", { state: { userData } })
+                  }}
+                ></i>
               </div>
             )
           },

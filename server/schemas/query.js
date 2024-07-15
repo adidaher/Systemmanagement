@@ -112,6 +112,22 @@ const RootQuery = new GraphQLObjectType({
       },
     },
 
+    getTaskOfCase: {
+      type: new GraphQLList(TaskType),
+      args: {
+        case_id: { type: GraphQLID },
+      },
+      resolve(parent, args) {
+        const query = `SELECT * FROM tasks WHERE case_id = $1 ORDER BY task_deadline Desc`;
+        const values = [args.case_id];
+        return db
+          .manyOrNone(query, values)
+          .then((res) => res)
+          .catch((err) => {
+            console.error("Error in getTaskOfCase resolver:", err);
+          });
+      },
+    },
     userEvents: {
       type: new GraphQLList(EventsType),
       args: {

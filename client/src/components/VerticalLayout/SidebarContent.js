@@ -239,11 +239,11 @@ const SidebarContent = props => {
                 <li>
                   <Link to="/projects-list">{props.t("Projects List")}</Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link to="/projects-overview">
                     {props.t("Project Overview")}
                   </Link>
-                </li>
+                </li> */}
                 <li>
                   <Link to="/projects-create">{props.t("Create New")}</Link>
                 </li>
@@ -285,7 +285,7 @@ const SidebarContent = props => {
                 </li>
               </ul>
             </li>
-
+            {/*
             <li className="menu-title">Pages</li>
             <li>
               <Link to="/#" className="has-arrow">
@@ -384,7 +384,7 @@ const SidebarContent = props => {
                   <Link to="/pages-500">{props.t("Error 500")}</Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
           </ul>
         </div>
       </SimpleBar>

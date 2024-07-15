@@ -20,22 +20,6 @@ const UserType = new GraphQLObjectType({
   },
 });
 
-const TaskType = new GraphQLObjectType({
-  name: "Task",
-  type: "Query",
-  fields: {
-    task_id: { type: GraphQLID },
-    task_name: { type: GraphQLString },
-    task_partners: {
-      type: new GraphQLList(GraphQLString),
-      resolve: (parent) => parent.task_partners.split(","),
-    },
-    task_status: { type: GraphQLString },
-    task_deadline: { type: GraphQLString },
-    task_description: { type: GraphQLString },
-  },
-});
-
 const EventsType = new GraphQLObjectType({
   name: "Event",
   type: "Query",
@@ -85,6 +69,24 @@ const CaseType = new GraphQLObjectType({
     case_description: { type: GraphQLString },
   },
 });
+
+const TaskType = new GraphQLObjectType({
+  name: "Task",
+  type: "Query",
+  fields: {
+    task_id: { type: GraphQLID },
+    task_name: { type: GraphQLString },
+    task_partners: {
+      type: new GraphQLList(GraphQLString),
+      resolve: (parent) => parent.task_partners.split(","),
+    },
+    task_status: { type: GraphQLString },
+    task_deadline: { type: GraphQLString },
+    task_description: { type: GraphQLString },
+    case: { type: CaseType },
+  },
+});
+
 /*
 const CaseOfCustomersType = new GraphQLObjectType({
   name: "CaseOfCustomers",

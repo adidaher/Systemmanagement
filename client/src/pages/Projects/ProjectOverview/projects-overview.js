@@ -14,14 +14,20 @@ import OverviewChart from "./overviewChart"
 import { options, series } from "common/data/projects"
 import AttachedFiles from "./attachedFiles"
 import Comments from "./comments"
-
+import { useLocation } from "react-router-dom"
 //redux
 import { useSelector, useDispatch } from "react-redux"
 import { createSelector } from "reselect"
+import ActivityComp from "./ActivityComp"
 
 const ProjectsOverview = props => {
   //meta title
   document.title = "Project Overview | CPALINK"
+
+  const location = useLocation()
+  const { userData } = location.state || {}
+
+  console.log("userData is ", userData)
 
   const dispatch = useDispatch()
 
@@ -31,10 +37,8 @@ const ProjectsOverview = props => {
       projectDetail: Projects.projectDetail,
     })
   )
-
-  const { projectDetail } = useSelector(ProjectsDetailProperties)
-
   const params = props.router.params
+  const { projectDetail } = useSelector(ProjectsDetailProperties)
 
   useEffect(() => {
     if (params && params.id) {
@@ -55,25 +59,14 @@ const ProjectsOverview = props => {
             <>
               <Row>
                 <Col lg="8">
-                  <ProjectDetail project={projectDetail} />
+                  <ProjectDetail
+                    project={projectDetail}
+                    projectDetails={userData}
+                  />
                 </Col>
 
                 <Col lg="4">
-                  <TeamMembers team={projectDetail.team} />
-                </Col>
-              </Row>
-
-              <Row>
-                <Col lg="4">
-                  <OverviewChart options={options} series={series} />
-                </Col>
-
-                <Col lg="4">
-                  <AttachedFiles files={projectDetail.files} />
-                </Col>
-
-                <Col lg="4">
-                  <Comments comments={projectDetail.comments} />
+                  <ActivityComp case_id={userData.case_id} />
                 </Col>
               </Row>
             </>
