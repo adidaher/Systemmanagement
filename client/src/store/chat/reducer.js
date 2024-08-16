@@ -10,16 +10,18 @@ import {
   POST_ADD_MESSAGE_SUCCESS,
   POST_ADD_MESSAGE_FAIL,
   DELETE_MESSAGE_FAIL,
-  DELETE_MESSAGE_SUCCESS
+  DELETE_MESSAGE_SUCCESS,
+  GET_OFFICE_NAME_SUCCESS,
 } from "./actionTypes"
 
 const INIT_STATE = {
   chats: [],
   groups: [],
   contacts: [],
+  officeName: "",
   messages: [],
   error: {},
-  loading: true
+  loading: true,
 }
 
 const Chat = (state = INIT_STATE, action) => {
@@ -28,7 +30,7 @@ const Chat = (state = INIT_STATE, action) => {
       return {
         ...state,
         chats: action.payload,
-        loading: true
+        loading: true,
       }
 
     case GET_CHATS_FAIL:
@@ -36,13 +38,16 @@ const Chat = (state = INIT_STATE, action) => {
         ...state,
         error: action.payload,
       }
-
+    case GET_OFFICE_NAME_SUCCESS:
+      return {
+        ...state,
+        officeName: action.payload,
+      }
     case GET_GROUPS_SUCCESS:
       return {
         ...state,
         groups: action.payload,
       }
-
     case GET_GROUPS_FAIL:
       return {
         ...state,
@@ -65,7 +70,7 @@ const Chat = (state = INIT_STATE, action) => {
       return {
         ...state,
         messages: action.payload,
-        loading: true
+        loading: true,
       }
 
     case GET_MESSAGES_FAIL:
@@ -77,10 +82,10 @@ const Chat = (state = INIT_STATE, action) => {
     case POST_ADD_MESSAGE_SUCCESS:
       return {
         ...state,
-        messages: state.messages.map((item) => ({
+        messages: state.messages.map(item => ({
           ...item,
-          usermessages: [...item.usermessages, action.payload]
-        }))
+          usermessages: [...item.usermessages, action.payload],
+        })),
       }
     case POST_ADD_MESSAGE_FAIL:
       return {
@@ -90,16 +95,18 @@ const Chat = (state = INIT_STATE, action) => {
     case DELETE_MESSAGE_SUCCESS:
       return {
         ...state,
-        messages: state.messages.map((item) => ({
+        messages: state.messages.map(item => ({
           ...item,
-          usermessages: item.usermessages.filter(data => data.id !== action.payload)
-        }))
-      };
+          usermessages: item.usermessages.filter(
+            data => data.id !== action.payload
+          ),
+        })),
+      }
     case DELETE_MESSAGE_FAIL:
       return {
         ...state,
         error: action.payload,
-      };
+      }
     default:
       return state
   }

@@ -14,6 +14,7 @@ const {
   CaseType,
   CaseOfCustomersType,
   CaseDetailsType,
+  ChatType,
 } = require("./types");
 
 const RootQuery = new GraphQLObjectType({
@@ -292,6 +293,52 @@ const RootQuery = new GraphQLObjectType({
                 id: row.case_id,
                 office_id: row.office_id,
                 case_description: row.case_description,
+              },
+            }));
+          })
+          .catch((err) => {
+            console.error("Error fetching cases of customers:", err);
+            throw err;
+          });
+      },
+    },
+
+    getChatsByOfficeId: {
+      type: new GraphQLList(ChatType),
+      args: {
+        office_id: { type: GraphQLID },
+      },
+      resolve: (parent, args) => {
+        const { office_id } = args;
+        const query = `
+        SELECT chats.id, chats.message, chats.sent_at, 
+               users.user_id AS user_id, users.username, users.email, users.first_name, users.last_name,
+               offices.office_id AS office_id, offices.name AS office_name
+        FROM chats
+        JOIN users ON chats.sender_id = users.user_id
+        JOIN offices ON chats.office_id = offices.office_id
+        WHERE chats.office_id = $1
+        ORDER BY chats.sent_at ASC
+      `;
+        const values = [office_id];
+        return db
+          .manyOrNone(query, values)
+          .then((res) => {
+            console.log(res);
+            return res.map((row) => ({
+              id: row.id,
+              message: row.message,
+              sent_at: row.sent_at,
+              sender: {
+                user_id: row.user_id,
+                username: row.username,
+                email: row.email,
+                first_name: row.first_name,
+                last_name: row.last_name,
+              },
+              office: {
+                office_id: row.office_id,
+                name: row.office_name,
               },
             }));
           })

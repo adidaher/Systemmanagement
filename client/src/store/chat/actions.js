@@ -16,7 +16,8 @@ import {
   POST_ADD_MESSAGE_SUCCESS,
   DELETE_MESSAGE,
   DELETE_MESSAGE_SUCCESS,
-  DELETE_MESSAGE_FAIL
+  DELETE_MESSAGE_FAIL,
+  GET_OFFICE_NAME_SUCCESS,
 } from "./actionTypes"
 
 export const getChats = () => ({
@@ -40,7 +41,7 @@ export const getGroups = () => ({
 export const getGroupsSuccess = groups => ({
   type: GET_GROUPS_SUCCESS,
   payload: groups,
-});
+})
 
 export const getGroupsFail = error => ({
   type: GET_GROUPS_FAIL,
@@ -50,7 +51,9 @@ export const getGroupsFail = error => ({
 export const getContacts = () => ({
   type: GET_CONTACTS,
 })
-
+export const getOfficeName = () => ({
+  type: GET_OFFICE_NAME_SUCCESS,
+})
 export const getContactsSuccess = contacts => ({
   type: GET_CONTACTS_SUCCESS,
   payload: contacts,
@@ -105,4 +108,3 @@ export const deleteMessageFail = error => ({
   type: DELETE_MESSAGE_FAIL,
   payload: error,
 })
-

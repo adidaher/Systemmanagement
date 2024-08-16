@@ -103,9 +103,9 @@ const CaseOfCustomersType = new GraphQLObjectType({
   description: "Represents a case associated with a customer and an office.",
   fields: {
     case_id: { type: GraphQLID },
-    customer: { type: CustomersType }, // Nesting customer details
-    office: { type: OfficeType }, // Nesting office details
-    case_details: { type: CaseType }, // Nesting case details
+    customer: { type: CustomersType },
+    office: { type: OfficeType },
+    case_details: { type: CaseType },
   },
 });
 
@@ -123,6 +123,16 @@ const CaseDetailsType = new GraphQLObjectType({
   }),
 });
 
+const ChatType = new GraphQLObjectType({
+  name: "Chat",
+  fields: () => ({
+    id: { type: GraphQLID },
+    message: { type: GraphQLString },
+    sent_at: { type: GraphQLString },
+    sender: { type: UserType },
+    office: { type: OfficeType },
+  }),
+});
 exports.UserType = UserType;
 exports.TaskType = TaskType;
 exports.EventsType = EventsType;
@@ -131,3 +141,4 @@ exports.CustomersType = CustomersType;
 exports.CaseType = CaseType;
 exports.CaseOfCustomersType = CaseOfCustomersType;
 exports.CaseDetailsType = CaseDetailsType;
+exports.ChatType = ChatType;
