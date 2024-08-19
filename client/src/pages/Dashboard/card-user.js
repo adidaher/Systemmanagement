@@ -1,8 +1,17 @@
 import React, { useState } from "react"
-import { Row, Col, Card, CardBody, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap"
+import {
+  Row,
+  Col,
+  Card,
+  CardBody,
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from "reactstrap"
 
 //Import Images
-import avatar1 from "../../assets/images/users/avatar-1.jpg"
+import avatar1 from "../../assets/images/users/avatar-1.png"
 
 const CardUser = () => {
   const [settingsMenu, setSettingsMenu] = useState(false)
@@ -17,13 +26,17 @@ const CardUser = () => {
                 <Col lg="4">
                   <div className="d-flex">
                     <div className="flex-shrink-0 me-3">
-                      <img src={avatar1} alt="" className="avatar-md rounded-circle img-thumbnail" />
+                      <img
+                        src={avatar1}
+                        alt=""
+                        className="avatar-md rounded-circle img-thumbnail"
+                      />
                     </div>
                     <div className="flex-grow-1 align-self-center">
                       <div className="text-muted">
-                        <p className="mb-2">Welcome to Skote Dashboard</p>
-                        <h5 className="mb-1">Henry wells</h5>
-                        <p className="mb-0">UI / UX Designer</p>
+                        <p className="mb-2">Welcome to Dashboard</p>
+                        <h5 className="mb-1">Admin</h5>
+                        <p className="mb-0">Admin</p>
                       </div>
                     </div>
                   </div>
@@ -37,15 +50,15 @@ const CardUser = () => {
                           <p className="text-muted text-truncate mb-2">
                             Total Projects
                           </p>
-                          <h5 className="mb-0">48</h5>
+                          <h5 className="mb-0">45</h5>
                         </div>
                       </Col>
                       <Col xs="4">
                         <div>
                           <p className="text-muted text-truncate mb-2">
-                            Projects
+                            employees
                           </p>
-                          <h5 className="mb-0">40</h5>
+                          <h5 className="mb-0">10</h5>
                         </div>
                       </Col>
                       <Col xs="4">
@@ -53,7 +66,7 @@ const CardUser = () => {
                           <p className="text-muted text-truncate mb-2">
                             Clients
                           </p>
-                          <h5 className="mb-0">18</h5>
+                          <h5 className="mb-0">40</h5>
                         </div>
                       </Col>
                     </Row>

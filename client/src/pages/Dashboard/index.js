@@ -48,6 +48,7 @@ import { createSelector } from "reselect"
 
 import TotalSellingProduct from "../Dashboard-saas/total-selling-product"
 import SalesAnalytics from "../Dashboard-saas/sales-analytics"
+import CardUser from "./card-user"
 
 const Dashboard = props => {
   const [modal, setModal] = useState(false)
@@ -67,12 +68,12 @@ const Dashboard = props => {
     {
       title: props.t("Hours"),
       iconClass: "bx-archive-in",
-      description: "$35, 723",
+      description: "44",
     },
     {
-      title: "Average Price",
+      title: "events",
       iconClass: "bx-purchase-tag-alt",
-      description: "$16.2",
+      description: "16",
     },
   ]
 
@@ -113,11 +114,8 @@ const Dashboard = props => {
               breadcrumbItem={props.t("Dashboard")}
             />
           }
-
+          <CardUser />
           <Row>
-            <Col xl="4">
-              <MonthlyEarning />
-            </Col>
             <Col xl="8">
               <Row>
                 {(reports || [])?.map((report, key) => (
@@ -146,68 +144,6 @@ const Dashboard = props => {
                   </Col>
                 ))}
               </Row>
-
-              {/* <Card>
-                <CardBody>
-                  <div className="d-sm-flex flex-wrap">
-                    <h4 className="card-title mb-4">Email Sent</h4>
-                    <div className="ms-auto">
-                      <ul className="nav nav-pills">
-                        <li className="nav-item">
-                          <Link
-                            to="#"
-                            className={classNames(
-                              { active: periodType === "weekly" },
-                              "nav-link"
-                            )}
-                            onClick={() => {
-                              onChangeChartPeriod("weekly")
-                            }}
-                            id="one_month"
-                          >
-                            Week
-                          </Link>{" "}
-                        </li>
-                        <li className="nav-item">
-                          <Link
-                            to="#"
-                            className={classNames(
-                              { active: periodType === "monthly" },
-                              "nav-link"
-                            )}
-                            onClick={() => {
-                              onChangeChartPeriod("monthly")
-                            }}
-                            id="one_month"
-                          >
-                            Month
-                          </Link>
-                        </li>
-                        <li className="nav-item">
-                          <Link
-                            to="#"
-                            className={classNames(
-                              { active: periodType === "yearly" },
-                              "nav-link"
-                            )}
-                            onClick={() => {
-                              onChangeChartPeriod("yearly")
-                            }}
-                            id="one_month"
-                          >
-                            Year
-                          </Link>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  {/* <div className="clearfix"></div> 
-                  <StackedColumnChart
-                    periodData={periodData}
-                    dataColors='["--bs-primary", "--bs-warning", "--bs-success"]'
-                  />
-                </CardBody>
-              </Card> */}
             </Col>
           </Row>
 
@@ -219,170 +155,8 @@ const Dashboard = props => {
               <ActivityComp />
             </Col>
           </Row>
-
-          <Row>
-            <Col lg="12">
-              <LatestTranaction />
-            </Col>
-          </Row>
         </Container>
       </div>
-
-      {/* subscribe ModalHeader */}
-      {/*<Modal
-        isOpen={subscribeModal}
-        role="dialog"
-        autoFocus={true}
-        centered
-        data-toggle="modal"
-        toggle={() => {
-          setSubscribeModal(!subscribeModal)
-        }}
-      >
-        <div>
-          <ModalHeader
-            className="border-bottom-0"
-            toggle={() => {
-              setSubscribeModal(!subscribeModal)
-            }}
-          ></ModalHeader>
-        </div>
-        <ModalBody>
-          <div className="text-center mb-4">
-            <div className="avatar-md mx-auto mb-4">
-              <div className="avatar-title bg-light  rounded-circle text-primary h1">
-                <i className="mdi mdi-email-open"></i>
-              </div>
-            </div>
-
-            <Row className="justify-content-center">
-              <Col xl={10}>
-                <h4 className="text-primary">Subscribe !</h4>
-                <p className="text-muted font-size-14 mb-4">
-                  Subscribe our newletter and get notification to stay update.
-                </p>
-
-                <div className="input-group rounded bg-light">
-                  <Input
-                    type="email"
-                    className="form-control bg-transparent border-0"
-                    placeholder="Enter Email address"
-                  />
-                  <Button color="primary" type="button" id="button-addon2">
-                    <i className="bx bxs-paper-plane"></i>
-                  </Button>
-                </div>
-              </Col>
-            </Row>
-          </div>
-        </ModalBody>
-      </Modal>*/}
-
-      <Modal
-        isOpen={modal}
-        role="dialog"
-        autoFocus={true}
-        centered={true}
-        className="exampleModal"
-        tabIndex="-1"
-        toggle={() => {
-          setModal(!modal)
-        }}
-      >
-        <div>
-          <ModalHeader
-            toggle={() => {
-              setModal(!modal)
-            }}
-          >
-            {" "}
-            Order Details
-          </ModalHeader>
-          <ModalBody>
-            <p className="mb-2">
-              Product id: <span className="text-primary">#SK2540</span>
-            </p>
-            <p className="mb-4">
-              Billing Name: <span className="text-primary">Neal Matthews</span>
-            </p>
-
-            <div className="table-responsive">
-              <Table className="table table-centered table-nowrap">
-                <thead>
-                  <tr>
-                    <th scope="col">Product</th>
-                    <th scope="col">Product Name</th>
-                    <th scope="col">Price</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">
-                      <div>
-                        <img src={modalimage1} alt="" className="avatar-sm" />
-                      </div>
-                    </th>
-                    <td>
-                      <div>
-                        <h5 className="text-truncate font-size-14">
-                          Wireless Headphone (Black)
-                        </h5>
-                        <p className="text-muted mb-0">$ 225 x 1</p>
-                      </div>
-                    </td>
-                    <td>$ 255</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">
-                      <div>
-                        <img src={modalimage2} alt="" className="avatar-sm" />
-                      </div>
-                    </th>
-                    <td>
-                      <div>
-                        <h5 className="text-truncate font-size-14">
-                          Hoodie (Blue)
-                        </h5>
-                        <p className="text-muted mb-0">$ 145 x 1</p>
-                      </div>
-                    </td>
-                    <td>$ 145</td>
-                  </tr>
-                  <tr>
-                    <td colSpan="2">
-                      <h6 className="m-0 text-end">Sub Total:</h6>
-                    </td>
-                    <td>$ 400</td>
-                  </tr>
-                  <tr>
-                    <td colSpan="2">
-                      <h6 className="m-0 text-end">Shipping:</h6>
-                    </td>
-                    <td>Free</td>
-                  </tr>
-                  <tr>
-                    <td colSpan="2">
-                      <h6 className="m-0 text-end">Total:</h6>
-                    </td>
-                    <td>$ 400</td>
-                  </tr>
-                </tbody>
-              </Table>
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              type="button"
-              color="secondary"
-              onClick={() => {
-                setModal(!modal)
-              }}
-            >
-              Close
-            </Button>
-          </ModalFooter>
-        </div>
-      </Modal>
     </React.Fragment>
   )
 }

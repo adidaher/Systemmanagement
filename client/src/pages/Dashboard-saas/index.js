@@ -5,7 +5,7 @@ import { Container, Row, Col } from "reactstrap"
 import Breadcrumbs from "../../components/Common/Breadcrumb"
 
 //Import Components
-import CardUser from "./card-user"
+import CardUser from "../Dashboard/card-user"
 import CardWelcome from "./card-welcome"
 import MiniWidget from "./mini-widget"
 import Earning from "./earning"
