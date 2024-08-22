@@ -359,27 +359,6 @@ const Customers = props => {
                 <Form onSubmit={validation.handleSubmit}>
                   <Row>
                     <Col className="col-12">
-                      {/* <div className="mb-3">
-                  <Label for="customer_id">Customer ID</Label>
-                  <Input
-                    name="customer_id"
-                    type="text"
-                    placeholder="Enter Customer ID"
-                    onChange={validation.handleChange}
-                    onBlur={validation.handleBlur}
-                    value={validation.values.customer_id || ""}
-                    invalid={
-                      validation.touched.customer_id &&
-                      validation.errors.customer_id
-                    }
-                  />
-                  {validation.touched.customer_id &&
-                    validation.errors.customer_id && (
-                      <FormFeedback>
-                        {validation.errors.customer_id}
-                      </FormFeedback>
-                    )}
-                </div> */}
                       <div className="mb-3">
                         <Label for="office_id">Office ID</Label>
                         <Input

@@ -49,6 +49,7 @@ import { createSelector } from "reselect"
 import TotalSellingProduct from "../Dashboard-saas/total-selling-product"
 import SalesAnalytics from "../Dashboard-saas/sales-analytics"
 import CardUser from "./card-user"
+import profile1 from "assets/images/dashboard.jpg"
 
 const Dashboard = props => {
   const [modal, setModal] = useState(false)
@@ -114,35 +115,103 @@ const Dashboard = props => {
               breadcrumbItem={props.t("Dashboard")}
             />
           }
-          <CardUser />
+          <Card className="overflow-hidden">
+            <div className="bg-secondary-subtle">
+              <Row>
+                <Col xs="5">
+                  <div className="text-primary p-3">
+                    <h5 className="text-primary">Welcome Back !</h5>
+                    <p>It will seem like simplified</p>
+                  </div>
+                </Col>
+              </Row>
+            </div>
+            <CardBody className="pt-0">
+              <Row>
+                <Col sm="4">
+                  <h5 className="font-size-15 text-truncate mt-5">admin</h5>
+
+                  <p className="text-muted mb-0 text-truncate">manager</p>
+                </Col>
+
+                <Col sm={8}>
+                  <div className="pt-4">
+                    <Row>
+                      <Col xs="6">
+                        <h5 className="font-size-15">40</h5>
+                        <p className="text-muted mb-0">Projects</p>
+                      </Col>
+                      <Col xs="6">
+                        <h5 className="font-size-15">$1212</h5>
+                        <p className="text-muted mb-0">Revenue</p>
+                      </Col>
+                    </Row>
+                    <div className="mt-4">
+                      <Link to="" className="btn btn-primary  btn-sm">
+                        View Profile <i className="mdi mdi-arrow-left ms-1" />
+                      </Link>
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
           <Row>
             <Col xl="8">
               <Row>
-                {(reports || [])?.map((report, key) => (
-                  <Col md="4" key={"_col_" + key}>
-                    <Card className="mini-stats-wid">
-                      <CardBody>
-                        <div className="d-flex">
-                          <div className="flex-grow-1">
-                            <p className="text-muted fw-medium">
-                              {report.title}
-                            </p>
-                            <h4 className="mb-0">{report.description}</h4>
-                          </div>
-                          <div className="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                            <span className="avatar-title rounded-circle bg-primary">
-                              <i
-                                className={
-                                  "bx " + report.iconClass + " font-size-24"
-                                }
-                              ></i>
-                            </span>
-                          </div>
+                <Col md="4" key={"_col_"}>
+                  <Card className="mini-stats-wid">
+                    <CardBody>
+                      <div className="d-flex">
+                        <div className="flex-grow-1">
+                          <p className="text-muted fw-medium">Tasks Todo</p>
+                          <h4 className="mb-0">120</h4>
                         </div>
-                      </CardBody>
-                    </Card>
-                  </Col>
-                ))}
+                        <div className="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
+                          <span className="avatar-title rounded-circle bg-primary">
+                            <i className={"bx bx-copy-alt font-size-24"}></i>
+                          </span>
+                        </div>
+                      </div>
+                    </CardBody>
+                  </Card>
+                </Col>
+                <Col md="4" key={"_col_"}>
+                  <Card className="mini-stats-wid">
+                    <CardBody>
+                      <div className="d-flex">
+                        <div className="flex-grow-1">
+                          <p className="text-muted fw-medium">
+                            Tasks Performed
+                          </p>
+                          <h4 className="mb-0">120</h4>
+                        </div>
+                        <div className="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
+                          <span className="avatar-title rounded-circle bg-primary">
+                            <i className={"bx bx-copy-alt font-size-24"}></i>
+                          </span>
+                        </div>
+                      </div>
+                    </CardBody>
+                  </Card>
+                </Col>
+                <Col md="4" key={"_col_"}>
+                  <Card className="mini-stats-wid">
+                    <CardBody>
+                      <div className="d-flex">
+                        <div className="flex-grow-1">
+                          <p className="text-muted fw-medium">Deferred Tasks</p>
+                          <h4 className="mb-0">120</h4>
+                        </div>
+                        <div className="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
+                          <span className="avatar-title rounded-circle bg-primary">
+                            <i className={"bx bx-copy-alt font-size-24"}></i>
+                          </span>
+                        </div>
+                      </div>
+                    </CardBody>
+                  </Card>
+                </Col>
               </Row>
             </Col>
           </Row>

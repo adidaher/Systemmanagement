@@ -46,7 +46,6 @@ const GET_ALL_USERS = gql`
       user_id
       username
       email
-      password
       phone
       role
       first_name
@@ -217,6 +216,7 @@ const ContactsList = () => {
             console.log("Error updating user:", error)
           })
       } else {
+        console.log("adding user ")
         addUserMutation({
           variables: {
             username: values["username"],
@@ -230,7 +230,6 @@ const ContactsList = () => {
           },
         }).then(result => {
           // Handle success
-
           dispatch(onAddNewUser(result.data.addUser))
           validation.resetForm()
         })
@@ -510,7 +509,7 @@ const ContactsList = () => {
                       }
                       handleUserClick={handleUserClicks}
                       buttonClass="btn btn-success btn-rounded waves-effect waves-light addContact-modal mb-2"
-                      buttonName="New Customer"
+                      buttonName="New User"
                       tableClass="align-middle table-nowrap table-hover dt-responsive nowrap w-100 dataTable no-footer dtr-inline"
                       theadClass="table-light"
                       paginationWrapper="dataTables_paginate paging_simple_numbers pagination-rounded"
@@ -526,13 +525,7 @@ const ContactsList = () => {
                 {!!isEdit ? "Edit User" : "Add User"}
               </ModalHeader>
               <ModalBody>
-                <Form
-                  onSubmit={e => {
-                    e.preventDefault()
-                    validation.handleSubmit()
-                    return false
-                  }}
-                >
+                <Form onSubmit={validation.handleSubmit}>
                   <Row>
                     <Col md={6}>
                       <div className="mb-3">
@@ -753,9 +746,6 @@ const ContactsList = () => {
                         <button
                           type="submit"
                           className="btn btn-success save-user"
-                          onClick={() => {
-                            validation.handleSubmit()
-                          }}
                         >
                           Save
                         </button>
