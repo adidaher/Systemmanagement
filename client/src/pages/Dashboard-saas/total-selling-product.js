@@ -90,7 +90,7 @@ const TotalSellngProduct = () => {
 
             <div className="text-muted text-center">
               <p className="mb-2">Product A</p>
-              <h4>$ 6385</h4>
+              <h4> 6385</h4>
               <p className="mt-4 mb-0">
                 <span className="badge badge-soft-success font-size-11 me-2">
                   {" "}
