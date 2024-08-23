@@ -149,8 +149,6 @@ const Calender = props => {
     {
       onCompleted: data => {
         if (data?.userEvents) {
-          console.log(data.userEvents)
-          //dispatch(getUsersSuccess(data.allUsers))
           setUserCalandar(data.userEvents)
           dispatch(getEventsSuccess(data.userEvents))
         }

@@ -154,13 +154,13 @@ const SidebarContent = props => {
                 <li>
                   <Link to="/dashboard">{props.t("Default")}</Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link to="/dashboard-saas">{props.t("Saas")}</Link>
                 </li>
 
                 <li>
                   <Link to="/blog">{props.t("Blog")}</Link>
-                </li>
+                </li> */}
               </ul>
             </li>
 

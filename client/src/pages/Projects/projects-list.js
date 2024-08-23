@@ -87,7 +87,6 @@ const ProjectsList = () => {
       onCompleted: data => {
         if (data?.casesOfCustomersDetailsByOfficeID) {
           dispatch(getProjectsSuccess(data.casesOfCustomersDetailsByOfficeID))
-          //setProjects(data.casesOfCustomersDetailsByOfficeID)
         }
       },
       onError: error => {
