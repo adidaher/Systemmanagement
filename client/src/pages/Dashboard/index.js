@@ -15,7 +15,7 @@ import {
   Table,
 } from "reactstrap"
 import { Link } from "react-router-dom"
-import loaderImg from "assets/images/loader.gif"
+import loaderImg from "assets/images/loader2.gif"
 
 //import action
 import { getChartsData as onGetChartsData } from "../../store/actions"
@@ -56,7 +56,7 @@ const Dashboard = props => {
   const [tasktodo, settasktodo] = useState([])
   const [deferredTasks, setDeferred] = useState([])
   const [loading, setLoading] = useState(true)
-  const [userevents, setUserEvents] = useState()
+
   const [currentUser, setCurrentUser] = useState()
   const dispatch = useDispatch()
 
@@ -137,7 +137,7 @@ const Dashboard = props => {
       setCompletedTasks(completedTasks)
 
       const inProgressTasks = tasks.filter(
-        task => task.task_status === "in progress"
+        task => task.task_status === "in Progress"
       )
       settasktodo(inProgressTasks)
 
@@ -320,9 +320,14 @@ const Dashboard = props => {
             </Row>
 
             <Row>
-              <TotalSellingProduct />
+              {/* <TotalSellingProduct /> */}
 
-              <SalesAnalytics dataColors='["--bs-primary", "--bs-success", "--bs-danger"]' />
+              <SalesAnalytics
+                dataColors='["--bs-primary", "--bs-success", "--bs-danger"]'
+                completed={completedTasks.length}
+                todo={tasktodo.length}
+                deferredTasks={deferredTasks.length}
+              />
               <Col xll="4">
                 {events && <ActivityComp activitiesArr={events} />}
               </Col>

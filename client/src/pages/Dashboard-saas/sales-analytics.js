@@ -1,13 +1,13 @@
-import React from "react";
-import { Row, Col, Card, CardBody } from "reactstrap";
-import ReactApexChart from "react-apexcharts";
-import getChartColorsArray from "../../components/Common/ChartsDynamicColor";
+import React from "react"
+import { Row, Col, Card, CardBody } from "reactstrap"
+import ReactApexChart from "react-apexcharts"
+import getChartColorsArray from "../../components/Common/ChartsDynamicColor"
 
-const SalesAnalytics = ({ dataColors }) => {
-  const apexSalesAnalyticsChartColors = getChartColorsArray(dataColors);
-  const series = [56, 38, 26];
+const SalesAnalytics = ({ dataColors, completed, todo, deferredTasks }) => {
+  const apexSalesAnalyticsChartColors = getChartColorsArray(dataColors)
+  const series = [completed, todo, deferredTasks]
   const options = {
-    labels: ["Series A", "Series B", "Series C"],
+    labels: ["Completed Tasks", "Task Todo", "Deferred Tasks"],
     colors: apexSalesAnalyticsChartColors,
     legend: { show: !1 },
     plotOptions: {
@@ -17,14 +17,14 @@ const SalesAnalytics = ({ dataColors }) => {
         },
       },
     },
-  };
+  }
 
   return (
     <React.Fragment>
       <Col xl="4">
         <Card>
           <CardBody>
-            <h4 className="card-title mb-4">Sales Analytics</h4>
+            <h4 className="card-title mb-4">Monthly Analytics</h4>
 
             <div>
               <div id="donut-chart">
@@ -43,28 +43,28 @@ const SalesAnalytics = ({ dataColors }) => {
                 <Col xs="4">
                   <div className="mt-4">
                     <p className="mb-2 text-truncate">
-                      <i className="mdi mdi-circle text-primary me-1" /> Product
-                      A
+                      <i className="mdi mdi-circle text-primary me-1" />
+                      Completed
                     </p>
-                    <h5>$ 2,132</h5>
+                    <h5>{completed}</h5>
                   </div>
                 </Col>
                 <Col xs="4">
                   <div className="mt-4">
                     <p className="mb-2 text-truncate">
-                      <i className="mdi mdi-circle text-success me-1" /> Product
-                      B
+                      <i className="mdi mdi-circle text-success me-1" />
+                      Tasks Todo
                     </p>
-                    <h5>$ 1,763</h5>
+                    <h5>{todo}</h5>
                   </div>
                 </Col>
                 <Col xs="4">
                   <div className="mt-4">
                     <p className="mb-2 text-truncate">
-                      <i className="mdi mdi-circle text-danger me-1" /> Product
-                      C
+                      <i className="mdi mdi-circle text-danger me-1" />
+                      Deferred Tasks
                     </p>
-                    <h5>$ 973</h5>
+                    <h5>{deferredTasks}</h5>
                   </div>
                 </Col>
               </Row>
@@ -73,7 +73,7 @@ const SalesAnalytics = ({ dataColors }) => {
         </Card>
       </Col>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default SalesAnalytics;
+export default SalesAnalytics
