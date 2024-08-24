@@ -5,7 +5,6 @@ import { Card, CardBody, Col, Row } from "reactstrap"
 import img1 from "../../../assets/images/companies/img-1.png"
 
 const ProjectDetail = ({ project, projectDetails }) => {
-  console.log(projectDetails)
   return (
     <Card>
       <CardBody>

@@ -470,7 +470,7 @@ const Customers = props => {
                     <Col>
                       <div className="text-end">
                         <Button color="success" type="submit" className="me-1">
-                          Save
+                          {props.t("Save")}
                         </Button>
                         <Button color="secondary" onClick={toggle}>
                           {props.t("Cancel")}

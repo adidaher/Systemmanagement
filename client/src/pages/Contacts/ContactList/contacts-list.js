@@ -14,6 +14,7 @@ import {
   Label,
   FormFeedback,
   Input,
+  Button,
   Form,
 } from "reactstrap"
 import * as Yup from "yup"
@@ -182,18 +183,6 @@ const ContactsList = () => {
 
     onSubmit: values => {
       if (isEdit) {
-        /*console.log("update start..")
-        console.log(
-          contact.user_id,
-          values.username,
-          values.email,
-          values.phone,
-          values.role,
-          contact.password,
-          values.first_name,
-          values.last_name,
-          values.manager_id
-        )*/
         updateUserMutation({
           variables: {
             user_id: contact.user_id,
@@ -205,6 +194,7 @@ const ContactsList = () => {
             first_name: values.first_name,
             last_name: values.last_name,
             manager_id: values.manager_id,
+            office_id: values.office_id,
           },
         })
           .then(result => {
@@ -216,22 +206,23 @@ const ContactsList = () => {
             console.log("Error updating user:", error)
           })
       } else {
-        console.log("adding user ")
         addUserMutation({
           variables: {
-            username: values["username"],
-            email: values["email"],
-            password: values["password"],
-            phone: values["phone"],
-            role: values["role"],
-            first_name: values["first_name"],
-            last_name: values["last_name"],
-            manager_id: values["manager_id"],
+            username: values.username,
+            email: values.email,
+            password: values.password,
+            phone: values.phone,
+            role: values.role,
+            first_name: values.first_name,
+            last_name: values.last_name,
+            manager_id: values.manager_id,
+            office_id: values.office_id,
           },
         }).then(result => {
           // Handle success
           dispatch(onAddNewUser(result.data.addUser))
           validation.resetForm()
+          //toast.success("User added Successfully", { autoClose: 2000 })
         })
       }
       toggle()
@@ -442,7 +433,7 @@ const ContactsList = () => {
             )
           },
         },
-        currentUser?.role === "admin" && {
+        currentUser?.role === "manager" && {
           header: "Action",
           cell: cellProps => {
             return (
@@ -525,230 +516,87 @@ const ContactsList = () => {
                 {!!isEdit ? "Edit User" : "Add User"}
               </ModalHeader>
               <ModalBody>
-                <Form onSubmit={validation.handleSubmit}>
-                  <Row>
-                    <Col md={6}>
-                      <div className="mb-3">
-                        <Label className="form-label">username</Label>
-                        <Input
-                          name="username"
-                          type="text"
-                          placeholder="Insert username"
-                          onChange={validation.handleChange}
-                          onBlur={validation.handleBlur}
-                          value={validation.values.username || ""}
-                          invalid={
-                            validation.touched.username &&
-                            validation.errors.username
-                              ? true
-                              : false
-                          }
-                        />
-
-                        {validation.touched.username &&
-                        validation.errors.username ? (
-                          <FormFeedback type="invalid">
-                            {validation.errors.username}
-                          </FormFeedback>
-                        ) : null}
-                      </div>
-                    </Col>
-                    <Col md={6}>
-                      <div className="mb-3">
-                        <Label className="form-label">Email</Label>
-                        <Input
-                          name="email"
-                          label="email"
-                          type="email"
-                          placeholder="Insert Email"
-                          onChange={validation.handleChange}
-                          onBlur={validation.handleBlur}
-                          value={validation.values.email || ""}
-                          invalid={
-                            validation.touched.email && validation.errors.email
-                              ? true
-                              : false
-                          }
-                        />
-
-                        {validation.touched.email && validation.errors.email ? (
-                          <FormFeedback type="invalid">
-                            {validation.errors.email}
-                          </FormFeedback>
-                        ) : null}
-                      </div>
-                    </Col>
-                    <Col md={6}>
-                      {currentUser?.role === "admin" && (
-                        <div className="mb-3">
-                          <Label className="form-label">password</Label>
+                <Form
+                  onSubmit={e => {
+                    e.preventDefault()
+                    validation.handleSubmit()
+                    return false
+                  }}
+                >
+                  <Row form>
+                    <Col className="col-12">
+                      {/* Form fields */}
+                      {[
+                        { label: "Username", field: "username" },
+                        { label: "Role", field: "role" },
+                        { label: "Email", field: "email" },
+                        { label: "Password", field: "password" },
+                        { label: "Phone No", field: "phone" },
+                        { label: "First name", field: "first_name" },
+                        { label: "Last name", field: "last_name" },
+                        { label: "Office ID", field: "office_id" }, // New office ID field
+                      ].map(({ label, field }) => (
+                        <div className="mb-3" key={field}>
+                          <Label className="form-label">{label}</Label>
                           <Input
-                            name="password"
-                            label="password"
-                            type="text"
-                            placeholder="Insert password"
+                            name={field}
+                            type={field === "email" ? "email" : "text"}
+                            placeholder={`Enter ${label}`}
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
-                            value={validation.values.password || ""}
+                            value={validation.values[field] || ""}
                             invalid={
-                              validation.touched.password &&
-                              validation.errors.password
+                              validation.touched[field] &&
+                              validation.errors[field]
                                 ? true
                                 : false
                             }
                           />
-
-                          {validation.touched.password &&
-                          validation.errors.password ? (
+                          {validation.touched[field] &&
+                          validation.errors[field] ? (
                             <FormFeedback type="invalid">
-                              {validation.errors.password}
+                              {validation.errors[field]}
                             </FormFeedback>
                           ) : null}
                         </div>
-                      )}
-                    </Col>
-                    <Col md={6}>
-                      <div className="mb-3">
-                        <Label className="form-label">role</Label>
-                        <Input
-                          name="role"
-                          label="role"
-                          type="text"
-                          placeholder="Insert role"
-                          onChange={validation.handleChange}
-                          onBlur={validation.handleBlur}
-                          value={validation.values.role || ""}
-                          invalid={
-                            validation.touched.role && validation.errors.role
-                              ? true
-                              : false
-                          }
-                        />
-
-                        {validation.touched.role && validation.errors.role ? (
-                          <FormFeedback type="invalid">
-                            {validation.errors.role}
-                          </FormFeedback>
-                        ) : null}
-                      </div>
-                    </Col>
-                    <Col md={6}>
-                      <div className="mb-3">
-                        <Label className="form-label">phone</Label>
-                        <Input
-                          name="phone"
-                          label="phone"
-                          type="text"
-                          placeholder="Insert phone"
-                          onChange={validation.handleChange}
-                          onBlur={validation.handleBlur}
-                          value={validation.values.phone || ""}
-                          invalid={
-                            validation.touched.phone && validation.errors.phone
-                              ? true
-                              : false
-                          }
-                        />
-
-                        {validation.touched.phone && validation.errors.phone ? (
-                          <FormFeedback type="invalid">
-                            {validation.errors.phone}
-                          </FormFeedback>
-                        ) : null}
-                      </div>
-                    </Col>
-                    <Col md={6}>
-                      <div className="mb-3">
-                        <Label className="form-label">first name</Label>
-                        <Input
-                          name="first_name"
-                          label="first_name"
-                          type="text"
-                          placeholder="Insert first name"
-                          onChange={validation.handleChange}
-                          onBlur={validation.handleBlur}
-                          value={validation.values.first_name || ""}
-                          invalid={
-                            validation.touched.first_name &&
-                            validation.errors.first_name
-                              ? true
-                              : false
-                          }
-                        />
-
-                        {validation.touched.first_name &&
-                        validation.errors.first_name ? (
-                          <FormFeedback type="invalid">
-                            {validation.errors.first_name}
-                          </FormFeedback>
-                        ) : null}
-                      </div>
-                    </Col>
-                    <Col md={6}>
-                      <div className="mb-3">
-                        <Label className="form-label">last name</Label>
-                        <Input
-                          name="last_name"
-                          label="last_name"
-                          type="text"
-                          placeholder="Insert last name"
-                          onChange={validation.handleChange}
-                          onBlur={validation.handleBlur}
-                          value={validation.values.last_name || ""}
-                          invalid={
-                            validation.touched.last_name &&
-                            validation.errors.last_name
-                              ? true
-                              : false
-                          }
-                        />
-
-                        {validation.touched.last_name &&
-                        validation.errors.last_name ? (
-                          <FormFeedback type="invalid">
-                            {validation.errors.last_name}
-                          </FormFeedback>
-                        ) : null}
-                      </div>
-                    </Col>
-                    <Col md={6}>
+                      ))}
                       <div className="mb-3">
                         <Label className="form-label">Manager</Label>
                         <Input
-                          name="manager_id"
                           type="select"
-                          value={validation.values.manager_id}
+                          name="manager_id"
                           onChange={validation.handleChange}
                           onBlur={validation.handleBlur}
+                          value={validation.values.manager_id || ""}
                           invalid={
                             validation.touched.manager_id &&
-                            !!validation.errors.manager_id
+                            validation.errors.manager_id
+                              ? true
+                              : false
                           }
                         >
-                          <option value="" disabled>
-                            Select Manager
-                          </option>
-                          {Object.values(ManagerList).map(manager => (
-                            <option
-                              key={manager.user_id}
-                              value={manager.user_id}
-                            >
-                              {`${manager.first_name} ${manager.last_name}`}
+                          <option value="">Select a Manager</option>
+                          {Object.keys(ManagerList).map(managerId => (
+                            <option key={managerId} value={managerId}>
+                              {ManagerList[managerId].first_name}
                             </option>
                           ))}
                         </Input>
+                        {validation.touched.manager_id &&
+                        validation.errors.manager_id ? (
+                          <FormFeedback type="invalid">
+                            {validation.errors.manager_id}
+                          </FormFeedback>
+                        ) : null}
                       </div>
                     </Col>
                   </Row>
                   <Row>
                     <Col>
                       <div className="text-end">
-                        <button
-                          type="submit"
-                          className="btn btn-success save-user"
-                        >
+                        <Button type="submit" color="success">
                           Save
-                        </button>
+                        </Button>
                       </div>
                     </Col>
                   </Row>

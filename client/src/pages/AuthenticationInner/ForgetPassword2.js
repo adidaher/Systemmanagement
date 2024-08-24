@@ -65,7 +65,7 @@ const ForgetPassword2 = () => {
                     <div className="my-auto">
                       <div>
                         <h5 className="text-primary">Reset Password</h5>
-                        <p className="text-muted">Re-Password with Skote.</p>
+                        <p className="text-muted">Re-Password with CPALINK.</p>
                       </div>
 
                       <div className="mt-4">

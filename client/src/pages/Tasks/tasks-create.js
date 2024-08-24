@@ -93,17 +93,8 @@ const TasksCreate = () => {
 
   const handleSubmit = async e => {
     e.preventDefault()
-    console.log("adding task started...")
     const taskDescription = task_description.getCurrentContent().getPlainText()
     const taskDeadline = startDate.toISOString().slice(0, 10)
-
-    console.log(
-      task_name,
-      task_partners,
-      task_status,
-      taskDeadline,
-      taskDescription
-    )
     try {
       await addTask({
         variables: {

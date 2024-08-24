@@ -127,8 +127,6 @@ const ProjectsList = () => {
 
     onSubmit: values => {
       if (isEdit) {
-        console.log("update start..")
-        console.log(project.office_id, project.customer_id)
         updateUserMutation({
           variables: {
             case_id: project.case_id,

@@ -255,7 +255,7 @@ const EmailInbox = props => {
                         <img
                           className="d-flex me-3 rounded-circle"
                           src={item.imageSrc}
-                          alt="skote"
+                          alt="CPALINK"
                           height="36"
                         />
                       </div>

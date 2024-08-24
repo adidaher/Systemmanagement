@@ -60,7 +60,6 @@ const OfficesGrid = props => {
     {
       onCompleted: data => {
         if (data) {
-          console.log(data)
           setOffices(data.allOffice)
           setLoading(false)
         }

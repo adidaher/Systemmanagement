@@ -16,7 +16,7 @@ const loginUsername = async ({ email, password }) => {
     const { loading, error, data } = useQuery(GET_USER_BY_EMAIL, {
       variables: { email: values.email },
     })
-    console.log("data is ", data)
+
     const userpwd = data?.GetUserByEmail?.password
 
     if (loading) {
@@ -24,7 +24,7 @@ const loginUsername = async ({ email, password }) => {
     }
 
     if (error) return false
-    console.log(userpwd)
+
     if (userpwd && userpwd === password) {
       console.log("User authenticated:", user)
     } else {
