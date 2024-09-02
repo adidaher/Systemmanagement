@@ -44,7 +44,7 @@ const ActivityComp = props => {
               to="/calendar"
               className="btn btn-primary waves-effect waves-light btn-sm"
             >
-              {props.t("View More")} <i className="mdi mdi-arrow-right ms-1" />
+              {props.t("View More")} <i className="mdi mdi-arrow-left ms-1" />
             </Link>
           </div>
         </CardBody>

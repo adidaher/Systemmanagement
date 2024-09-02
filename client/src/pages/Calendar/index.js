@@ -211,14 +211,6 @@ const Calender = props => {
     }),
     onSubmit: async values => {
       if (isEdit) {
-        console.log(
-          event.id,
-          currentUser.user_id,
-          values.title,
-          event.start,
-          values.category + " text-white",
-          values.shared_with
-        )
         try {
           await updateEvent({
             variables: {

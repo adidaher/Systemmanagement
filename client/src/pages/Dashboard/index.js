@@ -249,9 +249,9 @@ const Dashboard = props => {
               </CardBody>
             </Card>
             <Row>
-              <Col xl="8">
+              <Col xl="12">
                 <Row>
-                  <Col md="4" key={"_col_1"}>
+                  <Col md="3" key={"_col_1"}>
                     <Card className="mini-stats-wid">
                       <CardBody>
                         <div className="d-flex">
@@ -273,7 +273,7 @@ const Dashboard = props => {
                       </CardBody>
                     </Card>
                   </Col>
-                  <Col md="4" key={"_col_2"}>
+                  <Col md="3" key={"_col_2"}>
                     <Card className="mini-stats-wid">
                       <CardBody>
                         <div className="d-flex">
@@ -294,7 +294,7 @@ const Dashboard = props => {
                       </CardBody>
                     </Card>
                   </Col>
-                  <Col md="4" key={"_col_3"}>
+                  <Col md="3" key={"_col_3"}>
                     <Card className="mini-stats-wid">
                       <CardBody>
                         <div className="d-flex">
@@ -315,13 +315,26 @@ const Dashboard = props => {
                       </CardBody>
                     </Card>
                   </Col>
+                  <Col
+                    md="2"
+                    key={"_col_4"}
+                    className="d-flex justify-content-center align-items-center"
+                  >
+                    <div className="text-center mt-1">
+                      <Link
+                        to="/tasks-list"
+                        className="btn btn-primary waves-effect waves-light btn-sm"
+                      >
+                        {props.t("View More")}{" "}
+                        <i className="mdi mdi-arrow-left ms-1" />
+                      </Link>
+                    </div>
+                  </Col>
                 </Row>
               </Col>
             </Row>
 
             <Row>
-              {/* <TotalSellingProduct /> */}
-
               <SalesAnalytics
                 dataColors='["--bs-primary", "--bs-success", "--bs-danger"]'
                 completed={completedTasks.length}
