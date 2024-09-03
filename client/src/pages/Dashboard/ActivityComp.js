@@ -2,21 +2,19 @@ import React from "react"
 import { Card, CardBody, CardTitle } from "reactstrap"
 import { Link } from "react-router-dom"
 import { withTranslation } from "react-i18next"
+import { useSelector } from "react-redux"
 
 const ActivityComp = props => {
-  const formatDate = timestamp => {
-    const date = new Date(parseInt(timestamp, 10))
-    return date.toLocaleDateString()
-  }
-  console.log(props.activitiesArr)
+  const events = useSelector(state => state.calendar.events)
+
   return (
     <React.Fragment>
       <Card>
         <CardBody>
           <CardTitle className="mb-5">{props.t("Activity")} </CardTitle>
-          {props.activitiesArr && props.activitiesArr.length > 0 ? (
+          {events && events.length > 0 ? (
             <ul className="verti-timeline list-unstyled">
-              {props.activitiesArr?.map((item, index) => (
+              {events?.map((item, index) => (
                 <li className={`event-list `} key={index}>
                   <div className="event-timeline-dot">
                     <i className={`font-size-18 bx bx-right-arrow-circle`} />

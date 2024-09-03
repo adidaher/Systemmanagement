@@ -348,7 +348,7 @@ const Dashboard = props => {
                 deferredTasks={deferredTasks.length}
               />
               <Col xll="4">
-                <ActivityComp activitiesArr={events} />
+                <ActivityComp />
               </Col>
             </Row>
           </Container>
