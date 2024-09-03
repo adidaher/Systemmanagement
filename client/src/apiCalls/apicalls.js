@@ -90,13 +90,32 @@ export const useGetProjectsOfOffice = office_id => {
   return { getProjects, loading, data, error }
 }
 
+const convertEvents = events => {
+  return events.map(event => convertEvent(event))
+}
+
+// Utility function to convert a single event
+const convertEvent = event => {
+  return {
+    id: event.id,
+    title: event.title,
+    start: new Date(parseInt(event.start_timestamp)),
+    end: event.end_timestamp ? new Date(parseInt(event.end_timestamp)) : null,
+    className: event.event_class,
+    extendedProps: {
+      shared_with: event.shared_with,
+    },
+  }
+}
+
 export const useGetUserEvents = userEmail => {
   const dispatch = useDispatch()
   const [getEvents, { data, loading, error }] = useLazyQuery(GET_USER_EVENTS, {
     variables: { userEmail: userEmail },
     onCompleted: data => {
       if (data?.userEvents) {
-        dispatch(getEventsSuccess(data.userEvents))
+        const formattedEvents = convertEvents(data.userEvents)
+        dispatch(getEventsSuccess(formattedEvents))
       }
     },
   })

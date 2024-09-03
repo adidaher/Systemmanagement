@@ -15,7 +15,7 @@ import {
   Table,
 } from "reactstrap"
 import { Link } from "react-router-dom"
-import loaderImg from "assets/images/loader2.gif"
+import loaderImg from "assets/images/loadingg.gif"
 
 //import action
 import { getChartsData as onGetChartsData } from "../../store/actions"
@@ -183,10 +183,16 @@ const Dashboard = props => {
   document.title = `${props.t("Dashboard")} | CPALINK`
   return (
     <React.Fragment>
-      {loading ? (
-        <img src={loaderImg} alt="" className="w-100 h-100" />
-      ) : (
-        <div className="page-content">
+      <div className="page-content">
+        {loading ? (
+          <div className="d-flex justify-content-center align-items-center">
+            <img
+              src={loaderImg}
+              alt=""
+              className="w-10 h-10 justify-content-center"
+            />
+          </div>
+        ) : (
           <Container fluid>
             {/* Render Breadcrumb */}
             {
@@ -325,7 +331,7 @@ const Dashboard = props => {
                         to="/tasks-list"
                         className="btn btn-primary waves-effect waves-light btn-sm"
                       >
-                        {props.t("View More")}{" "}
+                        {props.t("View Tasks")}{" "}
                         <i className="mdi mdi-arrow-left ms-1" />
                       </Link>
                     </div>
@@ -346,8 +352,8 @@ const Dashboard = props => {
               </Col>
             </Row>
           </Container>
-        </div>
-      )}
+        )}
+      </div>
     </React.Fragment>
   )
 }

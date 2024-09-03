@@ -54,7 +54,7 @@ const events = [
 const calenderDefaultCategories = [
   {
     id: 1,
-    title: "New Event Planning",
+    title: "New Event",
     type: "bg-success",
   },
   {
@@ -64,12 +64,12 @@ const calenderDefaultCategories = [
   },
   {
     id: 3,
-    title: "Generating Reports",
+    title: "Reminder",
     type: "bg-warning",
   },
   {
     id: 4,
-    title: "Create New theme",
+    title: "Important Meeting",
     type: "bg-danger",
   },
 ]

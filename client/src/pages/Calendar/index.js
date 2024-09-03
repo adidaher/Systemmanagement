@@ -42,6 +42,7 @@ import {
   getEvents as onGetEvents,
   updateEvent as onUpdateEvent,
   getEventsSuccess,
+  addEventSuccess,
 } from "../../store/actions"
 
 import DeleteModal from "./DeleteModal"
@@ -141,57 +142,79 @@ const Calender = props => {
   const [event, setEvent] = useState([])
   const [isEdit, setIsEdit] = useState(false)
   const [currentUser, setCurrentUser] = useState()
-  const [userCalandar, setUserCalandar] = useState()
   const [convertedEvents, setConvertedEvents] = useState()
+
+  const CalendarProperties = createSelector(
+    state => state.calendar,
+
+    Calendar => ({
+      categories: Calendar.categories,
+      events: Calendar.events,
+    })
+  )
+
+  const { categories, events } = useSelector(CalendarProperties)
+
   const [getUserCalendar, { data, loading: queryLoading }] = useLazyQuery(
     GET_USER_EVENTS,
-
     {
       onCompleted: data => {
         if (data?.userEvents) {
-          setUserCalandar(data.userEvents)
-          dispatch(getEventsSuccess(data.userEvents))
+          const formattedEvents = convertEvents(data.userEvents)
+          dispatch(getEventsSuccess(formattedEvents))
         }
       },
     }
   )
 
-  const [deleteEvent, { loading, error }] = useMutation(DELETE_EVENT)
-  const [
-    updateEvent,
-    { loading: updateEventLoading, error: updateEventError },
-  ] = useMutation(UPDATE_EVENT)
+  const [deleteEvent] = useMutation(DELETE_EVENT, {
+    onCompleted: () => {
+      dispatch(onDeleteEvent(deleteId))
+      toast.success("Event deleted successfully", { autoClose: 2000 })
+    },
+  })
 
-  const [insertNewEvent, { loading: insertNewLoading, error: insertNewError }] =
-    useMutation(INSERT_EVENT)
+  const [updateEvent] = useMutation(UPDATE_EVENT, {
+    onCompleted: data => {
+      const updatedEvent = convertEvent(data.updateEvent)
+      dispatch(onUpdateEvent(updatedEvent))
+      toast.success("Event updated successfully", { autoClose: 2000 })
+    },
+  })
+
+  const [insertNewEvent] = useMutation(INSERT_EVENT, {
+    onCompleted: data => {
+      const newEvent = convertEvent(data.addEvent)
+      dispatch(addEventSuccess(newEvent))
+      toast.success("Event added successfully", { autoClose: 2000 })
+    },
+  })
 
   useEffect(() => {
     if (!currentUser) {
-      if (localStorage.getItem("authUser")) {
-        const obj = JSON.parse(localStorage.getItem("authUser"))
-        setCurrentUser(obj)
-      }
+      setCurrentUser(JSON.parse(localStorage.getItem("authUser")))
     }
   }, [currentUser])
 
   useEffect(() => {
-    if (!userCalandar && currentUser) {
+    if (events && currentUser) {
       getUserCalendar({
         variables: { userEmail: currentUser.email },
       })
     }
-  }, [currentUser, userCalandar])
+  }, [currentUser, events])
 
   useEffect(() => {
-    if (userCalandar) {
+    if (events) {
       setConvertedEvents(
-        userCalandar.map(event => ({
+        events.map(event => ({
           ...event,
           start: new Date(parseInt(event.start_timestamp)),
         }))
       )
     }
-  }, [userCalandar])
+  }, [events])
+
   // category validation
   const categoryValidation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
@@ -211,66 +234,30 @@ const Calender = props => {
     }),
     onSubmit: async values => {
       if (isEdit) {
-        try {
-          await updateEvent({
-            variables: {
-              id: event.id,
-              user_id: currentUser.user_id,
-              title: values.title,
-              start_timestamp: event.start,
-              event_class: values.category + " text-white",
-              shared_with: values.shared_with,
-            },
-          }).onCompleted(data => {
-            setUserCalandar(prevCalendar => [
-              ...prevCalendar,
-              {
-                id: event.id,
-                user_id: currentUser.user_id,
-                title: values.title,
-                start_timestamp: event.start,
-                event_class: values.category + " text-white",
-                shared_with: values.shared_with,
-              },
-            ])
-            // update event
-            dispatch(onUpdateEvent(updateEvent))
-            toast.success("Event updated Successfully", { autoClose: 2000 })
-            categoryValidation.resetForm()
-          })
-        } catch (err) {}
+        updateEvent({
+          variables: {
+            id: event.id,
+            user_id: currentUser.user_id,
+            title: values.title,
+            start_timestamp: event.start_timestamp,
+            event_class: values.category + " text-white",
+            shared_with: values.shared_with,
+          },
+        })
       } else {
         insertNewEvent({
           variables: {
             user_id: currentUser.user_id,
-            title: values["title"],
+            title: values.title,
             start_timestamp: selectedDay ? selectedDay.date : new Date(),
-            event_class: values["category"]
-              ? values["category"] + " text-white"
-              : "bg-primary text-white",
+            event_class: values.category + " text-white",
             shared_with: values.shared_with,
           },
-        }).onCompleted(() => {
-          //dispatch(onAddNewEvent(newEvent))
-
-          toast.success("Event added Successfully", { autoClose: 2000 })
-          categoryValidation.resetForm()
         })
-        // save new event
       }
       toggle()
     },
   })
-
-  const CalendarProperties = createSelector(
-    state => state.calendar,
-
-    Calendar => ({
-      categories: Calendar.categories,
-    })
-  )
-
-  const { categories, events } = useSelector(CalendarProperties)
 
   const [deleteModal, setDeleteModal] = useState(false)
   const [deleteId, setDeleteId] = useState()
@@ -279,7 +266,6 @@ const Calender = props => {
 
   useEffect(() => {
     dispatch(onGetCategories())
-    //dispatch(onGetEvents())
     new Draggable(document.getElementById("external-events"), {
       itemSelector: ".external-event",
     })
@@ -360,11 +346,7 @@ const Calender = props => {
    * On delete event
    */
   const handleDeleteEvent = () => {
-    if (deleteId) {
-      deleteEvent({ variables: { id: deleteId } }).then(result => {
-        toast.success("Event Deleted Successfully", { autoClose: 2000 })
-      })
-    }
+    deleteEvent({ variables: { id: deleteId } })
     setDeleteModal(false)
   }
 
@@ -379,6 +361,7 @@ const Calender = props => {
    * On calendar drop event
    */
   const onDrop = event => {
+    console.log("on onDrop  ... ", event)
     const date = event["date"]
     const day = date.getDate()
     const month = date.getMonth()
@@ -403,13 +386,14 @@ const Calender = props => {
       draggedEl.classList.contains("external-event") &&
       draggedElclass.indexOf("fc-event-draggable") == -1
     ) {
-      const modifiedData = {
+      const newEvent = {
         id: Math.floor(Math.random() * 100),
         title: draggedEl.innerText,
         start: modifiedDate,
         className: draggedEl.className,
       }
-      dispatch(onAddNewEvent(modifiedData))
+      dispatch(onAddNewEvent(newEvent))
+      setConvertedEvents([...convertedEvents, newEvent])
     }
   }
 
@@ -431,6 +415,25 @@ const Calender = props => {
   const [isLocal, setIsLocal] = useState(enLocal)
   const handleChangeLocals = value => {
     setIsLocal(value)
+  }
+
+  // Utility function to convert events data to the format expected by FullCalendar
+  const convertEvents = events => {
+    return events.map(event => convertEvent(event))
+  }
+
+  // Utility function to convert a single event
+  const convertEvent = event => {
+    return {
+      id: event.id,
+      title: event.title,
+      start: new Date(parseInt(event.start_timestamp)),
+      end: event.end_timestamp ? new Date(parseInt(event.end_timestamp)) : null,
+      className: event.event_class,
+      extendedProps: {
+        shared_with: event.shared_with,
+      },
+    }
   }
 
   return (
@@ -534,7 +537,7 @@ const Calender = props => {
                           right: "dayGridMonth,dayGridWeek,dayGridDay,listWeek",
                         }}
                         locale={isLocal}
-                        events={convertedEvents}
+                        events={events}
                         editable={true}
                         droppable={true}
                         selectable={true}

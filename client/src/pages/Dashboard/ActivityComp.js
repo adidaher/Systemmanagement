@@ -8,7 +8,7 @@ const ActivityComp = props => {
     const date = new Date(parseInt(timestamp, 10))
     return date.toLocaleDateString()
   }
-
+  console.log(props.activitiesArr)
   return (
     <React.Fragment>
       <Card>
@@ -24,7 +24,7 @@ const ActivityComp = props => {
                   <div className="flex-shrink-0 d-flex">
                     <div className="me-3">
                       <h5 className="font-size-14">
-                        {formatDate(item.start_timestamp)}
+                        {item.start.toLocaleDateString()}
                         <i className="bx bx-right-arrow-alt font-size-16 text-primary align-middle ms-2" />
                       </h5>
                     </div>
