@@ -197,7 +197,7 @@ const Calender = props => {
   }, [currentUser])
 
   useEffect(() => {
-    if (events && currentUser) {
+    if (!events && currentUser) {
       getUserCalendar({
         variables: { userEmail: currentUser.email },
       })
@@ -361,7 +361,6 @@ const Calender = props => {
    * On calendar drop event
    */
   const onDrop = event => {
-    console.log("on onDrop  ... ", event)
     const date = event["date"]
     const day = date.getDate()
     const month = date.getMonth()
