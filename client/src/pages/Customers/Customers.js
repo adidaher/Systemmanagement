@@ -211,7 +211,6 @@ const Customers = props => {
     setDeleteModal(true)
   }
   const handleDeleteCustomer = () => {
-    console.log(customer.customer_id)
     deleteCustomer({ variables: { id: customer.customer_id } }).then(result => {
       toast.success("Event Deleted Successfully", { autoClose: 2000 })
       setCustomer(customers =>
