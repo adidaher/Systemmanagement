@@ -213,7 +213,7 @@ const Customers = props => {
   const handleDeleteCustomer = () => {
     deleteCustomer({ variables: { id: customer.customer_id } }).then(result => {
       toast.success("Event Deleted Successfully", { autoClose: 2000 })
-      setCustomer(customers =>
+      setCustomerList(customers =>
         customers.filter(per => per.customer_id !== customer.customer_id)
       )
     })
