@@ -181,7 +181,7 @@ const Customers = props => {
                 className="btn btn-sm btn-soft-info"
                 onClick={() => handleCustomerClick(cellProps.row.original)}
               >
-                <i className="mdi mdi-pencil-outline" />
+                <i className="mdi mdi-pencil-outline font-size-18" />
               </Link>
             </li>
             <li>
@@ -190,7 +190,7 @@ const Customers = props => {
                 className="btn btn-sm btn-soft-danger"
                 onClick={() => handleDelete(cellProps.row.original)}
               >
-                <i className="mdi mdi-delete-outline" />
+                <i className="mdi mdi-delete-outline font-size-18" />
               </Link>
             </li>
           </ul>
@@ -211,6 +211,7 @@ const Customers = props => {
     setDeleteModal(true)
   }
   const handleDeleteCustomer = () => {
+    console.log(customer.customer_id)
     deleteCustomer({ variables: { id: customer.customer_id } }).then(result => {
       toast.success("Event Deleted Successfully", { autoClose: 2000 })
       setCustomer(customers =>

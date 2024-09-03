@@ -446,7 +446,7 @@ const ContactsList = () => {
                     handleUserClick(userData)
                   }}
                 >
-                  <i className="mdi mdi-pencil font-size-18" id="edittooltip" />
+                  <i className="mdi mdi-pencil font-size-20" id="edittooltip" />
                 </Link>
                 <Link
                   to="#"
@@ -457,7 +457,7 @@ const ContactsList = () => {
                   }}
                 >
                   <i
-                    className="mdi mdi-delete font-size-18"
+                    className="mdi mdi-delete font-size-20"
                     id="deletetooltip"
                   />
                 </Link>

@@ -251,7 +251,7 @@ const RootMutation = new GraphQLObjectType({
         id: { type: GraphQLID },
       },
       resolve(parentValue, args) {
-        const query = `DELETE FROM events WHERE customer_id = $1 RETURNING *`;
+        const query = `DELETE FROM customers WHERE customer_id = $1 RETURNING *`;
         const values = [args.id];
 
         return db
