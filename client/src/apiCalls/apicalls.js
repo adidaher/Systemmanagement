@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { useLazyQuery, gql, useMutation } from "@apollo/client"
+import { useLazyQuery, gql, useMutation, useQuery } from "@apollo/client"
 import { getTasksSuccess } from "store/tasks/actions"
 import { useSelector, useDispatch } from "react-redux"
 import { getProjectsSuccess } from "store/projects/actions"
@@ -121,4 +121,20 @@ export const useGetUserEvents = userEmail => {
   })
 
   return { getEvents, loading, data, error }
+}
+
+export const useUserEventsDashboard = userEmail => {
+  const dispatch = useDispatch()
+
+  const { data, loading, error } = useQuery(GET_USER_EVENTS, {
+    variables: { userEmail },
+    onCompleted: data => {
+      if (data?.userEvents) {
+        const formattedEvents = convertEvents(data.userEvents)
+        dispatch(getEventsSuccess(formattedEvents))
+      }
+    },
+  })
+
+  return { loading, data, error }
 }

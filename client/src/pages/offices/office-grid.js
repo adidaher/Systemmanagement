@@ -36,23 +36,9 @@ const OfficesGrid = props => {
   //meta title
   document.title = "Office Grid |  CPALINK "
 
-  const dispatch = useDispatch()
-
   const [offices, setOffices] = useState([])
   const [officesList, setOfficesList] = useState([])
   const [Loading, setLoading] = useState(true)
-  /*
-  const ProjectsProjectProperties = createSelector(
-    state => state.projects,
-    Projects => ({
-      projects: Projects.projects,
-      loading: Projects.loading,
-    })
-  )
-*/
-  //  const { loading, projects } = useSelector(ProjectsProjectProperties)
-
-  // const [projectsList, setProjectsList] = useState()
 
   const { data, loading: queryLoading } = useQuery(
     GET_OFFICES,
@@ -66,12 +52,6 @@ const OfficesGrid = props => {
       },
     }
   )
-
-  //const [isLoading, setLoading] = useState(queryLoading)
-  /*
-  useEffect(() => {
-    dispatch(onGetProjects())
-  }, [dispatch])*/
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1)

@@ -3,10 +3,21 @@ import { Card, CardBody, CardTitle } from "reactstrap"
 import { Link } from "react-router-dom"
 import { withTranslation } from "react-i18next"
 import { useSelector } from "react-redux"
+import { createSelector } from "reselect"
 
 const ActivityComp = props => {
-  const events = useSelector(state => state.calendar.events)
+  const CalendarProperties = createSelector(
+    state => state.calendar,
 
+    Calendar => ({
+      categories: Calendar.categories,
+      events: Calendar.events,
+    })
+  )
+
+  const { categories, events } = useSelector(CalendarProperties)
+
+  console.log(events)
   return (
     <React.Fragment>
       <Card>

@@ -141,7 +141,11 @@ const Calender = props => {
 
   const [event, setEvent] = useState([])
   const [isEdit, setIsEdit] = useState(false)
-  const [currentUser, setCurrentUser] = useState()
+
+  const [currentUser, setCurrentUser] = useState(() => {
+    const authUser = localStorage.getItem("authUser")
+    return authUser ? JSON.parse(authUser) : null
+  })
   const [convertedEvents, setConvertedEvents] = useState()
 
   const CalendarProperties = createSelector(
@@ -191,13 +195,7 @@ const Calender = props => {
   })
 
   useEffect(() => {
-    if (!currentUser) {
-      setCurrentUser(JSON.parse(localStorage.getItem("authUser")))
-    }
-  }, [currentUser])
-
-  useEffect(() => {
-    if (!events && currentUser) {
+    if (!events || events.length === 0) {
       getUserCalendar({
         variables: { userEmail: currentUser.email },
       })

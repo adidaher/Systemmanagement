@@ -1,367 +1,291 @@
 import PropTypes from "prop-types"
 import React, { useEffect, useState } from "react"
-import {
-  Container,
-  Row,
-  Col,
-  Button,
-  Card,
-  CardBody,
-  Input,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Table,
-} from "reactstrap"
-import { Link } from "react-router-dom"
+import { Container, Row, Col, Card, CardBody, CardTitle } from "reactstrap"
 import loaderImg from "assets/images/loadingg.gif"
-
-//import action
+import { Link } from "react-router-dom"
+// Redux
+import { useSelector, useDispatch } from "react-redux"
 import { getChartsData as onGetChartsData } from "../../store/actions"
 
-// Pages Components
+// Components
 import ActivityComp from "./ActivityComp"
-
-//Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb"
-
-//i18n
-import { withTranslation } from "react-i18next"
-
-//redux
-import { useSelector, useDispatch } from "react-redux"
-import { createSelector } from "reselect"
 import TotalSellingProduct from "../Dashboard-saas/total-selling-product"
 import SalesAnalytics from "../Dashboard-saas/sales-analytics"
 
+import { withTranslation } from "react-i18next"
+
+// API Hooks
 import {
   useGetAllTasks,
   useGetProjectsOfOffice,
   useGetUserEvents,
 } from "apiCalls/apicalls"
 
-/*
-  in this page we want to collect this data first:
-    tasks
-    upcoming events
-    cases
-*/
-
 const Dashboard = props => {
-  const [modal, setModal] = useState(false)
-  const [subscribeModal, setSubscribeModal] = useState(false)
-
+  const [loading, setLoading] = useState(false)
   const [completedTasks, setCompletedTasks] = useState([])
   const [tasktodo, settasktodo] = useState([])
   const [deferredTasks, setDeferred] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [dataFetched, setDataFetched] = useState(false)
 
-  const [currentUser, setCurrentUser] = useState()
   const dispatch = useDispatch()
 
-  // Selectors
-  const tasksSelector = createSelector(
-    state => state.tasks,
-    tasks => tasks.tasks
-  )
-  const projectsSelector = createSelector(
-    state => state.projects,
-    projects => projects.projects
-  )
-  const eventsSelector = createSelector(
-    state => state.calendar,
-    Calendar => Calendar.events
-  )
+  const tasks = useSelector(state => state.tasks.tasks)
+  const projects = useSelector(state => state.projects)
+  const events = useSelector(state => state.calendar.events)
 
-  const tasks = useSelector(tasksSelector)
-  const projects = useSelector(projectsSelector)
-  const events = useSelector(eventsSelector)
+  const [currentUser, setCurrentUser] = useState(() => {
+    const authUser = localStorage.getItem("authUser")
+    return authUser ? JSON.parse(authUser) : null
+  })
 
   // API Hooks
-  const {
-    fetchTasks,
-    loading: loadingTasks,
-    data: tasksData,
-    error: tasksError,
-  } = useGetAllTasks()
-  const {
-    getProjects,
-    loading: loadingProjects,
-    data: projectsData,
-    error: projectsError,
-  } = useGetProjectsOfOffice(currentUser?.office_id)
-  const {
-    getEvents,
-    loading: loadingEvents,
-    data: eventsData,
-    error: eventsError,
-  } = useGetUserEvents(currentUser?.email)
+  const { fetchTasks, loading: loadingTasks } = useGetAllTasks()
+  const { getProjects, loading: loadingProjects } = useGetProjectsOfOffice(
+    currentUser?.office_id
+  )
+  const { getEvents, loading: loadingEvents } = useGetUserEvents(
+    currentUser?.email
+  )
 
   useEffect(() => {
-    if (!currentUser) {
-      if (localStorage.getItem("authUser")) {
-        const obj = JSON.parse(localStorage.getItem("authUser"))
-        setCurrentUser(obj)
-      }
-    }
-  }, [currentUser])
-
-  // Effect to load user from localStorage and fetch data
-  useEffect(() => {
-    const fetchData = async () => {
-      if (currentUser) {
-        // Start loader before fetching
-        setLoading(true)
+    // Fetch tasks only if the Redux store is empty
+    if (!tasks || tasks.length === 0) {
+      const fetchTasksData = async () => {
         try {
-          await getProjects()
           await fetchTasks()
-          await getEvents()
         } catch (error) {
-          console.error("Error fetching data:", error)
-        } finally {
-          setLoading(false)
+          console.error("Failed to fetch tasks:", error)
         }
       }
+      fetchTasksData()
     }
+  }, [tasks, fetchTasks, dispatch])
 
-    fetchData()
-  }, [currentUser])
+  useEffect(() => {
+    // Fetch projects only if the Redux store is empty
+    if (!projects || projects.length === 0) {
+      const fetchProjectsData = async () => {
+        try {
+          await getProjects()
+        } catch (error) {
+          console.error("Failed to fetch projects:", error)
+        }
+      }
+      fetchProjectsData()
+    }
+  }, [projects, getProjects, dispatch])
 
-  // Effect to process tasks once fetched
+  useEffect(() => {
+    // Fetch events only if the Redux store is empty
+    if (!events || events.length === 0) {
+      const fetchEventsData = async () => {
+        try {
+          await getEvents()
+        } catch (error) {
+          console.error("Failed to fetch events:", error)
+        }
+      }
+      fetchEventsData()
+    }
+  }, [events, getEvents, dispatch])
+
   useEffect(() => {
     if (tasks) {
-      const completedTasks = tasks.filter(
+      const completedTasks = tasks?.filter(
         task => task.task_status === "completed"
       )
       setCompletedTasks(completedTasks)
 
-      const inProgressTasks = tasks.filter(
+      const inProgressTasks = tasks?.filter(
         task => task.task_status === "in Progress"
       )
       settasktodo(inProgressTasks)
 
-      const deferredTask = tasks.filter(
+      const deferredTask = tasks?.filter(
         task => task.task_status === "Up comming"
       )
       setDeferred(deferredTask)
     }
   }, [tasks])
 
-  const DashboardProperties = createSelector(
-    state => state.Dashboard,
-    dashboard => ({
-      chartsData: dashboard.chartsData,
-    })
-  )
-
-  const { chartsData } = useSelector(DashboardProperties)
-
-  useEffect(() => {
-    setTimeout(() => {
-      setSubscribeModal(true)
-    }, 2000)
-  }, [])
-
-  const [periodData, setPeriodData] = useState([])
-  const [periodType, setPeriodType] = useState("yearly")
-
-  useEffect(() => {
-    setPeriodData(chartsData)
-  }, [chartsData])
-
-  const onChangeChartPeriod = pType => {
-    setPeriodType(pType)
-    dispatch(onGetChartsData(pType))
-  }
-
   useEffect(() => {
     dispatch(onGetChartsData("yearly"))
   }, [dispatch])
 
-  // Meta title
   document.title = `${props.t("Dashboard")} | CPALINK`
+
   return (
-    <React.Fragment>
-      <div className="page-content">
-        {loading ? (
-          <div className="d-flex justify-content-center align-items-center">
-            <img
-              src={loaderImg}
-              alt=""
-              className="w-10 h-10 justify-content-center"
-            />
-          </div>
-        ) : (
-          <Container fluid>
-            {/* Render Breadcrumb */}
-            {
-              <Breadcrumbs
-                title={props.t("Dashboards")}
-                breadcrumbItem={props.t("Dashboard")}
-              />
-            }
-            <Card className="overflow-hidden">
-              <div className="bg-secondary-subtle">
-                <Row>
-                  <Col xs="5">
-                    <div className="text-primary p-3">
-                      <h5 className="text-primary">
-                        {props.t("Welcome Back !")}{" "}
-                      </h5>
-                      <p> {props.t("It will seem like simplified")}</p>
-                    </div>
-                  </Col>
-                </Row>
-              </div>
-              <CardBody className="pt-0">
-                <Row>
-                  <Col sm="4">
-                    <h3 className="font-size-15 text-truncate mt-5">
-                      {currentUser?.first_name} {currentUser?.last_name}
-                    </h3>
+    <div className="page-content">
+      {loading ? (
+        <div className="d-flex justify-content-center align-items-center">
+          <img
+            src={loaderImg}
+            alt=""
+            className="w-10 h-10 justify-content-center"
+          />
+        </div>
+      ) : (
+        <Container fluid>
+          <Breadcrumbs
+            title={props.t("Dashboards")}
+            breadcrumbItem={props.t("Dashboard")}
+          />
 
-                    <p className="text-muted mb-0 text-truncate">
-                      {currentUser?.role}
-                    </p>
-                    <div className="mt-4">
-                      <Link
-                        to="/contacts-profile"
-                        className="btn btn-primary  btn-sm"
-                      >
-                        {props.t("View Profile")}{" "}
-                        <i className="mdi mdi-arrow-left ms-1" />
-                      </Link>
-                    </div>
-                  </Col>
+          {/* Dashboard Header */}
+          <Card className="overflow-hidden">
+            <CardBody className="pt-0">
+              <Row>
+                <Col sm="4">
+                  <h3 className="font-size-15 mt-5">{`${currentUser?.first_name} ${currentUser?.last_name}`}</h3>
+                  <p className="text-muted mb-0">{currentUser?.role}</p>
+                  <div className="mt-4">
+                    <Link
+                      to="/contacts-profile"
+                      className="btn btn-primary btn-sm"
+                    >
+                      {props.t("View Profile")}{" "}
+                      <i className="mdi mdi-arrow-left ms-1" />
+                    </Link>
+                  </div>
+                </Col>
 
-                  <Col sm={8}>
-                    <div className="pt-4 mt-4">
-                      <Row>
-                        <Col xs="6">
+                <Col sm={8}>
+                  <div className="pt-4 mt-4">
+                    <Row>
+                      <Col xs="6">
+                        {projects && (
                           <h5 className="font-size-15">{projects.length}</h5>
+                        )}
+                        {projects && (
                           <p className="text-muted mb-0">
                             {props.t("Projects")}
                           </p>
-                        </Col>
-                        {/* <Col xs="6">
-                          <h5 className="font-size-15">10</h5>
-                          <p className="text-muted mb-0">Customers</p>
-                        </Col> */}
-                      </Row>
-                    </div>
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card>
-            <Row>
-              <Col xl="12">
-                <Row>
-                  <Col md="3" key={"_col_1"}>
-                    <Card className="mini-stats-wid">
-                      <CardBody>
-                        <div className="d-flex">
-                          <div className="flex-grow-1">
-                            <p className="text-muted fw-medium">
-                              {" "}
-                              {props.t("Tasks Todo")}{" "}
-                            </p>
-                            {tasktodo && (
-                              <h4 className="mb-0">{tasktodo.length}</h4>
-                            )}
-                          </div>
-                          <div className="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                            <span className="avatar-title rounded-circle bg-primary">
-                              <i className={"bx bx-copy-alt font-size-24"}></i>
-                            </span>
-                          </div>
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </Col>
-                  <Col md="3" key={"_col_2"}>
-                    <Card className="mini-stats-wid">
-                      <CardBody>
-                        <div className="d-flex">
-                          <div className="flex-grow-1">
-                            <p className="text-muted fw-medium">
-                              {props.t("Tasks Performed")}
-                            </p>
-                            {completedTasks && (
-                              <h4 className="mb-0">{completedTasks.length}</h4>
-                            )}
-                          </div>
-                          <div className="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                            <span className="avatar-title rounded-circle bg-primary">
-                              <i className={"bx bx-copy-alt font-size-24"}></i>
-                            </span>
-                          </div>
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </Col>
-                  <Col md="3" key={"_col_3"}>
-                    <Card className="mini-stats-wid">
-                      <CardBody>
-                        <div className="d-flex">
-                          <div className="flex-grow-1">
-                            <p className="text-muted fw-medium">
-                              {props.t("Deferred Tasks")}
-                            </p>
-                            {deferredTasks && (
-                              <h4 className="mb-0">{deferredTasks.length}</h4>
-                            )}
-                          </div>
-                          <div className="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                            <span className="avatar-title rounded-circle bg-primary">
-                              <i className={"bx bx-copy-alt font-size-24"}></i>
-                            </span>
-                          </div>
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </Col>
-                  <Col
-                    md="2"
-                    key={"_col_4"}
-                    className="d-flex justify-content-center align-items-center"
-                  >
-                    <div className="text-center mt-1">
-                      <Link
-                        to="/tasks-list"
-                        className="btn btn-primary waves-effect waves-light btn-sm"
-                      >
-                        {props.t("View Tasks")}{" "}
-                        <i className="mdi mdi-arrow-left ms-1" />
-                      </Link>
-                    </div>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
+                        )}
+                      </Col>
+                    </Row>
+                  </div>
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
 
-            <Row>
-              <SalesAnalytics
-                dataColors='["--bs-primary", "--bs-success", "--bs-danger"]'
-                completed={completedTasks.length}
-                todo={tasktodo.length}
-                deferredTasks={deferredTasks.length}
-              />
-              <Col xll="4">
-                <ActivityComp />
-              </Col>
-            </Row>
-          </Container>
-        )}
-      </div>
-    </React.Fragment>
+          {/* Tasks and Stats */}
+          <Row>
+            <Col md="3">
+              <Card className="mini-stats-wid">
+                <CardBody>
+                  <div className="d-flex">
+                    <div className="flex-grow-1">
+                      <p className="text-muted fw-medium">
+                        {props.t("Tasks Todo")}
+                      </p>
+                      <h4 className="mb-0">{tasktodo.length}</h4>
+                    </div>
+                  </div>
+                </CardBody>
+              </Card>
+            </Col>
+            <Col md="3">
+              <Card className="mini-stats-wid">
+                <CardBody>
+                  <div className="d-flex">
+                    <div className="flex-grow-1">
+                      <p className="text-muted fw-medium">
+                        {props.t("Tasks Performed")}
+                      </p>
+                      <h4 className="mb-0">{completedTasks.length}</h4>
+                    </div>
+                  </div>
+                </CardBody>
+              </Card>
+            </Col>
+            <Col md="3">
+              <Card className="mini-stats-wid">
+                <CardBody>
+                  <div className="d-flex">
+                    <div className="flex-grow-1">
+                      <p className="text-muted fw-medium">
+                        {props.t("Deferred Tasks")}
+                      </p>
+                      <h4 className="mb-0">{deferredTasks.length}</h4>
+                    </div>
+                  </div>
+                </CardBody>
+              </Card>
+            </Col>
+            <Col
+              md="2"
+              className="d-flex justify-content-center align-items-center"
+            >
+              <Link to="/tasks-list" className="btn btn-primary btn-sm">
+                {props.t("View Tasks")}{" "}
+                <i className="mdi mdi-arrow-left ms-1" />
+              </Link>
+            </Col>
+          </Row>
+
+          {/* Sales Analytics and Activity Component */}
+          <Row>
+            <SalesAnalytics
+              dataColors='["--bs-primary", "--bs-success", "--bs-danger"]'
+              completed={completedTasks.length}
+              todo={tasktodo.length}
+              deferredTasks={deferredTasks.length}
+            />
+            <Col xll="4">
+              <Card>
+                <CardBody>
+                  <CardTitle className="mb-5">{props.t("Activity")} </CardTitle>
+                  {events && events.length > 0 ? (
+                    <ul className="verti-timeline list-unstyled">
+                      {events?.map((item, index) => (
+                        <li className={`event-list `} key={index}>
+                          <div className="event-timeline-dot">
+                            <i
+                              className={`font-size-18 bx bx-right-arrow-circle`}
+                            />
+                          </div>
+                          <div className="flex-shrink-0 d-flex">
+                            <div className="me-3">
+                              <h5 className="font-size-14">
+                                {item.start.toLocaleDateString()}
+                                <i className="bx bx-right-arrow-alt font-size-16 text-primary align-middle ms-2" />
+                              </h5>
+                            </div>
+                            <div className="flex-grow-1">
+                              <div>{item.title}</div>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div>No activities</div>
+                  )}
+
+                  <div className="text-center mt-4">
+                    <Link
+                      to="/calendar"
+                      className="btn btn-primary waves-effect waves-light btn-sm"
+                    >
+                      {props.t("View More")}{" "}
+                      <i className="mdi mdi-arrow-left ms-1" />
+                    </Link>
+                  </div>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      )}
+    </div>
   )
 }
 
 Dashboard.propTypes = {
   t: PropTypes.any,
-  chartsData: PropTypes.any,
-  onGetChartsData: PropTypes.func,
 }
 
 export default withTranslation()(Dashboard)
