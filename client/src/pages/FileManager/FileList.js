@@ -66,7 +66,7 @@ const FileList = () => {
   const openFileInExplorer = filePath => {
     axios
       .get(
-        `https://systemmanagement.onrender.com/openFile?filePath=${encodeURIComponent(
+        `http://localhost:4000/openFile?filePath=${encodeURIComponent(
           filePath
         )}`
       )
