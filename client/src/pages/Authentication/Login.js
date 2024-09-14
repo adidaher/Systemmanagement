@@ -17,7 +17,7 @@ import {
 //redux
 import { useSelector, useDispatch } from "react-redux"
 import { createSelector } from "reselect"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import withRouter from "components/Common/withRouter"
 
 // Formik validation
@@ -55,7 +55,7 @@ const Login = props => {
   document.title = "Login | CPALINK"
 
   const dispatch = useDispatch()
-
+  const navigate = useNavigate()
   const [getUserByEmail, { loading, data }] = useLazyQuery(GET_USER_BY_EMAIL)
 
   const validation = useFormik({
@@ -73,12 +73,15 @@ const Login = props => {
     onSubmit: async values => {
       await getUserByEmail({
         variables: { email: values.email, password: values.password },
+        onCompleted: data => {
+          if (data && data.GetUserByEmail) {
+            dispatch(loginUser(data.GetUserByEmail, props.router.navigate))
+            navigate("/dashboard")
+          } else {
+            console.error("Invalid login credentials")
+          }
+        },
       })
-      if (data && data.GetUserByEmail) {
-        dispatch(loginUser(data.GetUserByEmail, props.router.navigate))
-      } else {
-        console.error("Invalid login credentials")
-      }
     },
   })
 

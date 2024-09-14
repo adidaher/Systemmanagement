@@ -2,8 +2,9 @@ import React from "react"
 import { Row, Col, Card, CardBody } from "reactstrap"
 import ReactApexChart from "react-apexcharts"
 import getChartColorsArray from "../../components/Common/ChartsDynamicColor"
+import { withTranslation } from "react-i18next"
 
-const SalesAnalytics = ({ dataColors, completed, todo, deferredTasks }) => {
+const SalesAnalytics = ({ t, dataColors, completed, todo, deferredTasks }) => {
   const apexSalesAnalyticsChartColors = getChartColorsArray(dataColors)
   const series = [completed, todo, deferredTasks]
   const options = {
@@ -24,7 +25,7 @@ const SalesAnalytics = ({ dataColors, completed, todo, deferredTasks }) => {
       <Col xl="4">
         <Card>
           <CardBody>
-            <h4 className="card-title mb-4">Monthly Analytics</h4>
+            <h4 className="card-title mb-4">{t("Monthly Analytic")}</h4>
 
             <div>
               <div id="donut-chart">
@@ -44,7 +45,7 @@ const SalesAnalytics = ({ dataColors, completed, todo, deferredTasks }) => {
                   <div className="mt-4">
                     <p className="mb-2 text-truncate">
                       <i className="mdi mdi-circle text-primary me-1" />
-                      Completed
+                      {t("Completed")}
                     </p>
                     <h5>{completed}</h5>
                   </div>
@@ -53,7 +54,7 @@ const SalesAnalytics = ({ dataColors, completed, todo, deferredTasks }) => {
                   <div className="mt-4">
                     <p className="mb-2 text-truncate">
                       <i className="mdi mdi-circle text-success me-1" />
-                      Tasks Todo
+                      {t("Tasks Todo")}
                     </p>
                     <h5>{todo}</h5>
                   </div>
@@ -62,7 +63,7 @@ const SalesAnalytics = ({ dataColors, completed, todo, deferredTasks }) => {
                   <div className="mt-4">
                     <p className="mb-2 text-truncate">
                       <i className="mdi mdi-circle text-danger me-1" />
-                      Deferred Tasks
+                      {t("Deferred Tasks")}
                     </p>
                     <h5>{deferredTasks}</h5>
                   </div>
@@ -76,4 +77,4 @@ const SalesAnalytics = ({ dataColors, completed, todo, deferredTasks }) => {
   )
 }
 
-export default SalesAnalytics
+export default withTranslation()(SalesAnalytics)

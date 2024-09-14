@@ -168,7 +168,7 @@ const TasksCreate = () => {
 
                         <FormGroup className="mb-4" row>
                           <Label className="col-form-label col-lg-2">
-                            Task Date
+                            DeadLine
                           </Label>
                           <Col lg="10">
                             <Row>

@@ -31,7 +31,7 @@ function* loginUser({ payload: { user, history } }) {
       localStorage.setItem("authUser", JSON.stringify(response))
       yield put(loginSuccess(response))
     } else if (process.env.REACT_APP_DEFAULTAUTH === "fake") {
-      console.log("start login with user: ", user.email)
+      //console.log("start login with user: ", user.email)
       localStorage.setItem("authUser", JSON.stringify(user))
 
       yield put(loginSuccess(user))

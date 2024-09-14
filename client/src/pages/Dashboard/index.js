@@ -237,7 +237,9 @@ const Dashboard = props => {
             <Col xll="4">
               <Card>
                 <CardBody>
-                  <CardTitle className="mb-5">{props.t("Activity")} </CardTitle>
+                  <CardTitle className="mb-5">
+                    {props.t("Upcoming Events")}
+                  </CardTitle>
                   {events && events.length > 0 ? (
                     <ul className="verti-timeline list-unstyled">
                       {events?.map((item, index) => (
