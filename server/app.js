@@ -49,7 +49,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/files", (req, res) => {
-  const directoryPath = "C:\\react"; // Specify the path to the directory
+  const directoryPath = "C:\\cpalink"; // Specify the path to the directory
   if (!fs.existsSync(directoryPath)) {
     console.error(`Directory does not exist: ${directoryPath}`);
     res.status(404).json({ error: "Directory not found" });

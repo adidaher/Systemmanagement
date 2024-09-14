@@ -20,7 +20,7 @@ const FileList = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/files")
+      .get("https://systemmanagement-two.vercel.app/files")
       .then(response => {
         console.log(response.data)
         setFiles(response.data)
