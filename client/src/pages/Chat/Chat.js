@@ -51,9 +51,6 @@ import { getGroupsSuccess, getOfficeName } from "../../store/chat/actions"
 //redux
 import { useSelector, useDispatch } from "react-redux"
 import { createSelector } from "reselect"
-import Spinners from "components/Common/Spinner"
-
-import { handleSearchData } from "components/Common/searchFile"
 
 import { useLazyQuery, gql, useMutation } from "@apollo/client"
 
@@ -127,8 +124,6 @@ const Chat = props => {
   }, [currentUser, groups, dispatch, getOfficeChats])
 
   const [messagesData, setMessagesData] = useState()
-
-  const [menu1, setMenu1] = useState(false)
   const [search_Menu, setsearch_Menu] = useState(false)
   const [settings_Menu, setsettings_Menu] = useState(false)
   const [other_Menu, setother_Menu] = useState(false)
@@ -150,7 +145,7 @@ const Chat = props => {
         }))
       }
       const updatedMessages = updateMessagesWithCurrentUser(groups, currentUser)
-      //console.log(updatedMessages)
+
       setMessagesData(updatedMessages)
     }
   }, [currentUser, groups])
@@ -352,7 +347,7 @@ const Chat = props => {
                           id="search-user"
                           type="text"
                           className="form-control"
-                          placeholder="Search..."
+                          placeholder={props.t("Search...")}
                         />
                         <i className="bx bx-search-alt search-icon" />
                       </div>
@@ -370,7 +365,9 @@ const Chat = props => {
                             }}
                           >
                             <i className="bx bx-group font-size-20 d-sm-none" />
-                            <span className="d-none d-sm-block">Groups</span>
+                            <span className="d-none d-sm-block">
+                              {props.t("Groups")}
+                            </span>
                           </NavLink>
                         </NavItem>
                       </Nav>
@@ -430,8 +427,8 @@ const Chat = props => {
                               }
                             />
                             {Chat_Box_User_Status === "online"
-                              ? "Active now"
-                              : "Offline"}
+                              ? props.t("Active now")
+                              : props.t("Offline")}
                           </p>
                         </Col>
                         <Col md="8" xs="3">

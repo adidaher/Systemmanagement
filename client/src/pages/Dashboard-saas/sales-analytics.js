@@ -7,8 +7,9 @@ import { withTranslation } from "react-i18next"
 const SalesAnalytics = ({ t, dataColors, completed, todo, deferredTasks }) => {
   const apexSalesAnalyticsChartColors = getChartColorsArray(dataColors)
   const series = [completed, todo, deferredTasks]
+
   const options = {
-    labels: ["Completed Tasks", "Task Todo", "Deferred Tasks"],
+    labels: [t("Completed Tasks"), t("Tasks Todo"), t("Deferred Tasks")],
     colors: apexSalesAnalyticsChartColors,
     legend: { show: !1 },
     plotOptions: {

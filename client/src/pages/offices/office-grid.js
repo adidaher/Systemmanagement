@@ -9,11 +9,7 @@ import Breadcrumbs from "components/Common/Breadcrumb"
 //Import Cards
 import CardProject from "../Projects/card-project"
 
-import { getProjects as onGetProjects } from "store/actions"
-
 //redux
-import { useSelector, useDispatch } from "react-redux"
-import { createSelector } from "reselect"
 import Spinners from "components/Common/Spinner"
 import Paginations from "components/Common/Pagination"
 
@@ -40,18 +36,14 @@ const OfficesGrid = props => {
   const [officesList, setOfficesList] = useState([])
   const [Loading, setLoading] = useState(true)
 
-  const { data, loading: queryLoading } = useQuery(
-    GET_OFFICES,
-
-    {
-      onCompleted: data => {
-        if (data) {
-          setOffices(data.allOffice)
-          setLoading(false)
-        }
-      },
-    }
-  )
+  const { data, loading: queryLoading } = useQuery(GET_OFFICES, {
+    onCompleted: data => {
+      if (data) {
+        setOffices(data.allOffice)
+        setLoading(false)
+      }
+    },
+  })
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1)

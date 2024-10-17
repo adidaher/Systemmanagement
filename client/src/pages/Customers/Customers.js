@@ -340,7 +340,7 @@ const Customers = props => {
                       }
                       handleUserClick={handleUserClicks}
                       buttonClass="btn btn-success btn-rounded waves-effect waves-light addContact-modal mb-2 float-start"
-                      buttonName="New Contact"
+                      buttonName={props.t("New Contact")}
                       tableClass="align-middle table-nowrap table-hover dt-responsive nowrap w-100 dataTable no-footer dtr-inline"
                       theadClass="table-light"
                       paginationWrapper="dataTables_paginate paging_simple_numbers pagination-rounded"
@@ -360,11 +360,11 @@ const Customers = props => {
                   <Row>
                     <Col className="col-12">
                       <div className="mb-3">
-                        <Label for="office_id">Office ID</Label>
+                        <Label for="office_id">{props.t("Office ID")}</Label>
                         <Input
                           name="office_id"
                           type="number"
-                          placeholder="Enter Office ID"
+                          placeholder={props.t("Enter Office ID")}
                           onChange={validation.handleChange}
                           onBlur={validation.handleBlur}
                           value={validation.values.office_id || ""}
@@ -381,11 +381,11 @@ const Customers = props => {
                           )}
                       </div>
                       <div className="mb-3">
-                        <Label for="first_name">First Name</Label>
+                        <Label for="first_name">{props.t("First Name")}</Label>
                         <Input
                           name="first_name"
                           type="text"
-                          placeholder="Enter First Name"
+                          placeholder={props.t("Enter First Name")}
                           onChange={validation.handleChange}
                           onBlur={validation.handleBlur}
                           value={validation.values.first_name || ""}
@@ -406,7 +406,7 @@ const Customers = props => {
                         <Input
                           name="last_name"
                           type="text"
-                          placeholder="Enter Last Name"
+                          placeholder={props.t("Enter Last Name")}
                           onChange={validation.handleChange}
                           onBlur={validation.handleBlur}
                           value={validation.values.last_name || ""}
@@ -424,11 +424,11 @@ const Customers = props => {
                       </div>
 
                       <div className="mb-3">
-                        <Label for="email">Email</Label>
+                        <Label for="email">{props.t("Email")}</Label>
                         <Input
                           name="email"
                           type="email"
-                          placeholder="Enter Email"
+                          placeholder={props.t("Enter Email")}
                           onChange={validation.handleChange}
                           onBlur={validation.handleBlur}
                           value={validation.values.email || ""}
@@ -444,11 +444,11 @@ const Customers = props => {
                           )}
                       </div>
                       <div className="mb-3">
-                        <Label for="gov_id">Government ID</Label>
+                        <Label for="gov_id">{props.t("Government ID")} </Label>
                         <Input
                           name="gov_id"
                           type="text"
-                          placeholder="Enter Government ID"
+                          placeholder={props.t("Enter Government ID")}
                           onChange={validation.handleChange}
                           onBlur={validation.handleBlur}
                           value={validation.values.gov_id || ""}

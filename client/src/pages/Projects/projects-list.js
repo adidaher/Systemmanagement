@@ -19,7 +19,7 @@ import {
 } from "reactstrap"
 import * as Yup from "yup"
 import { useFormik } from "formik"
-
+import { withTranslation } from "react-i18next"
 //Import Breadcrumb
 import Breadcrumbs from "components/Common/Breadcrumb"
 import DeleteModal from "components/Common/DeleteModal"
@@ -71,7 +71,7 @@ const DELETE_CASE = gql`
   }
 `
 
-const ProjectsList = () => {
+const ProjectsList = props => {
   //meta title
   document.title = "Project List | CPALINK"
 
@@ -295,7 +295,7 @@ const ProjectsList = () => {
           enableSorting: true,
         },
         {
-          header: "Description",
+          header: `${props.t("Description")}`,
           accessorKey: "Description",
           enableColumnFilter: false,
           enableSorting: true,
@@ -310,7 +310,7 @@ const ProjectsList = () => {
           ),
         },
         {
-          header: "Customer",
+          header: `${props.t("Project List")}`,
           accessorKey: "customer",
           enableColumnFilter: false,
           enableSorting: true,
@@ -321,21 +321,21 @@ const ProjectsList = () => {
           ),
         },
         {
-          header: "Office",
+          header: `${props.t("Office")}`,
           accessorKey: "office",
           enableColumnFilter: false,
           enableSorting: true,
           cell: cell => <>{cell.row.original.office.name}</>,
         },
         {
-          header: "customer email",
+          header: `${props.t("customer email")}`,
           accessorKey: "email",
           enableColumnFilter: false,
           enableSorting: true,
           cell: cell => <>{cell.row.original.customer.email}</>,
         },
         {
-          header: "Action",
+          header: `${props.t("Action")}`,
           cell: cellProps => {
             return (
               <div className="d-flex gap-3">
@@ -388,7 +388,10 @@ const ProjectsList = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Project" breadcrumbItem="Project List" />
+          <Breadcrumbs
+            title={props.t("Projects")}
+            breadcrumbItem={props.t("Project List")}
+          />
           <Row>
             {queryLoading ? (
               <Spinner />
@@ -401,7 +404,7 @@ const ProjectsList = () => {
                       data={projects || []}
                       isGlobalFilter={true}
                       isPagination={true}
-                      SearchPlaceholder="Search..."
+                      SearchPlaceholder={props.t("Search...")}
                       isCustomPageSize={true}
                       isAddButton={false}
                       handleUserClick={handleUserClicks}
@@ -510,4 +513,4 @@ const ProjectsList = () => {
   )
 }
 
-export default withRouter(ProjectsList)
+export default withRouter(withTranslation()(ProjectsList))

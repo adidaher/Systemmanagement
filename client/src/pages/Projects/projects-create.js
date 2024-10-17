@@ -18,6 +18,7 @@ import {
 
 //Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb"
+import { withTranslation } from "react-i18next"
 
 // FlatPickr
 import "flatpickr/dist/themes/material_blue.css"
@@ -45,15 +46,9 @@ const CREATE_CASE = gql`
   }
 `
 
-const ProjectsCreate = () => {
+const ProjectsCreate = props => {
   //meta title
   document.title = "Create New Project | CPALINK"
-
-  const [selectedFiles, setSelectedFiles] = useState([])
-  const [selectedImage, setSelectedImage] = useState(null)
-  const [imgStore, setImgStore] = useState([])
-  const [dropList, setDropList] = useState(false)
-  const [active, setActive] = useState(0)
 
   const dispatch = useDispatch()
 
@@ -99,7 +94,10 @@ const ProjectsCreate = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Projects" breadcrumbItem="Create New" />
+          <Breadcrumbs
+            title={props.t("Projects")}
+            breadcrumbItem={props.t("Create New")}
+          />
           <Form
             id="createproject-form"
             onSubmit={e => {
@@ -127,14 +125,14 @@ const ProjectsCreate = () => {
 
                     <div className="mb-3">
                       <Label htmlFor="projectdesc-input">
-                        Project Description
+                        {props.t("Project Description")}
                       </Label>
                       <Input
                         as="textarea"
                         id="projectdesc"
                         rows={3}
                         name="projectdesc"
-                        placeholder="Enter Project Description..."
+                        placeholder={props.t("Enter Project Description...")}
                         onChange={validation.handleChange}
                         onBlur={validation.handleBlur}
                         value={validation.values.projectdesc || ""}
@@ -148,12 +146,14 @@ const ProjectsCreate = () => {
                     </div>
 
                     <div className="mb-3">
-                      <Label htmlFor="projectname-input">Customer ID</Label>
+                      <Label htmlFor="projectname-input">
+                        {props.t("Customer ID")}
+                      </Label>
                       <Input
                         id="Customer_ID"
                         name="Customer_ID"
                         type="number"
-                        placeholder="Enter customer id..."
+                        placeholder={props.t("Enter customer id...")}
                         onChange={validation.handleChange}
                         onBlur={validation.handleBlur}
                         value={validation.values.Customer_ID || ""}
@@ -167,12 +167,14 @@ const ProjectsCreate = () => {
                     </div>
 
                     <div className="mb-3">
-                      <Label htmlFor="projectname-input">Assigned office</Label>
+                      <Label htmlFor="projectname-input">
+                        {props.t("Assigned office")}
+                      </Label>
                       <Input
                         id="office_id"
                         name="office_id"
                         type="number"
-                        placeholder="Enter office id..."
+                        placeholder={props.t("Enter office id...")}
                         onChange={validation.handleChange}
                         onBlur={validation.handleBlur}
                         value={validation.values.office_id || ""}
@@ -192,7 +194,7 @@ const ProjectsCreate = () => {
                 <div className="text-end mb-4">
                   {!mutationLoading ? (
                     <Button type="submit" color="primary">
-                      Create Project
+                      {props.t("Create Project")}
                     </Button>
                   ) : (
                     <Spinner />
@@ -208,4 +210,4 @@ const ProjectsCreate = () => {
   )
 }
 
-export default ProjectsCreate
+export default withTranslation()(ProjectsCreate)

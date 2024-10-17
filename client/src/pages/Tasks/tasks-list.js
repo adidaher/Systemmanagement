@@ -11,7 +11,7 @@ import {
   Spinner,
   Button,
 } from "reactstrap"
-import Breadcrumbs from "../../components/Common/Breadcrumb"
+import { withTranslation } from "react-i18next"
 import { getTasksSuccess, deleteTaskSuccess } from "store/tasks/actions"
 import { useSelector, useDispatch } from "react-redux"
 import { createSelector } from "reselect"
@@ -46,7 +46,7 @@ const DELETE_TASK = gql`
   }
 `
 
-const TasksList = () => {
+const TasksList = props => {
   document.title = "Task List | CPALINK"
 
   const dispatch = useDispatch()
@@ -135,20 +135,21 @@ const TasksList = () => {
             <div className="card border" style={{ borderRadius: 15 }}>
               <div className="card-header p-3">
                 <h5 className="mb-0">
-                  <i className="fas fa-tasks me-2"></i> Task List
+                  <i className="fas fa-tasks me-2"></i>
+                  {props.t("Task List")}
                 </h5>
               </div>
               <div className="card-body" data-mdb-perfect-scrollbar="true">
                 <table className="table mb-0">
                   <thead>
                     <tr className="text-center">
-                      <th scope="col">Title</th>
-                      <th scope="col">Description</th>
-                      <th scope="col">Priority</th>
+                      <th scope="col">{props.t("Title")}</th>
+                      <th scope="col">{props.t("Description")}</th>
+                      <th scope="col">{props.t("Priority")}</th>
                       <th scope="col" onClick={sortTasksByDeadline}>
-                        Start at
+                        {props.t("Start at")}
                       </th>
-                      <th scope="col">Actions</th>
+                      <th scope="col"> {props.t("Action")}</th>
                     </tr>
                   </thead>
 
@@ -268,4 +269,4 @@ const TasksList = () => {
   )
 }
 
-export default withRouter(TasksList)
+export default withRouter(withTranslation()(TasksList))

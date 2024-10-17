@@ -55,7 +55,7 @@ const Paginations = ({
                 to="#"
                 onClick={() => handleprevPage()}
               >
-                <i className="mdi mdi-chevron-left"></i>
+                <i className="mdi mdi-chevron-right"></i>
               </Link>
             </li>
             {(pageNumbers || []).map((item, index) => (
@@ -81,7 +81,7 @@ const Paginations = ({
                 to="#"
                 onClick={e => handlenextPage(e)}
               >
-                <i className="mdi mdi-chevron-right"></i>
+                <i className="mdi mdi-chevron-left"></i>
               </Link>
             </li>
           </ul>
