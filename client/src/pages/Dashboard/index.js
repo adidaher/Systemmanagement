@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react"
 import { Container, Row, Col, Card, CardBody, CardTitle } from "reactstrap"
 import loaderImg from "assets/images/loadingg.gif"
 import { Link } from "react-router-dom"
-// Redux
 import { useSelector, useDispatch } from "react-redux"
 import { getChartsData as onGetChartsData } from "../../store/actions"
 
@@ -12,7 +11,6 @@ import ActivityComp from "./ActivityComp"
 import Breadcrumbs from "../../components/Common/Breadcrumb"
 import TotalSellingProduct from "../Dashboard-saas/total-selling-product"
 import SalesAnalytics from "../Dashboard-saas/sales-analytics"
-
 import { withTranslation } from "react-i18next"
 
 // API Hooks
@@ -25,12 +23,10 @@ import {
 const Dashboard = props => {
   const [loading, setLoading] = useState(false)
   const [completedTasks, setCompletedTasks] = useState([])
-  const [tasktodo, settasktodo] = useState([])
-  const [deferredTasks, setDeferred] = useState([])
-  const [dataFetched, setDataFetched] = useState(false)
+  const [taskTodo, setTaskTodo] = useState([])
+  const [deferredTasks, setDeferredTasks] = useState([])
 
   const dispatch = useDispatch()
-
   const tasks = useSelector(state => state.tasks.tasks)
   const projects = useSelector(state => state.projects)
   const events = useSelector(state => state.calendar.events)
@@ -49,80 +45,72 @@ const Dashboard = props => {
     currentUser?.email
   )
 
-  useEffect(() => {
-    // Fetch tasks only if the Redux store is empty
-    if (!tasks || tasks.length === 0) {
-      const fetchTasksData = async () => {
-        try {
-          await fetchTasks()
-        } catch (error) {
-          console.error("Failed to fetch tasks:", error)
-        }
+  // Unified data fetching function
+  const fetchAllData = async () => {
+    setLoading(true)
+    try {
+      // Fetch tasks
+      if (!tasks || tasks.length === 0) {
+        console.log("fetching tasks...")
+        await fetchTasks()
       }
-      fetchTasksData()
-    }
-  }, [tasks, fetchTasks, dispatch])
 
-  useEffect(() => {
-    // Fetch projects only if the Redux store is empty
-    if (!projects || projects.length === 0) {
-      const fetchProjectsData = async () => {
-        try {
-          await getProjects()
-        } catch (error) {
-          console.error("Failed to fetch projects:", error)
-        }
+      // Fetch projects
+      if (!projects || projects.length === 0) {
+        console.log("fetching projects...")
+        await getProjects()
       }
-      fetchProjectsData()
-    }
-  }, [projects, getProjects, dispatch])
 
-  useEffect(() => {
-    // Fetch events only if the Redux store is empty
-    if (!events || events.length === 0) {
-      const fetchEventsData = async () => {
-        try {
-          await getEvents()
-        } catch (error) {
-          console.error("Failed to fetch events:", error)
-        }
+      // Fetch events
+      if (!events || events.length === 0) {
+        console.log("fetching events...")
+        await getEvents()
       }
-      fetchEventsData()
+    } catch (error) {
+      console.error("Error fetching data:", error)
+    } finally {
+      setLoading(false)
     }
-  }, [events, getEvents, dispatch])
+  }
 
+  // Fetch data on component mount
+  useEffect(() => {
+    fetchAllData()
+  }, [currentUser])
+
+  // Categorizing tasks
   useEffect(() => {
     if (tasks) {
-      const completedTasks = tasks?.filter(
-        task => task.task_status === "completed"
-      )
-      setCompletedTasks(completedTasks)
+      const completed = tasks.filter(task => task.task_status === "completed")
+      setCompletedTasks(completed)
 
-      const inProgressTasks = tasks?.filter(
+      const inProgress = tasks.filter(
         task => task.task_status === "in Progress"
       )
-      settasktodo(inProgressTasks)
+      setTaskTodo(inProgress)
 
-      const deferredTask = tasks?.filter(
-        task => task.task_status === "Up comming"
-      )
-      setDeferred(deferredTask)
+      const deferred = tasks.filter(task => task.task_status === "Up comming")
+      setDeferredTasks(deferred)
     }
   }, [tasks])
 
+  // Dispatch charts data
   useEffect(() => {
     dispatch(onGetChartsData("yearly"))
   }, [dispatch])
 
   document.title = `${props.t("Dashboard")} | CPALINK`
 
+  // Show a loading spinner until all data is fetched
+  const isLoading = loading || loadingTasks || loadingProjects || loadingEvents
+
   return (
     <div className="page-content">
-      {loading ? (
+      {isLoading ? (
         <div className="d-flex justify-content-center align-items-center">
           <img
             src={loaderImg}
-            alt=""
+            alt="Loading..."
             className="w-10 h-10 justify-content-center"
           />
         </div>
@@ -138,7 +126,9 @@ const Dashboard = props => {
             <CardBody className="pt-0">
               <Row>
                 <Col sm="4">
-                  <h3 className="font-size-15 mt-5">{`${currentUser?.first_name} ${currentUser?.last_name}`}</h3>
+                  <h3 className="font-size-15 mt-5">
+                    {`${currentUser?.first_name} ${currentUser?.last_name}`}
+                  </h3>
                   <p className="text-muted mb-0">{currentUser?.role}</p>
                   <div className="mt-4">
                     <Link
@@ -155,14 +145,8 @@ const Dashboard = props => {
                   <div className="pt-4 mt-4">
                     <Row>
                       <Col xs="6">
-                        {projects && (
-                          <h5 className="font-size-15">{projects.length}</h5>
-                        )}
-                        {projects && (
-                          <p className="text-muted mb-0">
-                            {props.t("Projects")}
-                          </p>
-                        )}
+                        <h5 className="font-size-15">{projects.length}</h5>
+                        <p className="text-muted mb-0">{props.t("Projects")}</p>
                       </Col>
                     </Row>
                   </div>
@@ -181,7 +165,7 @@ const Dashboard = props => {
                       <p className="text-muted fw-medium">
                         {props.t("Tasks Todo")}
                       </p>
-                      <h4 className="mb-0">{tasktodo.length}</h4>
+                      <h4 className="mb-0">{taskTodo.length}</h4>
                     </div>
                   </div>
                 </CardBody>
@@ -231,7 +215,7 @@ const Dashboard = props => {
             <SalesAnalytics
               dataColors='["--bs-primary", "--bs-success", "--bs-danger"]'
               completed={completedTasks.length}
-              todo={tasktodo.length}
+              todo={taskTodo.length}
               deferredTasks={deferredTasks.length}
             />
             <Col xll="4">
@@ -266,14 +250,13 @@ const Dashboard = props => {
                   ) : (
                     <div>No activities</div>
                   )}
-
                   <div className="text-center mt-4">
                     <Link
                       to="/calendar"
                       className="btn btn-primary waves-effect waves-light btn-sm"
                     >
                       {props.t("View More")}{" "}
-                      <i className="mdi mdi-arrow-left ms-1" />
+                      <i className="mdi mdi-arrow-right ms-1" />
                     </Link>
                   </div>
                 </CardBody>
