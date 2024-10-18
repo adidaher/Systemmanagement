@@ -174,7 +174,9 @@ const Calender = props => {
   const [deleteEvent] = useMutation(DELETE_EVENT, {
     onCompleted: () => {
       dispatch(onDeleteEvent(deleteId))
-      toast.success("Event deleted successfully", { autoClose: 2000 })
+      toast.success(`${props.t("Event deleted successfully")}`, {
+        autoClose: 2000,
+      })
     },
   })
 
@@ -182,7 +184,9 @@ const Calender = props => {
     onCompleted: data => {
       const updatedEvent = convertEvent(data.updateEvent)
       dispatch(onUpdateEvent(updatedEvent))
-      toast.success("Event updated successfully", { autoClose: 2000 })
+      toast.success(`${props.t("Event updated successfully")}`, {
+        autoClose: 2000,
+      })
     },
   })
 
@@ -190,7 +194,9 @@ const Calender = props => {
     onCompleted: data => {
       const newEvent = convertEvent(data.addEvent)
       dispatch(addEventSuccess(newEvent))
-      toast.success("Event added successfully", { autoClose: 2000 })
+      toast.success(`${props.t("Event added successfully")}`, {
+        autoClose: 2000,
+      })
     },
   })
 
@@ -480,14 +486,16 @@ const Calender = props => {
                           onClick={toggle}
                         >
                           <i className="mdi mdi-plus-circle-outline me-1" />
-                          Create New Event
+                          {props.t("Create New Event")}
                         </Button>
                       </div>
 
                       <div id="external-events" className="mt-2">
                         <br />
                         <p className="text-muted">
-                          Drag and drop your event or click in the calendar
+                          {props.t(
+                            "Drag and drop your event or click in the calendar"
+                          )}
                         </p>
                         {categories &&
                           (categories || [])?.map(category => (
@@ -568,7 +576,7 @@ const Calender = props => {
                               <Input
                                 name="title"
                                 type="text"
-                                placeholder="Insert Event Name"
+                                placeholder={props.t("Insert Event Name")}
                                 onChange={categoryValidation.handleChange}
                                 onBlur={categoryValidation.handleBlur}
                                 value={categoryValidation.values.title || ""}
@@ -593,7 +601,7 @@ const Calender = props => {
                               <Input
                                 type="select"
                                 name="category"
-                                placeholder="All Day Event"
+                                placeholder={props.t("All Day Event")}
                                 onChange={categoryValidation.handleChange}
                                 onBlur={categoryValidation.handleBlur}
                                 value={categoryValidation.values.category || ""}
@@ -604,12 +612,24 @@ const Calender = props => {
                                     : false
                                 }
                               >
-                                <option value="bg-danger">Danger</option>
-                                <option value="bg-success">Success</option>
-                                <option value="bg-primary">Primary</option>
-                                <option value="bg-info">Info</option>
-                                <option value="bg-dark">Dark</option>
-                                <option value="bg-warning">Warning</option>
+                                <option value="bg-danger">
+                                  {props.t("Danger")}
+                                </option>
+                                <option value="bg-success">
+                                  {props.t("Success")}
+                                </option>
+                                <option value="bg-primary">
+                                  {props.t("Primary")}
+                                </option>
+                                <option value="bg-info">
+                                  {props.t("Info")}
+                                </option>
+                                <option value="bg-dark">
+                                  {props.t("Dark")}
+                                </option>
+                                <option value="bg-warning">
+                                  {props.t("Warning")}
+                                </option>
                               </Input>
                               {categoryValidation.touched.category &&
                               categoryValidation.errors.category ? (
@@ -626,7 +646,7 @@ const Calender = props => {
                               <Input
                                 name="shared_with"
                                 type="text"
-                                placeholder="Insert user Email"
+                                placeholder={props.t("Insert user Email")}
                                 onChange={categoryValidation.handleChange}
                                 onBlur={categoryValidation.handleBlur}
                                 value={

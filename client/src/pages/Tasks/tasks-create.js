@@ -20,7 +20,7 @@ import { ToastContainer } from "react-toastify"
 // FlatPickr
 import "flatpickr/dist/themes/material_blue.css"
 import FlatPickr from "react-flatpickr"
-
+import { withTranslation } from "react-i18next"
 // Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb"
 
@@ -54,7 +54,7 @@ const ADD_TASK = gql`
   }
 `
 
-const TasksCreate = () => {
+const TasksCreate = props => {
   // Meta title
   document.title = "Create Task | CPALINK"
 
@@ -120,7 +120,10 @@ const TasksCreate = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Tasks" breadcrumbItem="Create Task" />
+          <Breadcrumbs
+            title={props.t("Tasks")}
+            breadcrumbItem={props.t("Create Task")}
+          />
 
           <Row>
             <Col lg="12">
@@ -135,7 +138,7 @@ const TasksCreate = () => {
                             htmlFor="taskname"
                             className="col-form-label col-lg-2"
                           >
-                            Task Name
+                            {props.t("Task Name")}
                           </Label>
                           <Col lg="10">
                             <Input
@@ -143,7 +146,7 @@ const TasksCreate = () => {
                               name="taskname"
                               type="text"
                               className="form-control"
-                              placeholder="Enter Task Name..."
+                              placeholder={props.t("Enter Task Name...")}
                               onChange={e => {
                                 setTaskName(e.target.value)
                               }}
@@ -152,14 +155,14 @@ const TasksCreate = () => {
                         </FormGroup>
                         <FormGroup className="mb-4" row>
                           <Label className="col-form-label col-lg-2">
-                            Task Description
+                            {props.t("Task Description")}
                           </Label>
                           <Col lg="10">
                             <Editor
                               toolbarClassName="toolbarClassName"
                               wrapperClassName="wrapperClassName"
                               editorClassName="editorClassName"
-                              placeholder="Place Your Content Here..."
+                              placeholder={props.t("Enter Task Description...")}
                               editorState={task_description}
                               onEditorStateChange={setTaskDescription}
                             />
@@ -168,7 +171,7 @@ const TasksCreate = () => {
 
                         <FormGroup className="mb-4" row>
                           <Label className="col-form-label col-lg-2">
-                            DeadLine
+                            {props.t("DeadLine")}
                           </Label>
                           <Col lg="10">
                             <Row>
@@ -179,7 +182,7 @@ const TasksCreate = () => {
                                   options={{
                                     dateFormat: "Y-m-d",
                                   }}
-                                  placeholder="Select DeadLine time"
+                                  placeholder={props.t("Select DeadLine time")}
                                   value={startDate}
                                   onChange={date => setStartDate(date[0])}
                                 />
@@ -191,7 +194,7 @@ const TasksCreate = () => {
                         <div className="inner-repeater mb-4">
                           <div className="inner form-group mb-0 row">
                             <Label className="col-form-label col-lg-2">
-                              Add Team Member
+                              {props.t("Add Team Member")}
                             </Label>
                             <div
                               className="inner col-lg-10 ml-md-auto"
@@ -208,7 +211,7 @@ const TasksCreate = () => {
                                       type="text"
                                       className="inner form-control"
                                       value={field.name}
-                                      placeholder="Enter email..."
+                                      placeholder={props.t("Enter email...")}
                                       onChange={e => {
                                         handlePartnerChange(key, e.target.value)
                                       }}
@@ -219,7 +222,7 @@ const TasksCreate = () => {
                                       color="danger"
                                       onClick={() => handleRemoveFields(key)}
                                     >
-                                      Remove
+                                      {props.t("Remove")}
                                     </Button>
                                   </Col>
                                 </div>
@@ -233,7 +236,7 @@ const TasksCreate = () => {
                                 className="inner"
                                 onClick={handleAddFields}
                               >
-                                Assign Member
+                                {props.t("Assign Member")}
                               </Button>
                             </Col>
                           </Row>
@@ -243,7 +246,7 @@ const TasksCreate = () => {
                     <Row className="justify-content-end">
                       <Col lg="10">
                         <Button type="submit" color="primary">
-                          Create Task
+                          {props.t("Create Task")}
                         </Button>
                       </Col>
                     </Row>
@@ -259,4 +262,4 @@ const TasksCreate = () => {
   )
 }
 
-export default TasksCreate
+export default withTranslation()(TasksCreate)

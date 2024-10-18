@@ -32,6 +32,7 @@ import {
   getUsersSuccess,
   updateUserSuccess,
 } from "store/contacts/actions"
+import { withTranslation } from "react-i18next"
 import { isEmpty, last } from "lodash"
 import { toast } from "react-toastify"
 //redux
@@ -140,7 +141,7 @@ const DELETE_USER = gql`
   }
 `
 
-const ContactsList = () => {
+const ContactsList = props => {
   //meta title
   document.title = "User List | CPALINK"
 
@@ -367,7 +368,7 @@ const ContactsList = () => {
           enableSorting: true,
         },
         {
-          header: "username",
+          header: `${props.t("username")}`,
           accessorKey: "username",
           enableColumnFilter: false,
           enableSorting: true,
@@ -387,13 +388,13 @@ const ContactsList = () => {
           },
         },
         {
-          header: "email",
+          header: `${props.t("Email")}`,
           accessorKey: "email",
           enableColumnFilter: false,
           enableSorting: true,
         },
         {
-          header: "role",
+          header: `${props.t("role")}`,
           accessorKey: "role",
           enableColumnFilter: false,
           enableSorting: true,
@@ -402,25 +403,25 @@ const ContactsList = () => {
           },
         },
         {
-          header: "phone",
+          header: `${props.t("phone")}`,
           accessorKey: "phone",
           enableColumnFilter: false,
           enableSorting: true,
         },
         {
-          header: "first name",
+          header: `${props.t("First Name")}`,
           accessorKey: "first_name",
           enableColumnFilter: false,
           enableSorting: true,
         },
         {
-          header: "last name",
+          header: `${props.t("Last Name")}`,
           accessorKey: "last_name",
           enableColumnFilter: false,
           enableSorting: true,
         },
         {
-          header: "Manager",
+          header: `${props.t("Manager")}`,
           accessorKey: "manager_id",
           enableColumnFilter: false,
           enableSorting: true,
@@ -434,7 +435,7 @@ const ContactsList = () => {
           },
         },
         currentUser?.role === "manager" && {
-          header: "Action",
+          header: `${props.t("Action")}`,
           cell: cellProps => {
             return (
               <div className="d-flex gap-3">
@@ -479,7 +480,10 @@ const ContactsList = () => {
       <div className="page-content">
         <Container fluid>
           {/* Render Breadcrumbs */}
-          <Breadcrumbs title="Contacts" breadcrumbItem="User List" />
+          <Breadcrumbs
+            title={props.t("Contacts")}
+            breadcrumbItem={props.t("User List")}
+          />
           <Row>
             {isLoading ? (
               <Spinners setLoading={setLoading} />
@@ -492,7 +496,7 @@ const ContactsList = () => {
                       data={users || []}
                       isGlobalFilter={true}
                       isPagination={true}
-                      SearchPlaceholder="Search..."
+                      SearchPlaceholder={props.t("Search...")}
                       isCustomPageSize={true}
                       isAddButton={
                         currentUser?.role === "admin" ||
@@ -500,7 +504,7 @@ const ContactsList = () => {
                       }
                       handleUserClick={handleUserClicks}
                       buttonClass="btn btn-success btn-rounded waves-effect waves-light addContact-modal mb-2"
-                      buttonName="New User"
+                      buttonName={props.t("New User")}
                       tableClass="align-middle table-nowrap table-hover dt-responsive nowrap w-100 dataTable no-footer dtr-inline"
                       theadClass="table-light"
                       paginationWrapper="dataTables_paginate paging_simple_numbers pagination-rounded"
@@ -513,7 +517,9 @@ const ContactsList = () => {
 
             <Modal isOpen={modal} toggle={toggle}>
               <ModalHeader toggle={toggle} tag="h4">
-                {!!isEdit ? "Edit User" : "Add User"}
+                {!!isEdit
+                  ? `${props.t("Edit User")} `
+                  : `${props.t("Add User")}`}
               </ModalHeader>
               <ModalBody>
                 <Form
@@ -527,21 +533,30 @@ const ContactsList = () => {
                     <Col className="col-12">
                       {/* Form fields */}
                       {[
-                        { label: "Username", field: "username" },
-                        { label: "Role", field: "role" },
-                        { label: "Email", field: "email" },
-                        { label: "Password", field: "password" },
-                        { label: "Phone No", field: "phone" },
-                        { label: "First name", field: "first_name" },
-                        { label: "Last name", field: "last_name" },
-                        { label: "Office ID", field: "office_id" }, // New office ID field
+                        { label: `${props.t("username")}`, field: "username" },
+                        { label: `${props.t("Role")}`, field: "role" },
+                        { label: `${props.t("Email")}`, field: "email" },
+                        { label: `${props.t("Password")}`, field: "password" },
+                        { label: `${props.t("Phone No")}`, field: "phone" },
+                        {
+                          label: `${props.t("First Name")}`,
+                          field: "first_name",
+                        },
+                        {
+                          label: `${props.t("Last Name")}`,
+                          field: "last_name",
+                        },
+                        {
+                          label: `${props.t("Office ID")}`,
+                          field: "office_id",
+                        }, // New office ID field
                       ].map(({ label, field }) => (
                         <div className="mb-3" key={field}>
                           <Label className="form-label">{label}</Label>
                           <Input
                             name={field}
                             type={field === "email" ? "email" : "text"}
-                            placeholder={`Enter ${label}`}
+                            placeholder={`${props.t("Enter")} ${label}`}
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
                             value={validation.values[field] || ""}
@@ -561,7 +576,9 @@ const ContactsList = () => {
                         </div>
                       ))}
                       <div className="mb-3">
-                        <Label className="form-label">Manager</Label>
+                        <Label className="form-label">
+                          {props.t("Manager")}
+                        </Label>
                         <Input
                           type="select"
                           name="manager_id"
@@ -575,7 +592,9 @@ const ContactsList = () => {
                               : false
                           }
                         >
-                          <option value="">Select a Manager</option>
+                          <option value="">
+                            {props.t("Select a Manager")}
+                          </option>
                           {Object.keys(ManagerList).map(managerId => (
                             <option key={managerId} value={managerId}>
                               {ManagerList[managerId].first_name}
@@ -595,7 +614,7 @@ const ContactsList = () => {
                     <Col>
                       <div className="text-end">
                         <Button type="submit" color="success">
-                          Save
+                          {props.t("Save")}
                         </Button>
                       </div>
                     </Col>
@@ -611,4 +630,4 @@ const ContactsList = () => {
   )
 }
 
-export default withRouter(ContactsList)
+export default withRouter(withTranslation()(ContactsList))
