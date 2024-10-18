@@ -38,7 +38,6 @@ import withRouter from "components/Common/withRouter"
 import {
   addNewEvent as onAddNewEvent,
   deleteEvent as onDeleteEvent,
-  getCategories as onGetCategories,
   getEvents as onGetEvents,
   updateEvent as onUpdateEvent,
   getEventsSuccess,
@@ -77,13 +76,33 @@ const Calender = props => {
     state => state.calendar,
 
     Calendar => ({
-      categories: Calendar.categories,
       events: Calendar.events,
     })
   )
 
-  const { categories, events } = useSelector(CalendarProperties)
-
+  const { events } = useSelector(CalendarProperties)
+  const categories = [
+    {
+      id: 1,
+      title: "New Event",
+      type: "bg-success",
+    },
+    {
+      id: 2,
+      title: "Meeting",
+      type: "bg-info",
+    },
+    {
+      id: 3,
+      title: "Reminder",
+      type: "bg-warning",
+    },
+    {
+      id: 4,
+      title: "Important Meeting",
+      type: "bg-danger",
+    },
+  ]
   const [getUserCalendar, { data, loading: queryLoading }] = useLazyQuery(
     GET_USER_EVENTS,
     {
@@ -136,6 +155,15 @@ const Calender = props => {
     }
   }, [events])
 
+  /*
+  useEffect(() => {
+    if (!events || events.length === 0) {
+      getUserCalendar({
+        variables: { userEmail: currentUser.email },
+      })
+    }
+  }, [currentUser, events])
+  */
   // category validation
   const categoryValidation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
@@ -186,7 +214,6 @@ const Calender = props => {
   const [selectedDay, setSelectedDay] = useState(0)
 
   useEffect(() => {
-    dispatch(onGetCategories())
     new Draggable(document.getElementById("external-events"), {
       itemSelector: ".external-event",
     })
@@ -468,13 +495,159 @@ const Calender = props => {
                     </CardBody>
                   </Card>
                   <Modal
-                    modalCategory={modalCategory}
-                    toggle={toggle}
-                    isEdit={isEdit}
-                    categoryValidation={categoryValidation}
-                    className="your-class-name"
-                    setDeleteModal={setDeleteModal}
-                  />
+                    isOpen={modalCategory}
+                    className={props.className}
+                    centered
+                  >
+                    <ModalHeader toggle={toggle} tag="h5">
+                      {!!isEdit ? "Edit Event" : "Add Event"}
+                    </ModalHeader>
+                    <ModalBody className="p-4">
+                      <Form
+                        onSubmit={e => {
+                          e.preventDefault()
+                          categoryValidation.handleSubmit()
+                          return false
+                        }}
+                      >
+                        <Row>
+                          <Col xs={12}>
+                            <div className="mb-3">
+                              <Label>{props.t("Event Name")}</Label>
+                              <Input
+                                name="title"
+                                type="text"
+                                placeholder={props.t("Insert Event Name")}
+                                onChange={categoryValidation.handleChange}
+                                onBlur={categoryValidation.handleBlur}
+                                value={categoryValidation.values.title || ""}
+                                invalid={
+                                  categoryValidation.touched.title &&
+                                  categoryValidation.errors.title
+                                    ? true
+                                    : false
+                                }
+                              />
+                              {categoryValidation.touched.title &&
+                              categoryValidation.errors.title ? (
+                                <FormFeedback type="invalid">
+                                  {categoryValidation.errors.title}
+                                </FormFeedback>
+                              ) : null}
+                            </div>
+                          </Col>
+                          <Col xs={12}>
+                            <div className="mb-3">
+                              <Label>{props.t("Category")}</Label>
+                              <Input
+                                type="select"
+                                name="category"
+                                placeholder={props.t("All Day Event")}
+                                onChange={categoryValidation.handleChange}
+                                onBlur={categoryValidation.handleBlur}
+                                value={categoryValidation.values.category || ""}
+                                invalid={
+                                  categoryValidation.touched.category &&
+                                  categoryValidation.errors.category
+                                    ? true
+                                    : false
+                                }
+                              >
+                                <option value="bg-danger">
+                                  {props.t("Danger")}
+                                </option>
+                                <option value="bg-success">
+                                  {props.t("Success")}
+                                </option>
+                                <option value="bg-primary">
+                                  {props.t("Primary")}
+                                </option>
+                                <option value="bg-info">
+                                  {props.t("Info")}
+                                </option>
+                                <option value="bg-dark">
+                                  {props.t("Dark")}
+                                </option>
+                                <option value="bg-warning">
+                                  {props.t("Warning")}
+                                </option>
+                              </Input>
+                              {categoryValidation.touched.category &&
+                              categoryValidation.errors.category ? (
+                                <FormFeedback type="invalid">
+                                  {categoryValidation.errors.category}
+                                </FormFeedback>
+                              ) : null}
+                            </div>
+                          </Col>
+
+                          <Col xs={12}>
+                            <div className="mb-3">
+                              <Label>{props.t("Share event with")}</Label>
+                              <Input
+                                name="shared_with"
+                                type="text"
+                                placeholder={props.t("Insert user Email")}
+                                onChange={categoryValidation.handleChange}
+                                onBlur={categoryValidation.handleBlur}
+                                value={
+                                  categoryValidation.values.shared_with || ""
+                                }
+                                invalid={
+                                  categoryValidation.touched.shared_with &&
+                                  categoryValidation.errors.shared_with
+                                    ? true
+                                    : false
+                                }
+                              />
+                              {categoryValidation.touched.shared_with &&
+                              categoryValidation.errors.shared_with ? (
+                                <FormFeedback type="invalid">
+                                  {categoryValidation.errors.shared_with}
+                                </FormFeedback>
+                              ) : null}
+                            </div>
+                          </Col>
+                        </Row>
+
+                        <Row className="mt-2">
+                          <Col xs={6}>
+                            {isEdit && (
+                              <Button
+                                type="button"
+                                color="btn btn-danger"
+                                id="btn-delete-event"
+                                onClick={() => {
+                                  toggle()
+                                  setDeleteModal(true)
+                                }}
+                              >
+                                {props.t("Delete")}
+                              </Button>
+                            )}
+                          </Col>
+
+                          <Col xs={6} className="text-end">
+                            <Button
+                              color="light"
+                              type="button"
+                              className="me-1"
+                              onClick={toggle}
+                            >
+                              {props.t("Close")}
+                            </Button>
+                            <Button
+                              type="submit"
+                              color="success"
+                              id="btn-save-event"
+                            >
+                              {props.t("Save")}
+                            </Button>
+                          </Col>
+                        </Row>
+                      </Form>
+                    </ModalBody>
+                  </Modal>
                 </Col>
               </Row>
             </Col>
@@ -488,13 +661,12 @@ const Calender = props => {
 
 Calender.propTypes = {
   events: PropTypes.array,
-  categories: PropTypes.array,
+
   className: PropTypes.string,
   onGetEvents: PropTypes.func,
   onAddNewEvent: PropTypes.func,
   onUpdateEvent: PropTypes.func,
   onDeleteEvent: PropTypes.func,
-  onGetCategories: PropTypes.func,
 }
 
 export default withRouter(withTranslation()(Calender))
