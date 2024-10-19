@@ -131,7 +131,8 @@ const RootMutation = new GraphQLObjectType({
           UPDATE events 
           SET user_id = $1, title = $2, start_timestamp = $3, end_timestamp = $4, event_class = $5, shared_with = $6
           WHERE id = $7
-          RETURNING *`;
+          RETURNING *
+          `;
         const values = [
           args.user_id,
           args.title,
@@ -141,7 +142,7 @@ const RootMutation = new GraphQLObjectType({
           args.shared_with,
           args.id,
         ];
-
+        console.log(values);
         return db
           .one(query, values)
           .then((res) => res)

@@ -95,9 +95,9 @@ const Dashboard = props => {
   }, [tasks])
 
   // Dispatch charts data
-  useEffect(() => {
+  /*useEffect(() => {
     dispatch(onGetChartsData("yearly"))
-  }, [dispatch])
+  }, [dispatch])*/
 
   document.title = `${props.t("Dashboard")} | CPALINK`
 

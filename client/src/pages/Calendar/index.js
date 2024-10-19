@@ -42,6 +42,7 @@ import {
   updateEvent as onUpdateEvent,
   getEventsSuccess,
   addEventSuccess,
+  updateEventSuccess,
 } from "../../store/actions"
 
 import DeleteModal from "./DeleteModal"
@@ -127,7 +128,7 @@ const Calender = props => {
   const [updateEvent] = useMutation(UPDATE_EVENT, {
     onCompleted: data => {
       const updatedEvent = convertEvent(data.updateEvent)
-      dispatch(onUpdateEvent(updatedEvent))
+      dispatch(updateEventSuccess(updatedEvent))
       toast.success(`${props.t("Event updated successfully")}`, {
         autoClose: 2000,
       })
@@ -182,14 +183,17 @@ const Calender = props => {
         .required("Please Enter Email to share event"),
     }),
     onSubmit: async values => {
+      console.log(event)
+      console.log(event.start_timestamp)
+      console.log(isEdit)
       if (isEdit) {
         updateEvent({
           variables: {
             id: event.id,
             user_id: currentUser.user_id,
             title: values.title,
-            start_timestamp: event.start_timestamp,
-            event_class: values.category + " text-white",
+            start_timestamp: event.start,
+            event_class: values.category,
             shared_with: values.shared_with,
           },
         })
@@ -275,7 +279,6 @@ const Calender = props => {
     setEvent({
       id: event.id,
       title: event.title,
-
       start: event.start,
       className: event.classNames,
       category: event.classNames[0],
@@ -312,10 +315,10 @@ const Calender = props => {
     const month = date.getMonth()
     const year = date.getFullYear()
 
-    const currectDate = new Date()
-    const currentHour = currectDate.getHours()
-    const currentMin = currectDate.getMinutes()
-    const currentSec = currectDate.getSeconds()
+    const currentDate = new Date()
+    const currentHour = currentDate.getHours()
+    const currentMin = currentDate.getMinutes()
+    const currentSec = currentDate.getSeconds()
     const modifiedDate = new Date(
       year,
       month,
@@ -326,19 +329,35 @@ const Calender = props => {
     )
 
     const draggedEl = event.draggedEl
-    const draggedElclass = draggedEl.className
+    const draggedElClass = draggedEl.className
+
     if (
       draggedEl.classList.contains("external-event") &&
-      draggedElclass.indexOf("fc-event-draggable") == -1
+      draggedElClass.indexOf("fc-event-draggable") === -1
     ) {
       const newEvent = {
-        id: Math.floor(Math.random() * 100),
+        id: Math.floor(Math.random() * 100), // You can change this ID generation logic
         title: draggedEl.innerText,
         start: modifiedDate,
         className: draggedEl.className,
       }
-      dispatch(onAddNewEvent(newEvent))
-      setConvertedEvents([...convertedEvents, newEvent])
+
+      insertNewEvent({
+        variables: {
+          user_id: currentUser.user_id,
+          title: newEvent.title,
+          start_timestamp: modifiedDate,
+          event_class: newEvent.className,
+          shared_with: currentUser.email,
+        },
+        onCompleted: data => {
+          dispatch(onAddNewEvent(newEvent))
+          setConvertedEvents([...convertedEvents, newEvent])
+          toast.success(`${props.t("Event added successfully")}`, {
+            autoClose: 2000,
+          })
+        },
+      })
     }
   }
 
