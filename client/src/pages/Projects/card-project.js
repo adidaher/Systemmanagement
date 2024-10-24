@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import { Badge, Card, CardBody, Col, UncontrolledTooltip } from "reactstrap"
 import cpaicon from "../../assets/images/companies/img-1.png"
-import { ToastContainer } from "react-toastify"
+import { toast, ToastContainer } from "react-toastify"
 import { useLazyQuery, gql, useMutation } from "@apollo/client"
 
 const DELETE_OFFICE = gql`
@@ -14,7 +14,7 @@ const DELETE_OFFICE = gql`
   }
 `
 
-const CardProject = ({ offices }) => {
+const CardProject = ({ offices, setOffices }) => {
   const [currentUser, setCurrentUser] = useState(() => {
     const authUser = localStorage.getItem("authUser")
     return authUser ? JSON.parse(authUser) : null
@@ -25,9 +25,14 @@ const CardProject = ({ offices }) => {
     deleteOffice({ variables: { office_id } })
       .then(result => {
         toast.success("Office Deleted Successfully", { autoClose: 2000 })
+
+        const updatedOffices = offices.filter(
+          office => office.office_id !== office_id
+        )
+        setOffices(updatedOffices)
       })
       .catch(err => {
-        toast.error("Failed to delete office: " + err.message, {
+        toast.error("Failed to delete office: ", {
           autoClose: 2000,
         })
       })

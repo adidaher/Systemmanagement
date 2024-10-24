@@ -36,7 +36,7 @@ const OfficesGrid = props => {
   const [officesList, setOfficesList] = useState([])
   const [Loading, setLoading] = useState(true)
 
-  const { data, loading: queryLoading } = useQuery(GET_OFFICES, {
+  const [getOffices, { data, loading, error }] = useLazyQuery(GET_OFFICES, {
     onCompleted: data => {
       if (data) {
         setOffices(data.allOffice)
@@ -44,6 +44,12 @@ const OfficesGrid = props => {
       }
     },
   })
+
+  useEffect(() => {
+    if (offices.length === 0) {
+      getOffices()
+    }
+  }, [offices])
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1)
@@ -75,7 +81,7 @@ const OfficesGrid = props => {
               <Spinners setLoading={setLoading} />
             ) : (
               <>
-                <CardProject offices={officesList} />
+                <CardProject offices={offices} setOffices={setOffices} />
                 <Row>
                   <Paginations
                     perPageData={perPageData}

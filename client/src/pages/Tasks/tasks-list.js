@@ -17,8 +17,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { createSelector } from "reselect"
 import { useLazyQuery, gql, useMutation } from "@apollo/client"
 import DeleteModal from "components/Common/DeleteModal"
-import { toast } from "react-toastify"
-import { ToastContainer } from "react-toastify"
+import { toast, ToastContainer } from "react-toastify"
 import { setTaskStatus } from "apiCalls/apicalls"
 
 const GET_TASKS_BY_STATUS = gql`
