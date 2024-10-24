@@ -32,8 +32,8 @@ const CardProject = ({ offices, setOffices }) => {
         setOffices(updatedOffices)
       })
       .catch(err => {
-        toast.error("Failed to delete office: ", {
-          autoClose: 2000,
+        toast.error("Can't delete office, There is cases assigned to it", {
+          autoClose: 3000,
         })
       })
   }
