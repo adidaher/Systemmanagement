@@ -11,6 +11,7 @@ import {
   UPDATE_CARD_DATA,
   UPDATE_CARD_DATA_SUCCESS,
   UPDATE_CARD_DATA_FAIL,
+  UPDATE_TASK_SUCCESS,
 } from "./actionTypes"
 
 export const getTasks = () => ({
@@ -26,7 +27,10 @@ export const getTasksFail = error => ({
   type: GET_TASKS_FAIL,
   payload: error,
 })
-
+export const updateTaskStatus = task => ({
+  type: UPDATE_TASK_SUCCESS,
+  payload: task,
+})
 export const deleteKanban = task => ({
   type: DELETE_KANBAN,
   payload: kanban,

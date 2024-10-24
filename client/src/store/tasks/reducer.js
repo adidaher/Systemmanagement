@@ -8,6 +8,7 @@ import {
   ADD_CARD_DATA_FAIL,
   UPDATE_CARD_DATA_SUCCESS,
   UPDATE_CARD_DATA_FAIL,
+  UPDATE_TASK_SUCCESS,
 } from "./actionTypes"
 
 const INIT_STATE = {
@@ -43,22 +44,14 @@ const tasks = (state = INIT_STATE, action) => {
         error: action.payload,
       }
 
-    case UPDATE_CARD_DATA_SUCCESS:
+    case UPDATE_TASK_SUCCESS:
       return {
         ...state,
-        tasks: state.tasks.map(task => {
-          if (task.id === action.payload.kanId) {
-            return {
-              ...task,
-              cards: task.cards.map(card =>
-                card.id.toString() === action.payload.id.toString()
-                  ? { card, ...action.payload }
-                  : card
-              ),
-            }
-          }
-          return task
-        }),
+        tasks: state.tasks.map(task =>
+          task.task_id === action.payload.task_id
+            ? { ...task, ...action.payload } // Update the task with the new data
+            : task
+        ),
       }
 
     case UPDATE_CARD_DATA_FAIL:

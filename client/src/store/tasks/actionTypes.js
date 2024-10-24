@@ -17,3 +17,4 @@ export const UPDATE_CARD_DATA_FAIL = "UPDATE_CARD_DATA_FAIL"
 
 export const GET_upcomingTask_SUCCESS = "GET_upcomingTask"
 export const GET_inProgressTask_SUCCESS = "GET_inProgressTask"
+export const UPDATE_TASK_SUCCESS = "UPDATE_TASK_SUCCESS"

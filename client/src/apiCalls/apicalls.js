@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { useLazyQuery, gql, useMutation, useQuery } from "@apollo/client"
-import { getTasksSuccess } from "store/tasks/actions"
+import { getTasksSuccess, updateTaskStatus } from "store/tasks/actions"
 import { useSelector, useDispatch } from "react-redux"
 import { getProjectsSuccess } from "store/projects/actions"
 import { getEventsSuccess } from "store/calendar/actions"
+
 const GET_USER_EVENTS = gql`
   query GetUserEvents($userEmail: String!) {
     userEvents(userEmail: $userEmail) {
@@ -53,7 +54,18 @@ const GET_PROJECTS_BY_OFFICE_ID = gql`
     }
   }
 `
-
+const UPDATE_TASK_STATUS = gql`
+  mutation updateTaskStatus($task_id: ID!, $task_status: String!) {
+    updateTaskStatus(task_id: $task_id, task_status: $task_status) {
+      task_id
+      task_name
+      task_partners
+      task_status
+      task_deadline
+      task_description
+    }
+  }
+`
 export const useGetAllTasks = () => {
   const dispatch = useDispatch()
 
@@ -137,4 +149,21 @@ export const useUserEventsDashboard = userEmail => {
   })
 
   return { loading, data, error }
+}
+
+export const setTaskStatus = () => {
+  const dispatch = useDispatch()
+
+  const [setTaskStatusMutation, { data, loading, error }] = useMutation(
+    UPDATE_TASK_STATUS,
+    {
+      onCompleted: data => {
+        if (data?.updateTaskStatus) {
+          dispatch(updateTaskStatus(data?.updateTaskStatus))
+        }
+      },
+    }
+  )
+
+  return { setTaskStatusMutation, loading, data, error }
 }

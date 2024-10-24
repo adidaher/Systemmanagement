@@ -19,6 +19,7 @@ import { useLazyQuery, gql, useMutation } from "@apollo/client"
 import DeleteModal from "components/Common/DeleteModal"
 import { toast } from "react-toastify"
 import { ToastContainer } from "react-toastify"
+import { setTaskStatus } from "apiCalls/apicalls"
 
 const GET_TASKS_BY_STATUS = gql`
   query getAllTasks {
@@ -66,6 +67,7 @@ const TasksList = props => {
   )
 
   const tasks = useSelector(tasksSelector)
+  const { setTaskStatusMutation, loadingstatus } = setTaskStatus()
 
   useEffect(() => {
     if (!tasks || tasks.length === 0) {
@@ -127,7 +129,25 @@ const TasksList = props => {
     Completed: "completed", // Key for "Completed" in the translation file (or any other status)
   }
 
-  console.log(currentUser)
+  const setCompletedTask = ({ task_id }) => {
+    if (!task_id) {
+      console.error("task_id is undefined")
+      return
+    }
+    setTaskStatusMutation({
+      variables: { task_id, task_status: "Completed" },
+    })
+  }
+
+  const setinProgressTask = ({ task_id }) => {
+    if (!task_id) {
+      console.error("task_id is undefined")
+      return
+    }
+    setTaskStatusMutation({
+      variables: { task_id, task_status: "in Progress" },
+    })
+  }
   return (
     <section className={"vh-150"} style={{ backgroundColor: "#eee" }}>
       <DeleteModal
@@ -268,13 +288,26 @@ const TasksList = props => {
                                           backgroundColor: "#07bc0c",
                                           color: "white",
                                         }}
+                                        onClick={() =>
+                                          setCompletedTask({
+                                            task_id: task.task_id,
+                                          })
+                                        }
                                       >
                                         mark as completed
                                       </Button>
                                     )}
                                   {currentUser?.role === "admin" &&
                                     task.task_status === "Up comming" && (
-                                      <Button type="button" color="primary">
+                                      <Button
+                                        type="button"
+                                        color="primary"
+                                        onClick={() =>
+                                          setinProgressTask({
+                                            task_id: task.task_id,
+                                          })
+                                        }
+                                      >
                                         mark as in-progress
                                       </Button>
                                     )}
