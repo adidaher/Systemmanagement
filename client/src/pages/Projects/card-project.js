@@ -4,10 +4,11 @@ import { Link } from "react-router-dom"
 import { Badge, Card, CardBody, Col, UncontrolledTooltip } from "reactstrap"
 import cpaicon from "../../assets/images/companies/img-1.png"
 import { ToastContainer } from "react-toastify"
+import { useLazyQuery, gql, useMutation } from "@apollo/client"
 
 const DELETE_OFFICE = gql`
-  mutation deleteOffice($id: ID!) {
-    deleteOffice(id: $id) {
+  mutation deleteOffice($office_id: ID!) {
+    deleteOffice(office_id: $office_id) {
       office_id
     }
   }
@@ -21,10 +22,17 @@ const CardProject = ({ offices }) => {
   const [deleteOffice] = useMutation(DELETE_OFFICE)
 
   const handleDeleteOffice = office_id => {
-    deleteTask({ variables: { id: selectedTask.task_id } }).then(result => {
-      toast.success("Event Deleted Successfully", { autoClose: 2000 })
-    })
+    deleteOffice({ variables: { office_id } })
+      .then(result => {
+        toast.success("Office Deleted Successfully", { autoClose: 2000 })
+      })
+      .catch(err => {
+        toast.error("Failed to delete office: " + err.message, {
+          autoClose: 2000,
+        })
+      })
   }
+
   return (
     <React.Fragment>
       {(offices || []).map((office, key) => (

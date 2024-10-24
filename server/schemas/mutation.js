@@ -346,11 +346,11 @@ const RootMutation = new GraphQLObjectType({
     deleteOffice: {
       type: OfficeType,
       args: {
-        office_id: { type: GraphQLID },
+        office_id: { type: GraphQLID }, // GraphQL expects office_id
       },
       resolve(parentValue, args) {
         const query = `DELETE FROM offices WHERE office_id = $1 RETURNING *`;
-        const values = [args.id];
+        const values = [args.office_id]; // Use args.office_id instead of args.id
 
         return db
           .one(query, values)
