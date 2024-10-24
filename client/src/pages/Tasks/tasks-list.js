@@ -118,6 +118,11 @@ const TasksList = props => {
     dispatch(deleteTaskSuccess(selectedTask)) // Dispatch delete action
     setDeleteModal(false) // Close the delete modal
   }
+  const statusTranslationMap = {
+    "in Progress": "inProgress", // Key for "in Progress" in the translation file
+    "Up comming": "upComing", // Key for "Up comming" in the translation file
+    Completed: "completed", // Key for "Completed" in the translation file (or any other status)
+  }
 
   return (
     <section className={"vh-150"} style={{ backgroundColor: "#eee" }}>
@@ -236,19 +241,20 @@ const TasksList = props => {
                                   }}
                                 >
                                   <p>
-                                    <strong>Partners:</strong>{" "}
+                                    <strong>{props.t("Partners")} :</strong>{" "}
                                     {task.task_partners.join(", ")}
                                   </p>
                                   <p>
-                                    <strong>Description:</strong>{" "}
+                                    <strong>{props.t("Description")} :</strong>{" "}
                                     {task.task_description}
                                   </p>
                                   <p>
-                                    <strong>Deadline:</strong>{" "}
+                                    <strong>{props.t("DeadLine")} :</strong>{" "}
                                     {formatDate(task.task_deadline)}
                                   </p>
                                   <p>
-                                    <strong>Status:</strong> {task.task_status}
+                                    <strong> {props.t("Status")}:</strong>{" "}
+                                    {task.task_status}
                                   </p>
                                 </div>
                               </td>

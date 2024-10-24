@@ -14,7 +14,7 @@ import { ApolloProvider } from "@apollo/client"
 //https://systemmanagement-two.vercel.app
 //https://systemmanagement-two.vercel.app/graphql
 const client = new ApolloClient({
-  uri: "https://systemmanagement.onrender.com/graphql",
+  uri: "https://systemmanagement-two.vercel.app/graphql",
   cache: new InMemoryCache(),
 })
 

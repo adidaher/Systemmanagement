@@ -43,10 +43,15 @@ import {
   getEventsSuccess,
   addEventSuccess,
   updateEventSuccess,
+  deleteEventSuccess,
 } from "../../store/actions"
 
 import DeleteModal from "./DeleteModal"
-
+import {
+  useGetAllTasks,
+  useGetProjectsOfOffice,
+  useGetUserEvents,
+} from "apiCalls/apicalls"
 //redux
 import { useSelector, useDispatch } from "react-redux"
 import { createSelector } from "reselect"
@@ -72,6 +77,9 @@ const Calender = props => {
     return authUser ? JSON.parse(authUser) : null
   })
   const [convertedEvents, setConvertedEvents] = useState()
+  const { getEvents, loading: loadingEvents } = useGetUserEvents(
+    currentUser?.email
+  )
 
   const CalendarProperties = createSelector(
     state => state.calendar,
@@ -104,21 +112,10 @@ const Calender = props => {
       type: "bg-danger",
     },
   ]
-  const [getUserCalendar, { data, loading: queryLoading }] = useLazyQuery(
-    GET_USER_EVENTS,
-    {
-      onCompleted: data => {
-        if (data?.userEvents) {
-          const formattedEvents = convertEvents(data.userEvents)
-          dispatch(getEventsSuccess(formattedEvents))
-        }
-      },
-    }
-  )
 
   const [deleteEvent] = useMutation(DELETE_EVENT, {
     onCompleted: () => {
-      dispatch(onDeleteEvent(deleteId))
+      dispatch(deleteEventSuccess(deleteId))
       toast.success(`${props.t("Event deleted successfully")}`, {
         autoClose: 2000,
       })
@@ -146,28 +143,16 @@ const Calender = props => {
   })
 
   useEffect(() => {
-    if (events) {
-      setConvertedEvents(
-        events.map(event => ({
-          ...event,
-          start: new Date(parseInt(event.start_timestamp)),
-        }))
-      )
+    async function fetchEvents() {
+      if (!events || events.length === 0) {
+        await getEvents()
+      }
     }
-  }, [events])
 
-  /*
-  useEffect(() => {
-    if (!events || events.length === 0) {
-      getUserCalendar({
-        variables: { userEmail: currentUser.email },
-      })
-    }
+    fetchEvents()
   }, [currentUser, events])
-  */
-  // category validation
+
   const categoryValidation = useFormik({
-    // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {

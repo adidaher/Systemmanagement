@@ -4,7 +4,7 @@
   "Menu": "תפריט",
   "Dashboards": "לוחות מחוונים",
   "Dashboard": "לוח מחוונים",
-  "Default": "ברירת מחדל",
+  "Default": "דף הבית",
   "Saas": "סאס",
   "Crypto": "קריפטו",
   "Apps": "אפליקציות",
@@ -183,7 +183,7 @@
   "Welcome Back !": "ברוך הבא",
   "It will seem like simplified": "זה ייראה כמו פשוט",
   "View Profile": "צפייה בפרופיל",
-  "Tasks Todo": "מסימות לביצוע",
+  "Tasks Todo": "משימות",
   "Tasks Performed": "משימות בוצעו",
   "Deferred Tasks": "משימות בהמתנה",
   "Activity": "פעולות",
@@ -253,5 +253,10 @@
   "Info": "מידע",
   "Dark": "חשוב",
   "Warning": "סכנה",
-  "Insert user Email": "הכנס אימייל של משתמש"
+  "Insert user Email": "הכנס אימייל של משתמש",
+  "Partners": "שייך ל",
+  "Status": "סטטוס",
+  "inProgress": "בטיפול",
+  "upComing": "הוגדרה",
+  "Completed": "הסתיימו"
 }
