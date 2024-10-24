@@ -8,6 +8,7 @@ const {
   CustomersType,
   CaseType,
   CaseOfCustomersType,
+  OfficeType,
 } = require("./types");
 
 const RootMutation = new GraphQLObjectType({
@@ -342,7 +343,21 @@ const RootMutation = new GraphQLObjectType({
           .catch((err) => ({ success: false, message: err.message }));
       },
     },
+    deleteOffice: {
+      type: OfficeType,
+      args: {
+        office_id: { type: GraphQLID },
+      },
+      resolve(parentValue, args) {
+        const query = `DELETE FROM offices WHERE office_id = $1 RETURNING *`;
+        const values = [args.id];
 
+        return db
+          .one(query, values)
+          .then((res) => res)
+          .catch((err) => err);
+      },
+    },
     /*createCase: {
       type: CaseType,
       args: {

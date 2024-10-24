@@ -1,9 +1,30 @@
 import PropTypes from "prop-types"
-import React from "react"
+import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import { Badge, Card, CardBody, Col, UncontrolledTooltip } from "reactstrap"
 import cpaicon from "../../assets/images/companies/img-1.png"
+import { ToastContainer } from "react-toastify"
+
+const DELETE_OFFICE = gql`
+  mutation deleteOffice($id: ID!) {
+    deleteOffice(id: $id) {
+      office_id
+    }
+  }
+`
+
 const CardProject = ({ offices }) => {
+  const [currentUser, setCurrentUser] = useState(() => {
+    const authUser = localStorage.getItem("authUser")
+    return authUser ? JSON.parse(authUser) : null
+  })
+  const [deleteOffice] = useMutation(DELETE_OFFICE)
+
+  const handleDeleteOffice = office_id => {
+    deleteTask({ variables: { id: selectedTask.task_id } }).then(result => {
+      toast.success("Event Deleted Successfully", { autoClose: 2000 })
+    })
+  }
   return (
     <React.Fragment>
       {(offices || []).map((office, key) => (
@@ -37,11 +58,23 @@ const CardProject = ({ offices }) => {
                   <i className="bx bx-comment-dots me-1" />
                   {office.manager}
                 </li>
+                {currentUser?.role === "admin" && (
+                  <Link
+                    to="#"
+                    onClick={() => handleDeleteOffice(office.office_id)}
+                  >
+                    <i
+                      className="mdi mdi-delete "
+                      style={{ fontSize: "20px", color: "#dc3545" }}
+                    ></i>
+                  </Link>
+                )}
               </ul>
             </div>
           </Card>
         </Col>
       ))}
+      <ToastContainer />
     </React.Fragment>
   )
 }
