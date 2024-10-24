@@ -114,6 +114,22 @@ const RootMutation = new GraphQLObjectType({
           .catch((err) => err);
       },
     },
+    updateTaskStatus: {
+      type: TaskType,
+      args: {
+        task_id: { type: GraphQLID },
+        task_status: { type: GraphQLString },
+      },
+      resolve(parentValue, args) {
+        const query = `UPDATE tasks SET task_status = $1 WHERE task_id = $2 RETURNING *`;
+        const values = [args.task_status, args.task_id];
+
+        return db
+          .one(query, values)
+          .then((res) => res)
+          .catch((err) => err);
+      },
+    },
 
     updateEvent: {
       type: EventsType,

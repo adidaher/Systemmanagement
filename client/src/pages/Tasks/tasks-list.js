@@ -48,7 +48,10 @@ const DELETE_TASK = gql`
 
 const TasksList = props => {
   document.title = "Task List | CPALINK"
-
+  const [currentUser, setCurrentUser] = useState(() => {
+    const authUser = localStorage.getItem("authUser")
+    return authUser ? JSON.parse(authUser) : null
+  })
   const dispatch = useDispatch()
   const [selectedTask, setSelectedTask] = useState(null)
   const [expandedTaskId, setExpandedTaskId] = useState(null) // State to track expanded task
@@ -124,6 +127,7 @@ const TasksList = props => {
     Completed: "completed", // Key for "Completed" in the translation file (or any other status)
   }
 
+  console.log(currentUser)
   return (
     <section className={"vh-150"} style={{ backgroundColor: "#eee" }}>
       <DeleteModal
@@ -256,6 +260,24 @@ const TasksList = props => {
                                     <strong> {props.t("Status")}:</strong>{" "}
                                     {task.task_status}
                                   </p>
+                                  {currentUser?.role === "admin" &&
+                                    task.task_status === "in Progress" && (
+                                      <Button
+                                        type="button"
+                                        style={{
+                                          backgroundColor: "#07bc0c",
+                                          color: "white",
+                                        }}
+                                      >
+                                        mark as completed
+                                      </Button>
+                                    )}
+                                  {currentUser?.role === "admin" &&
+                                    task.task_status === "Up comming" && (
+                                      <Button type="button" color="primary">
+                                        mark as in-progress
+                                      </Button>
+                                    )}
                                 </div>
                               </td>
                             </tr>
