@@ -146,7 +146,7 @@ const RootQuery = new GraphQLObjectType({
         SELECT * 
         FROM events 
         WHERE (user_id = (SELECT user_id FROM users WHERE email = $1) OR $1 IN (SELECT shared_with FROM events))
-          AND start_timestamp >= $2
+          AND start_timestamp >= $2 ORDER BY start_timestamp ASC;
       `;
         const values = [args.userEmail, startOfToday];
 
