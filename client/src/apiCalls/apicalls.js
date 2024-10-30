@@ -86,6 +86,7 @@ export const useGetAllTasks = () => {
 }
 
 export const useGetProjectsOfOffice = office_id => {
+  console.log("fetching project by ", office_id)
   const dispatch = useDispatch()
   const [getProjects, { data, loading, error }] = useLazyQuery(
     GET_PROJECTS_BY_OFFICE_ID,
@@ -93,6 +94,7 @@ export const useGetProjectsOfOffice = office_id => {
       variables: { office_id },
       onCompleted: data => {
         if (data?.casesOfCustomersDetailsByOfficeID) {
+          console.log(data?.casesOfCustomersDetailsByOfficeID)
           dispatch(getProjectsSuccess(data.casesOfCustomersDetailsByOfficeID))
         }
       },

@@ -74,7 +74,10 @@ const DELETE_CASE = gql`
 const ProjectsList = props => {
   //meta title
   document.title = "Project List | CPALINK"
-
+  const [currentUser, setCurrentUser] = useState(() => {
+    const authUser = localStorage.getItem("authUser")
+    return authUser ? JSON.parse(authUser) : null
+  })
   const dispatch = useDispatch()
   const [project, setProject] = useState()
   const navigate = useNavigate()
@@ -173,11 +176,6 @@ const ProjectsList = props => {
 
   const [modal, setModal] = useState(false)
   const [isEdit, setIsEdit] = useState(false)
-
-  const [currentUser, setCurrentUser] = useState(() => {
-    const authUser = localStorage.getItem("authUser")
-    return authUser ? JSON.parse(authUser) : null
-  })
 
   useEffect(() => {
     setProject(project)

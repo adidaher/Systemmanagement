@@ -54,10 +54,14 @@ const Dashboard = props => {
         await fetchTasks()
       }
 
-      // Fetch projects
       if (!projects || projects.length === 0) {
-        console.log("fetching projects...")
-        await getProjects()
+        if (currentUser?.office_id) {
+          console.log("Fetching projects...")
+          await getProjects() // Trigger the fetch
+          console.log("Projects fetched:", data) // Log the fetched projects data
+        } else {
+          console.warn("No office ID found, skipping project fetch")
+        }
       }
 
       // Fetch events
@@ -80,7 +84,7 @@ const Dashboard = props => {
   // Categorizing tasks
   useEffect(() => {
     if (tasks) {
-      const completed = tasks.filter(task => task.task_status === "completed")
+      const completed = tasks.filter(task => task.task_status === "Completed")
       setCompletedTasks(completed)
 
       const inProgress = tasks.filter(
