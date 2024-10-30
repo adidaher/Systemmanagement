@@ -77,8 +77,6 @@ const ProjectsList = props => {
 
   const dispatch = useDispatch()
   const [project, setProject] = useState()
-  const [currentUser, setCurrentUser] = useState()
-  //const [projects, setProjects] = useState()
   const navigate = useNavigate()
 
   const [getProjects, { data, loading: queryLoading, error }] = useLazyQuery(
@@ -110,10 +108,7 @@ const ProjectsList = props => {
     }
   }, [currentUser, projects])
 
-  // validation
-
   const validation = useFormik({
-    // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {
@@ -135,7 +130,6 @@ const ProjectsList = props => {
           },
         })
           .then(result => {
-            // dispatch(updateUserSuccess(result.data.updateUser))
             setIsEdit(false)
             validation.resetForm()
           })
@@ -180,14 +174,10 @@ const ProjectsList = props => {
   const [modal, setModal] = useState(false)
   const [isEdit, setIsEdit] = useState(false)
 
-  useEffect(() => {
-    if (!currentUser) {
-      if (localStorage.getItem("authUser")) {
-        const obj = JSON.parse(localStorage.getItem("authUser"))
-        setCurrentUser(obj)
-      }
-    }
-  }, [currentUser])
+  const [currentUser, setCurrentUser] = useState(() => {
+    const authUser = localStorage.getItem("authUser")
+    return authUser ? JSON.parse(authUser) : null
+  })
 
   useEffect(() => {
     setProject(project)

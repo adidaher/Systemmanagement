@@ -252,7 +252,9 @@ const ContactsList = props => {
       onCompleted: data => {
         if (data?.allUsers) {
           dispatch(getUsersSuccess(data.allUsers))
-          const managers = data.allUsers.filter(user => user.role === "manager")
+          const managers = data.allUsers.filter(
+            user => user.role === "manager" || user.role === "admin"
+          )
           const managersObject = managers.reduce((acc, manager) => {
             acc[manager.manager_id] = manager
             return acc

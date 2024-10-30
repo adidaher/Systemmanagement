@@ -51,7 +51,6 @@ const Dashboard = props => {
     try {
       // Fetch tasks
       if (!tasks || tasks.length === 0) {
-        console.log("fetching tasks...")
         await fetchTasks()
       }
 

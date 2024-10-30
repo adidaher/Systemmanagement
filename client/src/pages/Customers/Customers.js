@@ -110,8 +110,12 @@ const Customers = props => {
   const [customer, setCustomer] = useState(null)
   const [loading, setLoading] = useState(true)
   const [customerList, setCustomerList] = useState([])
-  const [currentUser, setCurrentUser] = useState()
+
   const [deleteModal, setDeleteModal] = useState(false)
+  const [currentUser, setCurrentUser] = useState(() => {
+    const authUser = localStorage.getItem("authUser")
+    return authUser ? JSON.parse(authUser) : null
+  })
 
   const {
     loading: QueryLoading,
@@ -129,15 +133,6 @@ const Customers = props => {
   const [deleteCustomer] = useMutation(DELETE_CUSTOMER)
   const [addCustomer] = useMutation(ADD_CUSTOMER)
   const [updateCustomer] = useMutation(UPDATE_CUSTOMER)
-
-  useEffect(() => {
-    if (!currentUser) {
-      if (localStorage.getItem("authUser")) {
-        const obj = JSON.parse(localStorage.getItem("authUser"))
-        setCurrentUser(obj)
-      }
-    }
-  }, [currentUser])
 
   const columns = useMemo(
     () => [
@@ -422,7 +417,6 @@ const Customers = props => {
                             </FormFeedback>
                           )}
                       </div>
-
                       <div className="mb-3">
                         <Label for="email">{props.t("Email")}</Label>
                         <Input

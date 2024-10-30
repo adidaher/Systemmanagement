@@ -248,6 +248,30 @@ const RootMutation = new GraphQLObjectType({
       },
     },
 
+    addOffice: {
+      type: OfficeType,
+      args: {
+        name: { type: GraphQLString },
+        manager: { type: GraphQLString },
+        location: { type: GraphQLString },
+        phone: { type: GraphQLString },
+      },
+      resolve(parentValue, args) {
+        const query = `
+        INSERT INTO offices ( name, manager, location, phone)
+        VALUES ($1, $2, $3, $4)
+        RETURNING *
+      `;
+        const values = [args.name, args.manager, args.location, args.phone];
+        return db
+          .one(query, values)
+          .then((res) => res)
+          .catch((err) => {
+            throw new Error("Error adding office: " + err.message);
+          });
+      },
+    },
+
     deleteEvent: {
       type: EventsType,
       args: {
