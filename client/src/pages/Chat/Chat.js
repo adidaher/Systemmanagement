@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import PropTypes from "prop-types"
 import { Link } from "react-router-dom"
-import { map } from "lodash"
+
 import {
   Button,
   Card,
@@ -46,6 +46,7 @@ import {
   getContacts as onGetContacts,
   getGroups as onGetGroups,
   getMessages as onGetMessages,
+  addMessageSuccess,
 } from "store/actions"
 import { getGroupsSuccess, getOfficeName } from "../../store/chat/actions"
 //redux
@@ -75,11 +76,40 @@ const getChats = gql`
   }
 `
 
+const ADD_CHAT = gql`
+  mutation addchat(
+    $message: String!
+    $sent_at: String!
+    $senderId: ID!
+    $officeId: ID!
+  ) {
+    addchat(
+      message: $message
+      sent_at: $sent_at
+      senderId: $senderId
+      officeId: $officeId
+    ) {
+      id
+      message
+      sent_at
+      sender {
+        user_id
+        first_name
+        last_name
+      }
+      office {
+        office_id
+        name
+      }
+    }
+  }
+`
+
 const Chat = props => {
   //meta title
   document.title = "Chat | CPALINK"
   const [currentUser, setCurrentUser] = useState()
-
+  const [addChat] = useMutation(ADD_CHAT)
   const dispatch = useDispatch()
 
   const [getOfficeChats, { isLoading, data, error }] = useLazyQuery(getChats, {
@@ -136,14 +166,15 @@ const Chat = props => {
   const [selectedImage, setSelectedImage] = useState(null)
   const [isdisable, setDisable] = useState(false)
 
+  const updateMessagesWithCurrentUser = (messages, currentUser) => {
+    return messages.map(msg => ({
+      ...msg,
+      isCurrentUser: msg.sender.user_id === currentUser.user_id,
+    }))
+  }
+
   useEffect(() => {
     if (currentUser) {
-      const updateMessagesWithCurrentUser = (messages, currentUser) => {
-        return messages.map(msg => ({
-          ...msg,
-          isCurrentUser: msg.sender.user_id === currentUser.user_id,
-        }))
-      }
       const updatedMessages = updateMessagesWithCurrentUser(groups, currentUser)
 
       setMessagesData(updatedMessages)
@@ -193,10 +224,42 @@ const Chat = props => {
     })
   }
 
+  const handleAddMessage = async newTimestamp => {
+    try {
+      const currentDate = new Date()
+      const year = currentDate.getFullYear()
+      const month = currentDate.getMonth()
+      const day = currentDate.getDay()
+      const currentHour = currentDate.getHours()
+      const currentMin = currentDate.getMinutes()
+      const currentSec = currentDate.getSeconds()
+      const modifiedDate = new Date(
+        year,
+        month,
+        day,
+        currentHour,
+        currentMin,
+        currentSec
+      )
+
+      const { data } = await addChat({
+        variables: {
+          message: curMessage,
+          sent_at: modifiedDate,
+          senderId: currentUser.user_id,
+          officeId: currentUser.office_id,
+        },
+      })
+      console.log("Message added:", data.addChat)
+    } catch (error) {
+      console.error("Error adding message:", error)
+    }
+  }
+
   function convertTimestamp(timestampStr) {
     const timestamp = parseInt(timestampStr, 10)
 
-    const dateObj = new Date(timestamp)
+    const dateObj = new Date(timestamp * 1000)
 
     const date = dateObj.toLocaleDateString()
     const time = dateObj.toLocaleTimeString()
@@ -211,17 +274,51 @@ const Chat = props => {
   const hours = currentTime.getHours()
   const minutes = currentTime.getMinutes()
   const time = `${hours}: ${minutes}`
-  const addMessage = () => {
+
+  function convertTimestamp(timestampStr) {
+    const timestamp = parseInt(timestampStr, 10)
+    const dateObj = new Date(timestamp)
+
+    // Format date as "DD/MM/YYYY"
+    const options = { day: "2-digit", month: "2-digit", year: "numeric" }
+    const date = dateObj.toLocaleDateString("en-GB", options) // Use 'en-GB' for DD/MM/YYYY format
+
+    // Format time as "HH:mm AM/PM"
+    const timeOptions = { hour: "2-digit", minute: "2-digit", hour12: true }
+    const time = dateObj.toLocaleTimeString("en-US", timeOptions)
+
+    return {
+      date: date,
+      time: time,
+    }
+  }
+
+  const addMessage = async () => {
     if (curMessage !== "" || selectedImage !== null) {
+      const newTimestamp = Date.now() // Get the current timestamp
+
       const newMessage = {
-        id: Math.floor(Math.random() * 100),
-        to_id: 2,
-        msg: curMessage,
+        message: curMessage, // Changed from `msg` to `message` to match your database structure
+        sent_at: newTimestamp.toString(),
         isSameTime: true,
         images: selectedImage,
-        time: time,
+        sender: {
+          user_id: currentUser.user_id,
+          first_name: currentUser.first_name,
+        },
+
+        time: convertTimestamp(newTimestamp).time,
+        date: convertTimestamp(newTimestamp).date,
+        isCurrentUser: true, // Flag for current user
       }
-      dispatch(onAddMessage(newMessage))
+
+      // Update messagesData state with the new message
+      setMessagesData(prevMessages => [...prevMessages, newMessage])
+
+      // Optionally dispatch Redux action
+      dispatch(addMessageSuccess(newMessage))
+      await handleAddMessage(newTimestamp)
+      // Reset input fields
       setCurMessage("")
       setDisable(false)
       setEmoji(false)
@@ -252,6 +349,15 @@ const Chat = props => {
       } else {
         li[i].style.display = "none"
       }
+    }
+  }
+
+  const onKeyDown = e => {
+    if (e.key === "Enter") {
+      const { value } = e
+      setCurMessage(value)
+      addMessage()
+      setDisable(true)
     }
   }
 
@@ -524,7 +630,7 @@ const Chat = props => {
                                 (messagesData || []).map(message => {
                                   return (
                                     <li
-                                      key={1}
+                                      key={message.id}
                                       className={
                                         message.isCurrentUser ? "right" : ""
                                       }
@@ -631,7 +737,7 @@ const Chat = props => {
                               <input
                                 type="text"
                                 value={curMessage}
-                                onKeyPress={onKeyPress}
+                                onKeyDown={onKeyDown}
                                 onChange={e => {
                                   setCurMessage(e.target.value)
                                   setDisable(true)

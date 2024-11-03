@@ -9,6 +9,7 @@ const {
   CaseType,
   CaseOfCustomersType,
   OfficeType,
+  ChatType,
 } = require("./types");
 
 const RootMutation = new GraphQLObjectType({
@@ -398,6 +399,35 @@ const RootMutation = new GraphQLObjectType({
           .catch((err) => err);
       },
     },*/
+
+    addchat: {
+      type: ChatType,
+      args: {
+        message: { type: GraphQLString },
+        sent_at: { type: GraphQLString },
+        senderId: { type: GraphQLID },
+        officeId: { type: GraphQLID },
+      },
+      resolve(parentValue, args) {
+        const query = `
+        INSERT INTO chats (message, sent_at, sender_id, office_id)
+        VALUES ( $1, $2, $3, $4)
+        RETURNING *
+      `;
+        const values = [
+          args.message,
+          args.sent_at,
+          args.senderId,
+          args.officeId,
+        ];
+        return db
+          .one(query, values)
+          .then((res) => res)
+          .catch((err) => {
+            throw new Error("Error adding office: " + err.message);
+          });
+      },
+    },
 
     createCase: {
       type: CaseType,
