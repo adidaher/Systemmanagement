@@ -10,6 +10,7 @@ const {
   CaseOfCustomersType,
   OfficeType,
   ChatType,
+  SubTaskType,
 } = require("./types");
 
 const RootMutation = new GraphQLObjectType({
@@ -472,6 +473,64 @@ const RootMutation = new GraphQLObjectType({
             console.error("Error in createCase resolver:", err);
             throw new Error("Error creating case");
           });
+      },
+    },
+
+    addSubTask: {
+      type: SubTaskType,
+      args: {
+        subtask_name: { type: GraphQLString },
+        subtask_status: { type: GraphQLString },
+        subtask_description: { type: GraphQLString },
+        subtask_deadline: { type: GraphQLString },
+        task_id: { type: GraphQLID },
+      },
+      resolve(parentValue, args) {
+        const {
+          subtask_name,
+          subtask_status,
+          subtask_description,
+          subtask_deadline,
+          task_id,
+        } = args;
+
+        const query = `
+        INSERT INTO subtasks (subtask_name, subtask_status, subtask_deadline, subtask_description, task_id)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING *;
+        `;
+        const values = [
+          subtask_name,
+          subtask_status,
+          subtask_deadline,
+          subtask_description,
+          task_id,
+        ];
+
+        return db
+          .one(query, values)
+          .then((res) => res)
+          .catch((err) => {
+            console.error("Error adding subtask:", err);
+            throw new Error("Failed to add subtask.");
+          });
+      },
+    },
+
+    updateSubTaskStatus: {
+      type: SubTaskType,
+      args: {
+        subtask_id: { type: GraphQLID },
+        subtask_status: { type: GraphQLString },
+      },
+      resolve(parentValue, args) {
+        const query = `UPDATE subtasks SET subtask_status = $1 WHERE subtask_id = $2 RETURNING *`;
+        const values = [args.subtask_status, args.subtask_id];
+
+        return db
+          .one(query, values)
+          .then((res) => res)
+          .catch((err) => err);
       },
     },
   },

@@ -18,7 +18,7 @@ import { createSelector } from "reselect"
 import { useLazyQuery, gql, useMutation } from "@apollo/client"
 import DeleteModal from "components/Common/DeleteModal"
 import { toast, ToastContainer } from "react-toastify"
-import { setTaskStatus } from "apiCalls/apicalls"
+import { setTaskStatus, setSubTaskStatus } from "apiCalls/apicalls"
 
 const GET_TASKS_BY_STATUS = gql`
   query getAllTasks {
@@ -45,7 +45,25 @@ const DELETE_TASK = gql`
     }
   }
 `
-
+const GET_TASKS_List = gql`
+  query retrieveTasks {
+    retrieveTasks {
+      task_id
+      task_name
+      task_partners
+      task_status
+      task_deadline
+      task_description
+      subtasks {
+        subtask_id
+        subtask_name
+        subtask_status
+        subtask_description
+        subtask_deadline
+      }
+    }
+  }
+`
 const TasksList = props => {
   document.title = "Task List | CPALINK"
   const [currentUser, setCurrentUser] = useState(() => {
@@ -56,6 +74,8 @@ const TasksList = props => {
   const [selectedTask, setSelectedTask] = useState(null)
   const [expandedTaskId, setExpandedTaskId] = useState(null) // State to track expanded task
   const [getTasks, { loading, data }] = useLazyQuery(GET_TASKS_BY_STATUS)
+  const [getTaskList, { tasksloading, tasksdata }] =
+    useLazyQuery(GET_TASKS_List)
   const [deleteModal, setDeleteModal] = useState(false)
   const [sortedTasks, setSortedTasks] = useState([])
   const [isAscending, setIsAscending] = useState(true)
@@ -67,15 +87,18 @@ const TasksList = props => {
 
   const tasks = useSelector(tasksSelector)
   const { setTaskStatusMutation, loadingstatus } = setTaskStatus()
+  const { setSubTaskStatusMutation } = setSubTaskStatus()
 
   useEffect(() => {
     if (!tasks || tasks.length === 0) {
       const fetchTasks = async () => {
         try {
-          const { data } = await getTasks()
+          //const { data } = await getTasks()
+          const { data } = await getTaskList()
           if (data) {
-            dispatch(getTasksSuccess(data.getAllTasks))
+            dispatch(getTasksSuccess(data.retrieveTasks))
           }
+          console.log(data)
         } catch (err) {
           console.error("Error fetching tasks:", err)
         }
@@ -83,7 +106,7 @@ const TasksList = props => {
 
       fetchTasks()
     }
-  }, [tasks, getTasks, dispatch])
+  }, [tasks, getTaskList, dispatch])
 
   useEffect(() => {
     if (tasks) {
@@ -122,11 +145,6 @@ const TasksList = props => {
     dispatch(deleteTaskSuccess(selectedTask)) // Dispatch delete action
     setDeleteModal(false) // Close the delete modal
   }
-  const statusTranslationMap = {
-    "in Progress": "inProgress", // Key for "in Progress" in the translation file
-    "Up comming": "upComing", // Key for "Up comming" in the translation file
-    Completed: "completed", // Key for "Completed" in the translation file (or any other status)
-  }
 
   const setCompletedTask = ({ task_id }) => {
     if (!task_id) {
@@ -147,6 +165,13 @@ const TasksList = props => {
       variables: { task_id, task_status: "in Progress" },
     })
   }
+
+  const handleUpdateStatus = (subtaskId, newStatus) => {
+    setSubTaskStatusMutation({
+      variables: { subtask_id: subtaskId, subtask_status: newStatus },
+    })
+  }
+
   return (
     <section className={"vh-150"} style={{ backgroundColor: "#eee" }}>
       <DeleteModal
@@ -192,6 +217,7 @@ const TasksList = props => {
                       const isExpanded = task.task_id === expandedTaskId
                       return (
                         <React.Fragment key={task.task_id}>
+                          {/* Main task row */}
                           <tr
                             className="fw-normal align-middle text-center"
                             onClick={() => toggleTaskDetails(task.task_id)}
@@ -205,7 +231,6 @@ const TasksList = props => {
                                 {task.task_name}
                               </span>
                             </th>
-
                             <td className="align-middle">
                               <span
                                 className="d-inline-block text-truncate"
@@ -215,7 +240,6 @@ const TasksList = props => {
                                 {task.task_description}
                               </span>
                             </td>
-
                             <td className="align-middle">
                               <h6 className="mb-0">
                                 <span
@@ -231,11 +255,9 @@ const TasksList = props => {
                                 </span>
                               </h6>
                             </td>
-
                             <td className="align-middle">
                               <span>{formatDate(task.task_deadline)}</span>
                             </td>
-
                             <td className="align-middle">
                               <Link
                                 to="#"
@@ -252,64 +274,182 @@ const TasksList = props => {
                               </Link>
                             </td>
                           </tr>
+
                           {isExpanded && (
                             <tr>
                               <td colSpan="5">
                                 <div
-                                  className="col d-flex justify-content-start align-items-center"
                                   style={{
-                                    flexDirection: "column",
-                                    paddingLeft: "20px",
-                                    paddingTop: "10px",
+                                    backgroundColor: "#f8f9fa",
+                                    padding: "10px",
+                                    borderRadius: "5px",
                                   }}
                                 >
-                                  <p>
-                                    <strong>{props.t("Partners")} :</strong>{" "}
-                                    {task.task_partners.join(", ")}
-                                  </p>
-                                  <p>
-                                    <strong>{props.t("Description")} :</strong>{" "}
-                                    {task.task_description}
-                                  </p>
-                                  <p>
-                                    <strong>{props.t("DeadLine")} :</strong>{" "}
-                                    {formatDate(task.task_deadline)}
-                                  </p>
-                                  <p>
-                                    <strong> {props.t("Status")}:</strong>{" "}
-                                    {task.task_status}
-                                  </p>
-                                  {currentUser?.role === "admin" &&
-                                    task.task_status === "in Progress" && (
-                                      <Button
-                                        type="button"
-                                        style={{
-                                          backgroundColor: "#07bc0c",
-                                          color: "white",
-                                        }}
-                                        onClick={() =>
-                                          setCompletedTask({
-                                            task_id: task.task_id,
-                                          })
-                                        }
-                                      >
-                                        mark as completed
-                                      </Button>
-                                    )}
-                                  {currentUser?.role === "admin" &&
-                                    task.task_status === "Up comming" && (
-                                      <Button
-                                        type="button"
-                                        color="primary"
-                                        onClick={() =>
-                                          setinProgressTask({
-                                            task_id: task.task_id,
-                                          })
-                                        }
-                                      >
-                                        mark as in-progress
-                                      </Button>
-                                    )}
+                                  <table className="table table-borderless mb-0">
+                                    <tbody>
+                                      {/* Main Task Details */}
+                                      <>
+                                        <tr key={task.task_id}>
+                                          <td>
+                                            <strong>
+                                              {props.t("Partners")}:
+                                            </strong>{" "}
+                                            {task.task_partners.join(", ")}
+                                          </td>
+                                          <td>
+                                            <strong>
+                                              {props.t("Description")}:
+                                            </strong>{" "}
+                                            {task.task_description}
+                                          </td>
+                                          <td>
+                                            <strong>
+                                              {props.t("Status")}:
+                                            </strong>{" "}
+                                            <span
+                                              className={`badge ${
+                                                task.task_status ===
+                                                "in Progress"
+                                                  ? "bg-primary"
+                                                  : task.task_status ===
+                                                    "Up comming"
+                                                  ? "bg-warning text-dark"
+                                                  : "bg-success"
+                                              }`}
+                                            >
+                                              {task.task_status}
+                                            </span>
+                                          </td>
+                                          <td>
+                                            <strong>
+                                              {props.t("Deadline")}:
+                                            </strong>{" "}
+                                            {formatDate(task.task_deadline)}
+                                          </td>
+                                          <td>
+                                            {/* Buttons for updating task status */}
+                                            {currentUser?.role === "admin" &&
+                                              task.task_status ===
+                                                "in Progress" && (
+                                                <Button
+                                                  color="success"
+                                                  size="sm"
+                                                  onClick={() =>
+                                                    setCompletedTask({
+                                                      task_id: task.task_id,
+                                                    })
+                                                  }
+                                                >
+                                                  {props.t("Set to Completed")}
+                                                </Button>
+                                              )}
+                                            {currentUser?.role === "admin" &&
+                                              task.task_status ===
+                                                "Up comming" && (
+                                                <Button
+                                                  color="primary"
+                                                  size="sm"
+                                                  onClick={() =>
+                                                    setinProgressTask({
+                                                      task_id: task.task_id,
+                                                    })
+                                                  }
+                                                >
+                                                  {props.t(
+                                                    "Set to In Progress"
+                                                  )}
+                                                </Button>
+                                              )}
+                                          </td>
+                                        </tr>
+                                      </>
+
+                                      {/* Subtasks, if available */}
+                                      <>
+                                        {task.subtasks?.map(subtask => (
+                                          <tr key={subtask.subtask_id}>
+                                            <td>
+                                              <strong>
+                                                {props.t("Subtask Name")}:
+                                              </strong>{" "}
+                                              {subtask.subtask_name}
+                                            </td>
+                                            <td>
+                                              <strong>
+                                                {props.t("Description")}:
+                                              </strong>{" "}
+                                              {subtask.subtask_description}
+                                            </td>
+                                            <td>
+                                              <strong>
+                                                {props.t("Status")}:
+                                              </strong>{" "}
+                                              <span
+                                                className={`badge ${
+                                                  subtask.subtask_status ===
+                                                  "in Progress"
+                                                    ? "bg-primary"
+                                                    : task.task_status ===
+                                                      "Up comming"
+                                                    ? "bg-warning text-dark"
+                                                    : "bg-success"
+                                                }`}
+                                              >
+                                                {subtask.subtask_status}
+                                              </span>
+                                            </td>
+                                            <td>
+                                              <strong>
+                                                {props.t("Deadline")}:
+                                              </strong>{" "}
+                                              {formatDate(
+                                                subtask.subtask_deadline
+                                              )}
+                                            </td>
+                                            <td>
+                                              {/* Buttons for updating subtask status */}
+                                              {currentUser?.role === "admin" &&
+                                                subtask.subtask_status ===
+                                                  "in Progress" && (
+                                                  <Button
+                                                    color="success"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                      handleUpdateStatus(
+                                                        subtask.subtask_id,
+                                                        "Completed"
+                                                      )
+                                                    }
+                                                  >
+                                                    {props.t(
+                                                      "Set to Completed"
+                                                    )}
+                                                  </Button>
+                                                )}
+                                              {currentUser?.role === "admin" &&
+                                                subtask.subtask_status ===
+                                                  "Up comming" && (
+                                                  <Button
+                                                    color="primary"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                      handleUpdateStatus(
+                                                        subtask.subtask_id,
+                                                        "in Progress"
+                                                      )
+                                                    }
+                                                  >
+                                                    {props.t(
+                                                      "Set to In Progress"
+                                                    )}
+                                                  </Button>
+                                                )}
+                                            </td>
+                                          </tr>
+                                        ))}
+                                      </>
+                                    </tbody>
+                                  </table>
                                 </div>
                               </td>
                             </tr>

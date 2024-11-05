@@ -33,6 +33,44 @@ const RootQuery = new GraphQLObjectType({
           .catch((err) => err);
       },
     },
+    retrieveTasks: {
+      type: new GraphQLList(TaskType),
+      resolve(parent, args) {
+        const query = `
+          SELECT 
+            tasks.task_id,
+            tasks.task_name,
+            tasks.task_partners,
+            tasks.task_status,
+            tasks.task_deadline,
+            tasks.task_description,
+            COALESCE(json_agg(json_build_object(
+              'subtask_id', subtasks.subtask_id,
+              'subtask_name', subtasks.subtask_name,
+              'subtask_status', subtasks.subtask_status,
+              'subtask_deadline', subtasks.subtask_deadline,
+              'subtask_description', subtasks.subtask_description
+            )) FILTER (WHERE subtasks.subtask_id IS NOT NULL), '[]') AS subtasks
+          FROM 
+            tasks
+          LEFT JOIN 
+            subtasks ON tasks.task_id = subtasks.task_id
+          GROUP BY 
+            tasks.task_id
+          ORDER BY 
+            tasks.task_id;
+        `;
+
+        return db
+          .manyOrNone(query)
+          .then((tasks) => tasks)
+          .catch((err) => {
+            console.error("Error fetching tasks:", err);
+            throw new Error("Failed to fetch tasks.");
+          });
+      },
+    },
+
     allUsers: {
       type: new GraphQLList(UserType),
       resolve() {

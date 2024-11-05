@@ -69,11 +69,20 @@ const CaseType = new GraphQLObjectType({
     case_description: { type: GraphQLString },
   },
 });
-
+const SubTaskType = new GraphQLObjectType({
+  name: "SubTask",
+  fields: {
+    subtask_id: { type: GraphQLID },
+    subtask_name: { type: GraphQLString },
+    subtask_status: { type: GraphQLString },
+    subtask_description: { type: GraphQLString },
+    subtask_deadline: { type: GraphQLString },
+    task_id: { type: GraphQLID }, // Reference to the parent task
+  },
+});
 const TaskType = new GraphQLObjectType({
   name: "Task",
-  type: "Query",
-  fields: {
+  fields: () => ({
     task_id: { type: GraphQLID },
     task_name: { type: GraphQLString },
     task_partners: {
@@ -84,7 +93,8 @@ const TaskType = new GraphQLObjectType({
     task_deadline: { type: GraphQLString },
     task_description: { type: GraphQLString },
     case: { type: CaseType },
-  },
+    subtasks: { type: new GraphQLList(SubTaskType) },
+  }),
 });
 
 /*
@@ -142,3 +152,4 @@ exports.CaseType = CaseType;
 exports.CaseOfCustomersType = CaseOfCustomersType;
 exports.CaseDetailsType = CaseDetailsType;
 exports.ChatType = ChatType;
+exports.SubTaskType = SubTaskType;

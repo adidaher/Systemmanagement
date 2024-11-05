@@ -66,6 +66,22 @@ const UPDATE_TASK_STATUS = gql`
     }
   }
 `
+
+export const UPDATE_SUBTASK_STATUS = gql`
+  mutation updateSubTaskStatus($subtask_id: ID!, $subtask_status: String!) {
+    updateSubTaskStatus(
+      subtask_id: $subtask_id
+      subtask_status: $subtask_status
+    ) {
+      subtask_id
+      subtask_name
+      subtask_status
+      subtask_description
+      subtask_deadline
+    }
+  }
+`
+
 export const useGetAllTasks = () => {
   const dispatch = useDispatch()
 
@@ -168,4 +184,21 @@ export const setTaskStatus = () => {
   )
 
   return { setTaskStatusMutation, loading, data, error }
+}
+
+export const setSubTaskStatus = () => {
+  const dispatch = useDispatch()
+
+  const [setSubTaskStatusMutation, { data, loading, error }] = useMutation(
+    UPDATE_SUBTASK_STATUS,
+    {
+      onCompleted: data => {
+        if (data?.updateSubTaskStatus) {
+          //dispatch(updateSubTaskStatus(data.updateSubTaskStatus))
+        }
+      },
+    }
+  )
+
+  return { setSubTaskStatusMutation, loading, data, error }
 }
