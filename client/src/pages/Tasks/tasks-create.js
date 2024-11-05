@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import {
   Container,
   Row,
@@ -23,11 +23,12 @@ import FlatPickr from "react-flatpickr"
 import { withTranslation } from "react-i18next"
 // Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb"
-
-import { useMutation, gql } from "@apollo/client"
+import { createSelector } from "reselect"
+import { useMutation, gql, useLazyQuery } from "@apollo/client"
 import { toast } from "react-toastify"
 import { addCardDataSuccess } from "store/tasks/actions"
 import { useSelector, useDispatch } from "react-redux"
+import { getTasksSuccess, deleteTaskSuccess } from "store/tasks/actions"
 
 const ADD_TASK = gql`
   mutation AddTask(
@@ -53,11 +54,30 @@ const ADD_TASK = gql`
     }
   }
 `
+const GET_TASKS_List = gql`
+  query retrieveTasks {
+    retrieveTasks {
+      task_id
+      task_name
+      task_partners
+      task_status
+      task_deadline
+      task_description
+      subtasks {
+        subtask_id
+        subtask_name
+        subtask_status
+        subtask_description
+        subtask_deadline
+      }
+    }
+  }
+`
 
 const TasksCreate = props => {
   // Meta title
   document.title = "Create Task | CPALINK"
-
+  const [selectedParentTask, setSelectedParentTask] = useState(null)
   const inpRow = [{ name: "" }]
   const [startDate, setStartDate] = useState(new Date())
   const [inputFields, setInputFields] = useState(inpRow)
@@ -67,6 +87,15 @@ const TasksCreate = props => {
   const [task_description, setTaskDescription] = useState(
     EditorState.createEmpty()
   )
+  const tasksSelector = createSelector(
+    state => state.tasks,
+    tasks => tasks.tasks
+  )
+
+  const tasks = useSelector(tasksSelector)
+
+  const [getTaskList, { tasksloading, tasksdata }] =
+    useLazyQuery(GET_TASKS_List)
   const dispatch = useDispatch()
   const [addTask, { loading, error, data }] = useMutation(ADD_TASK)
 
@@ -75,6 +104,25 @@ const TasksCreate = props => {
     const item = { name: "" }
     setInputFields([...inputFields, item])
   }
+
+  useEffect(() => {
+    if (!tasks || tasks.length === 0) {
+      const fetchTasks = async () => {
+        try {
+          //const { data } = await getTasks()
+          const { data } = await getTaskList()
+          if (data) {
+            dispatch(getTasksSuccess(data.retrieveTasks))
+          }
+          console.log(data)
+        } catch (err) {
+          console.error("Error fetching tasks:", err)
+        }
+      }
+
+      fetchTasks()
+    }
+  }, [tasks, getTaskList, dispatch])
 
   // Function to remove input fields
   function handleRemoveFields(idx) {
@@ -151,6 +199,34 @@ const TasksCreate = props => {
                                 setTaskName(e.target.value)
                               }}
                             />
+                          </Col>
+                        </FormGroup>
+                        <FormGroup className="mb-4" row>
+                          <Label
+                            htmlFor="parenttaskname"
+                            className="col-form-label col-lg-2"
+                          >
+                            {props.t("Sub-Task of")}
+                          </Label>
+                          <Col lg="10">
+                            <Input
+                              type="select"
+                              id="parenttaskname"
+                              name="parenttaskname"
+                              value={selectedParentTask || ""}
+                              onChange={e =>
+                                setSelectedParentTask(e.target.value)
+                              }
+                            >
+                              <option value="">
+                                {props.t("Select Parent Task")}
+                              </option>
+                              {tasks.map(task => (
+                                <option key={task.task_id} value={task.task_id}>
+                                  {task.task_name}
+                                </option>
+                              ))}
+                            </Input>
                           </Col>
                         </FormGroup>
                         <FormGroup className="mb-4" row>

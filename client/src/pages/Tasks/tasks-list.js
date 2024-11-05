@@ -98,7 +98,6 @@ const TasksList = props => {
           if (data) {
             dispatch(getTasksSuccess(data.retrieveTasks))
           }
-          console.log(data)
         } catch (err) {
           console.error("Error fetching tasks:", err)
         }
