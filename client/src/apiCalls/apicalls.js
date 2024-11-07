@@ -81,6 +81,30 @@ export const UPDATE_SUBTASK_STATUS = gql`
     }
   }
 `
+const ADD_SUBTASK = gql`
+  mutation AddSubTask(
+    $subtask_name: String!
+    $subtask_status: String!
+    $subtask_description: String!
+    $subtask_deadline: String!
+    $task_id: ID!
+  ) {
+    addSubTask(
+      subtask_name: $subtask_name
+      subtask_status: $subtask_status
+      subtask_description: $subtask_description
+      subtask_deadline: $subtask_deadline
+      task_id: $task_id
+    ) {
+      subtask_id
+      subtask_name
+      subtask_status
+      subtask_description
+      subtask_deadline
+      task_id
+    }
+  }
+`
 
 export const useGetAllTasks = () => {
   const dispatch = useDispatch()
@@ -201,4 +225,20 @@ export const setSubTaskStatus = () => {
   )
 
   return { setSubTaskStatusMutation, loading, data, error }
+}
+
+export const useAddSubTask = () => {
+  const [addSubTaskMutation, { data, loading, error }] = useMutation(
+    ADD_SUBTASK,
+    {
+      onCompleted: data => {
+        if (data?.addSubTask) {
+          // Dispatch success action to Redux store
+          // dispatch(addSubTaskSuccess(data.addSubTask));
+        }
+      },
+    }
+  )
+
+  return { addSubTask: addSubTaskMutation, loading, data, error }
 }

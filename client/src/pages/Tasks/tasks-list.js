@@ -18,8 +18,14 @@ import { createSelector } from "reselect"
 import { useLazyQuery, gql, useMutation } from "@apollo/client"
 import DeleteModal from "components/Common/DeleteModal"
 import { toast, ToastContainer } from "react-toastify"
-import { setTaskStatus, setSubTaskStatus } from "apiCalls/apicalls"
-
+import {
+  setTaskStatus,
+  setSubTaskStatus,
+  addSubTaskMutation,
+} from "apiCalls/apicalls"
+import config from "config"
+import axios from "axios"
+import emailjs from "@emailjs/browser"
 const GET_TASKS_BY_STATUS = gql`
   query getAllTasks {
     getAllTasks {
@@ -171,20 +177,95 @@ const TasksList = props => {
     })
   }
 
+  const generateTasksTableHTML = tasks => {
+    let tableHTML =
+      "<table><tr><th>Task</th><th>Deadline</th><th>Status</th></tr>"
+
+    tasks.forEach(task => {
+      tableHTML += `
+        <tr>
+          <td>${task.name}</td>
+          <td>${task.deadline}</td>
+          <td>${task.status}</td>
+        </tr>
+      `
+    })
+
+    tableHTML += "</table>"
+    return tableHTML
+  }
+
+  const handleTasksByMail = () => {
+    const htmlContent = `
+    <html>
+      <body>
+        <h1>Tasks Report</h1>
+        <p>Here is the list of tasks:</p>
+        <table border="1">
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Deadline</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tasks
+              .map(
+                task => `
+              <tr>
+                <td>${task.name || "N/A"}</td>
+                <td>${task.deadline || "N/A"}</td>
+                <td>${task.status || "N/A"}</td>
+              </tr>
+            `
+              )
+              .join("")}
+          </tbody>
+        </table>
+      </body>
+    </html>
+  `
+    const templateParams = {
+      to_email: "adedaher5@example.com", // Replace with recipient's email
+      subject: "Task Report", // Subject of the email
+      html: htmlContent, // HTML content for the email
+    }
+
+    // Send the email using EmailJS
+    emailjs
+      .send("service_1nlt43g", "template_0aqhw5n", templateParams, {
+        publicKey: "qcXypAENgVmeK1ubB",
+      })
+      .then(
+        response => {
+          console.log("Email sent successfully:", response)
+          alert("Email sent successfully!")
+        },
+        error => {
+          console.error("Error sending email:", error)
+          alert("Failed to send email.")
+        }
+      )
+  }
+
   return (
-    <section className={"vh-150"} style={{ backgroundColor: "#eee" }}>
+    <section className={""} style={{ backgroundColor: "#eee" }}>
       <DeleteModal
         show={deleteModal}
         onDeleteClick={handleDeleteConfirm}
         onCloseClick={() => setDeleteModal(false)}
       />
-      <div className="container py-5 h-100 ">
+      <div className="container py-5  ">
         <div
           className="row d-flex justify-content-center align-items-center h-100 "
           style={{ paddingTop: "40px" }}
         >
           <div className="col-md-12 col-xl-12 ">
-            <div className="card border" style={{ borderRadius: 15 }}>
+            <button className="mb-50" onClick={handleTasksByMail}>
+              Get Tasks by mail
+            </button>
+            <div className="card border mt-10" style={{ borderRadius: 15 }}>
               <div className="card-header p-3">
                 <h5 className="mb-0">
                   <i className="fas fa-tasks me-2"></i>

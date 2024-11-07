@@ -29,6 +29,7 @@ import { toast } from "react-toastify"
 import { addCardDataSuccess } from "store/tasks/actions"
 import { useSelector, useDispatch } from "react-redux"
 import { getTasksSuccess, deleteTaskSuccess } from "store/tasks/actions"
+import { useAddSubTask } from "apiCalls/apicalls"
 
 const ADD_TASK = gql`
   mutation AddTask(
@@ -84,6 +85,7 @@ const TasksCreate = props => {
   const [task_status] = useState("in Progress")
   const [task_name, setTaskName] = useState("")
   const [task_partners, setTaskPartners] = useState("")
+  const { addSubTask } = useAddSubTask()
   const [task_description, setTaskDescription] = useState(
     EditorState.createEmpty()
   )
@@ -144,22 +146,33 @@ const TasksCreate = props => {
     const taskDescription = task_description.getCurrentContent().getPlainText()
     const taskDeadline = startDate.toISOString().slice(0, 10)
     try {
-      await addTask({
-        variables: {
-          task_name,
-          task_partners,
-          task_status,
-          task_deadline: taskDeadline,
-          task_description: taskDescription,
-        },
-      }).then(result => {
+      if (selectedParentTask != null) {
+        addSubTask({
+          variables: {
+            subtask_name: task_name,
+            subtask_status: task_status,
+            subtask_deadline: taskDeadline,
+            subtask_description: taskDescription,
+            task_id: selectedParentTask,
+          },
+        })
+      } else {
+        // Create a new task
+        const result = await addTask({
+          variables: {
+            task_name,
+            task_partners,
+            task_status,
+            task_deadline: taskDeadline,
+            task_description: taskDescription,
+          },
+        })
         dispatch(addCardDataSuccess(result.data.addTask))
-        //console.log("Task created Successfully")
-        toast.success("Task created Successfully", { autoClose: 2000 })
-      })
+        toast.success("Task created successfully", { autoClose: 2000 })
+      }
     } catch (err) {
-      //console.log(err)
-      toast.error("Task created Failded", { autoClose: 2000 })
+      console.error("Task creation failed:", err)
+      toast.error("Task creation failed", { autoClose: 2000 })
     }
   }
 
@@ -214,9 +227,9 @@ const TasksCreate = props => {
                               id="parenttaskname"
                               name="parenttaskname"
                               value={selectedParentTask || ""}
-                              onChange={e =>
+                              onChange={e => {
                                 setSelectedParentTask(e.target.value)
-                              }
+                              }}
                             >
                               <option value="">
                                 {props.t("Select Parent Task")}
