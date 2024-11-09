@@ -51,45 +51,6 @@ app.get("/", (req, res) => {
   return res.status(200).json("app is running");
 });
 
-app.post("/send-email", async (req, res) => {
-  console.log("Received request body:", req.body); // Log to ensure body is parsed
-  const { email, subject, Content } = req.body;
-
-  if (!email || !subject || !Content) {
-    return res.status(400).json({ message: "Missing required fields" });
-  }
-
-  const htmlContent = generateTasksTableHTML(Content); // Generate HTML content for the email
-
-  const mailOptions = {
-    from: "adedaher6@gmail.com", // Sender email
-    to: email, // Recipient email
-    subject: subject, // Subject of the email
-    html: htmlContent, // HTML body of the email
-  };
-
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "adedaher6@gmail.com",
-        pass: "Goshonda123@",
-      },
-    });
-
-    const info = transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log("Error sending email:", error);
-      } else {
-        console.log("Email sent:", info.response);
-      }
-    });
-    res.json({ success: true, message: info.response });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
-
 app.get("/files", (req, res) => {
   const directoryPath = "C:\\cpalink"; // Specify the path to the directory
   if (!fs.existsSync(directoryPath)) {
@@ -150,54 +111,6 @@ app.get("/files", (req, res) => {
   });
 });
 
-function generateTasksTableHTML(tasks) {
-  let html = `
-    <h2>Tasks List</h2>
-    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">
-      <thead>
-        <tr>
-          <th>Task Name</th>
-          <th>Task Partners</th>
-          <th>Status</th>
-          <th>Deadline</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
-
-  tasks.forEach((task) => {
-    html += `
-      <tr>
-        <td>${task.task_name}</td>
-        <td>${task.task_partners}</td>
-        <td>${task.task_status}</td>
-        <td>${task.task_deadline}</td>
-        <td>${task.task_description}</td>
-      </tr>
-    `;
-
-    // If there are subtasks, include them in the table as well
-    if (task.subtasks && task.subtasks.length > 0) {
-      task.subtasks.forEach((subtask) => {
-        html += `
-          <tr style="background-color: #f9f9f9;">
-            <td colspan="1"> - ${subtask.subtask_name}</td>
-            <td colspan="2">${subtask.subtask_status}</td>
-            <td>${subtask.subtask_deadline}</td>
-            <td>${subtask.subtask_description}</td>
-          </tr>
-        `;
-      });
-    }
-  });
-
-  html += `
-      </tbody>
-    </table>
-  `;
-  return html;
-}
 app.get("/openFile", (req, res) => {
   const { filePath } = req.query;
 

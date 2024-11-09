@@ -176,79 +176,116 @@ const TasksList = props => {
       variables: { subtask_id: subtaskId, subtask_status: newStatus },
     })
   }
-
-  const generateTasksTableHTML = tasks => {
-    let tableHTML =
-      "<table><tr><th>Task</th><th>Deadline</th><th>Status</th></tr>"
-
-    tasks.forEach(task => {
-      tableHTML += `
-        <tr>
-          <td>${task.name}</td>
-          <td>${task.deadline}</td>
-          <td>${task.status}</td>
-        </tr>
-      `
-    })
-
-    tableHTML += "</table>"
-    return tableHTML
-  }
-
   const handleTasksByMail = () => {
     const htmlContent = `
-    <html>
-      <body>
-        <h1>Tasks Report</h1>
-        <p>Here is the list of tasks:</p>
-        <table border="1">
-          <thead>
-            <tr>
-              <th>Task</th>
-              <th>Deadline</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${tasks
-              .map(
-                task => `
+      <html>
+        <head>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              margin: 20px;
+              background-color: #f9f9f9;
+            }
+            h1 {
+              color: #333;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 20px;
+              background-color: #fff;
+            }
+            th, td {
+              padding: 12px;
+              text-align: left;
+              border: 1px solid #ddd;
+            }
+            th {
+              background-color: #4CAF50;
+              color: white;
+            }
+            tr:nth-child(even) {
+              background-color: #f2f2f2;
+            }
+            tr:hover {
+              background-color: #ddd;
+            }
+            td {
+              word-wrap: break-word;
+            }
+            .subtask-row td {
+              background-color: #f9f9f9;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Tasks Report</h1>
+          <p>Here is the list of tasks with their subtasks:</p>
+          <table>
+            <thead>
               <tr>
-                <td>${task.name || "N/A"}</td>
-                <td>${task.deadline || "N/A"}</td>
-                <td>${task.status || "N/A"}</td>
+                <th>Task</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                <th>Partners</th>
               </tr>
-            `
-              )
-              .join("")}
-          </tbody>
-        </table>
-      </body>
-    </html>
-  `
+            </thead>
+            <tbody>
+              ${tasks
+                .map(
+                  task => `
+                  <tr>
+                    <td>${task.task_name || "N/A"}</td>
+                    <td>${formatDate(task.task_deadline) || "N/A"}</td>
+                    <td>${task.task_status || "N/A"}</td>
+                    <td>${task.task_partners?.join(", ") || "N/A"}</td>
+                  </tr>
+                  ${task.subtasks
+                    ?.map(
+                      subtask => `
+                    <tr class="subtask-row">
+                      <td style="padding-left: 20px;">${
+                        subtask.subtask_name || "N/A"
+                      }</td>
+                      <td>${formatDate(subtask.subtask_deadline) || "N/A"}</td>
+                      <td>${subtask.subtask_status || "N/A"}</td>
+                    </tr>
+                  `
+                    )
+                    .join("")}
+                `
+                )
+                .join("")}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `
+    //to_email
     const templateParams = {
-      to_email: "adedaher5@example.com", // Replace with recipient's email
-      subject: "Task Report", // Subject of the email
-      html: htmlContent, // HTML content for the email
+      to_email: "cohensahar17@gmail.com",
+      subject: "Task Report",
+      html: htmlContent,
     }
 
-    // Send the email using EmailJS
     emailjs
-      .send("service_1nlt43g", "template_0aqhw5n", templateParams, {
-        publicKey: "qcXypAENgVmeK1ubB",
-      })
+      .send(
+        "service_rhlu9s9",
+        "template_1fj0kpv",
+        templateParams,
+        "r-OVdJGszMAElSpIl"
+      )
       .then(
         response => {
           console.log("Email sent successfully:", response)
-          alert("Email sent successfully!")
+          toast.success("Email sent successfully!", { autoClose: 2000 })
         },
         error => {
           console.error("Error sending email:", error)
-          alert("Failed to send email.")
+          toast.error("Failed to send email.", { autoClose: 2000 })
         }
       )
   }
-
   return (
     <section className={""} style={{ backgroundColor: "#eee" }}>
       <DeleteModal
