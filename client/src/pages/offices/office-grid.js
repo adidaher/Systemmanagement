@@ -155,7 +155,7 @@ const OfficesGrid = props => {
                   className="btn btn-success btn-rounded waves-effect waves-light addContact-modal mb-2 float-start"
                   onClick={handleUserClicks}
                 >
-                  Add office
+                  {props.t("Add office")}
                 </button>
               )}
             </div>

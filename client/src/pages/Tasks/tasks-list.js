@@ -300,7 +300,7 @@ const TasksList = props => {
         >
           <div className="col-md-12 col-xl-12 ">
             <button className="mb-50" onClick={handleTasksByMail}>
-              Get Tasks by mail
+              {props.t("Get Tasks by mail")}
             </button>
             <div className="card border mt-10" style={{ borderRadius: 15 }}>
               <div className="card-header p-3">

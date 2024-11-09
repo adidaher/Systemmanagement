@@ -258,5 +258,7 @@
   "Status": "סטטוס",
   "inProgress": "בטיפול",
   "upComing": "הוגדרה",
-  "Completed": "הסתיימו"
+  "Completed": "הסתיימו",
+  "Add office": "הוסף משרד",
+  "Get Tasks by mail": "הפק דווח למייל"
 }
